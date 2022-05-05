@@ -1,0 +1,5 @@
+gps_fix_uere: 3
+dgps_fix_uere: 0.5
+float_rtk_fix_uere: 0.1
+rtk_fix_uere: 0.02
+simulation_fix_uere: 0.02

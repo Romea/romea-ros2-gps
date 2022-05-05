@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<launch>
+
+   <arg name="gps_name"/>
+   <arg name="gps_name"/>
+   <arg name="robot_name"/>
+   <arg name="driver_pkg"/>
+   <arg name="port"/>
+   <arg name="baudrate"/>
+   <arg name="nmea_sentence_topic"/>
+   <arg name="fix_topic"/>
+   <arg name="vel_topic"/>
+
+
+   <group if="$(eval arg('driver_pkg') == 'nmea_navsat_driver')">
+
+      <node pkg="nmea_navsat_driver"
+            type="nmea_topic_serial_reader"
+            name="$(arg gps_name)_nmea_driver">
+          <remap from="nmea_sentence" to="nmea_sentence_topic"/>
+          <param name="port" value="$(arg port)"/>
+          <param name="baud" value="$(arg baudrate)"/>
+          <param name="frame_id" value="$(arg robot_name)/$(arg gps_name)_link"/>
+       </node>
+
+       <node pkg="nmea_navsat_driver"
+             type="nmea_topic_driver"
+             name="$(arg gps_name)_navsat_driver">
+           <remap from="fix" to="fix_topic"/>
+           <remap from="vel" to="vel_topic"/>
+       </node>
+
+
+   </group>
+
+   <group if="$(eval arg('driver_pkg') == 'romea_gps_driver')">
+
+       <node pkg="romea_nmea_gps_driver"
+             type="nmea_gps_driver_node"
+             name="$(arg gps_name)_driver">
+           <remap from="nmea_sentence" to="nmea_sentence_topic"/>
+           <remap from="fix" to="fix_topic"/>
+           <remap from="vel" to="vel_topic"/>
+           <param name="port" value="$(arg port)"/>
+           <param name="baud" value="$(arg baudrate)"/>
+           <param name="frame_id" value="$(arg robot_name)/$(arg gps_name)_link"/>
+       </node>
+
+   </group>z
+
+
+</launch>

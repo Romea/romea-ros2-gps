@@ -1,0 +1,16 @@
+- git:
+    local-name: src/romea_common_core
+    uri: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    version: devel
+- git:
+    local-name: src/romea_gps_core
+    uri: git@gitlab-ssh.irstea.fr:romea_core/romea_gps.git
+    version: devel
+- git:
+    local-name: src/romea_common_ros
+    uri: git@gitlab-ssh.irstea.fr:romea_ros1/interfaces/core/romea_common.git
+    version: devel
+
+- git:
+    local-name: src/serial
+    uri: https://github.com/wjwwood/serial.git
