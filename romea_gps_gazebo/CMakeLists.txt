@@ -61,7 +61,6 @@ set(AMENT_CMAKE_ENVIRONMENT_HOOKS_DESC_romea_gps_gazebo
 
 ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/romea_gps_gazebo.sh.in")
 
-ament_package()
 
 install(DIRECTORY include/
         DESTINATION include)
@@ -71,3 +70,5 @@ install(TARGETS
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
+
+ament_package()
