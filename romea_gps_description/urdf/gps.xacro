@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
-  <xacro:macro name="gps_sensor" params="xyz parent_link rate name">
+  <xacro:macro name="gps_sensor" params="xyz parent_link rate name prefix">
 
     <xacro:property name="link_name" value="${prefix}${name}_link"/>
     <xacro:property name="joint_name" value="${prefix}${name}_joint"/>
-    <xacro:property name="controller_name" value="${prefix}${name}_controller"/>
     <xacro:property name="base_footprint_name" value="${prefix}base_footprint"/>
     <xacro:property name="parent_link_name" value="${prefix}${parent_link}"/>
 
@@ -35,6 +34,7 @@
       <parent link="${parent_link_name}" />
       <child link="${link_name}" />
     </joint>
+
 
     <gazebo reference="${link_name}">
       <sensor type="gps" name="gps_sensor">
@@ -80,21 +80,12 @@
             </vertical>
           </velocity_sensing>
         </gps>
-
-       <plugin name="${controller_name}" filename="libgazebo_ros_romea_gps.so">
-         <update_rate>${rate}</update_rate>
-         <body_name>${parent_link}</body_name>
-         <link_name>${link_name}</link_name>
-         <nmea_topic_name>${nmea_topic_name}</nmea_topic_name>
-         <fix_topic_name>${fix_topic_name}</fix_topic_name>
-         <velocity_topic_name>${vel_topic_name}</velocity_topic_name>
-<!--         <antenna_body_position>${xyz}</antenna_body_position>-->
-<!--         <wgs84_anchor>${wgs84_anchor}</wgs84_anchor>-->
-         <gps_name>${prefix}${name}</gps_name>
+       <plugin name="${name}" filename="libromea_gazebo_ros_gps_sensor.so">
+         <ros>
+             <namespace>${prefix}${name}</namespace>
+         </ros>
        </plugin>
-
       </sensor>
-
     </gazebo>
 
   </xacro:macro>
