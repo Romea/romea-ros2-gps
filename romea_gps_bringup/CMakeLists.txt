@@ -13,4 +13,12 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+ament_python_install_module(python/gps_bringup.py)
+
+install(PROGRAMS
+  scripts/urdf_description.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
 ament_package()
