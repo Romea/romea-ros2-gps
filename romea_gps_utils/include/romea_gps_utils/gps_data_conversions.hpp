@@ -16,7 +16,7 @@ namespace romea {
 void to_ros_msg(const rclcpp::Time & stamp,
                 const std::string & frame_id,
                 const std::string & raw_sentence,
-                nmea_msgs::msg::Sentence);
+                nmea_msgs::msg::Sentence & msg);
 
 void to_ros_msg(const rclcpp::Time & stamp,
                 const std::string & frame_id,

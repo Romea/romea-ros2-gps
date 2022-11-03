@@ -1,5 +1,5 @@
-#ifndef __GpsDataDiagnostic_HPP__
-#define __GpsDataDiagnostic_HPP__
+#ifndef __GpsDataDiagnostics_HPP__
+#define __GpsDataDiagnostics_HPP__
 
 //romea
 #include <romea_core_common/diagnostic/CheckupRate.hpp>
@@ -22,7 +22,7 @@ private :
 
   CheckupEqualToRate  gga_rate_diagnostic_;
   CheckupEqualToRate  rmc_rate_diagnostic_;
-  CheckupEqualToRate  gsv_rate_diagnostic_;
+  CheckupGreaterThanRate  gsv_rate_diagnostic_;
 
 };
 

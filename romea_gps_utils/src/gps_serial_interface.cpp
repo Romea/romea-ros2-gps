@@ -12,14 +12,13 @@ GpsSerialInterface::GpsSerialInterface(std::shared_ptr<rclcpp::Node> node)
   declare_device(node);
   declare_baudrate(node);
 
-  serial_.setPort(get_device(node));
-  serial_.setBaudrate(get_baudrate(node));
-  serial::Timeout t = serial::Timeout::simpleTimeout(40);
-  serial_.setTimeout(t);
-  serial_.open();
-
-  if(!serial_.isOpen())
-  {
+  try {
+    serial_.setPort(get_device(node));
+    serial_.setBaudrate(get_baudrate(node));
+    serial::Timeout t = serial::Timeout::simpleTimeout(40);
+    serial_.setTimeout(t);
+    serial_.open();
+  } catch (...) {
     throw(std::runtime_error("Unable to connect to device "+ get_device(node) ));
   }
 }
@@ -40,7 +39,10 @@ size_t GpsSerialInterface::write(const std::string & data)
 std::optional<std::string> GpsSerialInterface::read_nmea_sentence()
 {
   std::string raw_sentence;
-  if(read(raw_sentence) && NMEAParsing::isNMEASentence(raw_sentence))
+
+  read(raw_sentence);
+  NMEAParsing::removeCRLF(raw_sentence);
+  if(NMEAParsing::isNMEASentence(raw_sentence))
   {
     return raw_sentence;
   }

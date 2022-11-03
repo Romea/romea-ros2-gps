@@ -7,7 +7,14 @@ namespace romea
 {
 
 //-----------------------------------------------------------------------------
-GpsData::GpsData(std::shared_ptr<rclcpp::Node> node)
+GpsData::GpsData(std::shared_ptr<rclcpp::Node> node):
+  clock_(node->get_clock()),
+  timer_(nullptr),
+  diagnostics_(nullptr),
+  fix_publisher_(nullptr),
+  vel_publisher_(nullptr),
+  nmea_sentence_publisher_(nullptr),
+  diagnostics_publisher_(nullptr)
 {
   declare_rate(node);
   declare_frame_id(node);
@@ -23,6 +30,7 @@ void GpsData::init_diagnostics_(std::shared_ptr<rclcpp::Node> node)
 
   diagnostics_publisher_ = make_diagnostic_publisher<DiagnosticReport>
       (node,"gps",1.,"","/diagnostics",true);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -33,10 +41,9 @@ void GpsData::init_publishers_(std::shared_ptr<rclcpp::Node> node)
   fix_publisher_=make_stamped_data_publisher<GGAFrame,sensor_msgs::msg::NavSatFix>(
         node,"fix",frame_id,sensor_data_qos(),true);
   vel_publisher_=make_stamped_data_publisher<RMCFrame,geometry_msgs::msg::TwistStamped>(
-        node,"fix",frame_id,sensor_data_qos(),true);
+        node,"vel",frame_id,sensor_data_qos(),true);
   nmea_sentence_publisher_=make_stamped_data_publisher<std::string,nmea_msgs::msg::Sentence>(
-        node,"fix",frame_id,sensor_data_qos(),true);
-
+        node,"nmea",frame_id,sensor_data_qos(),true);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +65,7 @@ bool GpsData::can_be_converted_to_fix_msg_(const GGAFrame & gga_frame)
 }
 
 //-----------------------------------------------------------------------------
-bool can_be_converted_to_vel_msg_(const RMCFrame & rmc_frame)
+bool GpsData::can_be_converted_to_vel_msg_(const RMCFrame & rmc_frame)
 {
   return rmc_frame.speedOverGroundInMeterPerSecond
       && rmc_frame.trackAngleTrue;
@@ -68,6 +75,7 @@ bool can_be_converted_to_vel_msg_(const RMCFrame & rmc_frame)
 void GpsData::process_gga_frame_(const rclcpp::Time  & stamp,
                                  const std::string & nmea_sentence)
 {
+//  std::cout << " process_gga_frame_ " << std::endl;
   GGAFrame gga_frame(nmea_sentence);
   diagnostics_->updateGGARate(to_romea_duration(stamp));
   if(can_be_converted_to_fix_msg_(gga_frame))
@@ -80,6 +88,8 @@ void GpsData::process_gga_frame_(const rclcpp::Time  & stamp,
 void GpsData::process_rmc_frame_(const rclcpp::Time &stamp,
                                  const std::string & nmea_sentence)
 {
+//  std::cout << " process_rmc_frame_ " << std::endl;
+
   RMCFrame rmc_frame(nmea_sentence);
   diagnostics_->updateRMCRate(to_romea_duration(stamp));
   if(can_be_converted_to_vel_msg_(rmc_frame))
@@ -92,8 +102,10 @@ void GpsData::process_rmc_frame_(const rclcpp::Time &stamp,
 void GpsData::process_gsv_frame_(const rclcpp::Time &stamp,
                                  const std::string & nmea_sentence)
 {
+//  std::cout << " process_gsv_frame_ " << std::endl;
+
   GSVFrame gsv_frame(nmea_sentence);
-  if(gsv_frame.sentenceNumber == 0)
+  if(gsv_frame.sentenceNumber == gsv_frame.numberOfSentences)
   {
     diagnostics_->updateGSVRate(to_romea_duration(stamp));
   }
@@ -102,7 +114,7 @@ void GpsData::process_gsv_frame_(const rclcpp::Time &stamp,
 //-----------------------------------------------------------------------------
 void GpsData::process_nmea_sentence(const std::string & nmea_sentence)
 {
-  std::cout << nmea_sentence<<std::endl;
+//  std::cout << nmea_sentence<<std::endl;
 
   rclcpp::Time stamp = clock_->now();
   nmea_sentence_publisher_->publish(stamp,nmea_sentence);
@@ -116,7 +128,7 @@ void GpsData::process_nmea_sentence(const std::string & nmea_sentence)
     process_rmc_frame_(stamp,nmea_sentence);
     break;
   case NMEAParsing::SentenceID::GSV:
-    process_rmc_frame_(stamp,nmea_sentence);
+    process_gsv_frame_(stamp,nmea_sentence);
     break;
   default:
     break;
