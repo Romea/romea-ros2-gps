@@ -27,12 +27,10 @@ def launch_setup(context, *args, **kwargs):
     with open(description_yaml_file) as f:
         device = yaml.safe_load(f)
 
-    if robot_namespace != '':
+    if robot_namespace != "":
         frame_id = robot_namespace + "_" + device["name"] + "_link"
     else:
         frame_id = device["name"] + "_link"
-
-    print(frame_id)
 
     driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -54,37 +52,38 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    ntrip = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("romea_gps_bringup"),
-                        "launch",
-                        "drivers/" + device["ntrip"]["pkg"] + ".launch.py",
-                    ]
-                )
-            ]
-        ),
-        launch_arguments={
-            "host": device["ntrip"]["host"],
-            "port": str(device["ntrip"]["port"]),
-            "mountpoint": device["ntrip"]["mountpoint"],
-            "username": device["ntrip"].get("username", ""),
-            "password": device["ntrip"].get("password", ""),
-        }.items(),
-    )
-
-    return [
-        GroupAction(
-            actions=[
-                PushRosNamespace(robot_namespace),
-                PushRosNamespace(device["name"]),
-                driver,
-                ntrip,
-            ]
-        )
+    actions = [
+        PushRosNamespace(robot_namespace),
+        PushRosNamespace(device["name"]),
+        driver,
     ]
+
+    if "ntrip" in device:
+
+        ntrip = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("romea_gps_bringup"),
+                            "launch",
+                            "drivers/" + device["ntrip"]["pkg"] + ".launch.py",
+                        ]
+                    )
+                ]
+            ),
+            launch_arguments={
+                "host": device["ntrip"]["host"],
+                "port": str(device["ntrip"]["port"]),
+                "mountpoint": device["ntrip"]["mountpoint"],
+                "username": device["ntrip"].get("username", ""),
+                "password": device["ntrip"].get("password", ""),
+            }.items(),
+        )
+
+        actions.append(ntrip)
+
+    return [GroupAction(actions)]
 
 
 def generate_launch_description():

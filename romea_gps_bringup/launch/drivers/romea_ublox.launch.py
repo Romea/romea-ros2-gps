@@ -30,7 +30,7 @@ def launch_setup(context, *args, **kwargs):
               {"device" : device},
               {"baudrate" : int(baudrate)},
               {"frame_id": frame_id},
-              {"rate" : rate},
+              {"rate" : int(rate)},
             ]
     )
 

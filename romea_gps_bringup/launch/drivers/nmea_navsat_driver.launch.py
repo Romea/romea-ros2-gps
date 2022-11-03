@@ -29,7 +29,8 @@ def launch_setup(context, *args, **kwargs):
           {"port" : port},
           {"baud" : int(baudrate)},
           {"frame_id": frame_id},
-        ]
+        ],
+        remappings=[("nmea_sentence","nmea")],
     )
 
     drivers.add_action(nmea_driver_node)
@@ -39,6 +40,7 @@ def launch_setup(context, *args, **kwargs):
             executable='nmea_topic_driver',
             name='topic_driver',
             output='screen',
+            remappings=[("nmea_sentence","nmea")],
     )
 
     drivers.add_action(topic_driver_node)

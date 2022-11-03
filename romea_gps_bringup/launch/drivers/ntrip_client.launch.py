@@ -34,7 +34,8 @@ def launch_setup(context, *args, **kwargs):
           {"username" : username},
           {"password" : password},
           {"authenticate" : username!='' and password!=''},
-        ]
+        ],
+        remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
     )
 
     driver.add_action(ntrip_client_node)
