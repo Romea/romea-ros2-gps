@@ -12,7 +12,9 @@ def urdf_description(prefix,description_yaml_file):
    return gps_description.urdf(
        prefix,
        device["name"],
+       device["configuration"]["type"],
+       device["configuration"]["model"],
        device["configuration"]["rate"],
-       device["configuration"]["parent_link"],
-       device["configuration"]["xyz"],
+       device["geometry"]["parent_link"],
+       device["geometry"]["xyz"],
    )

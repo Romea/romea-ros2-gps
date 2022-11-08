@@ -27,6 +27,9 @@ def launch_setup(context, *args, **kwargs):
     with open(description_yaml_file) as f:
         device = yaml.safe_load(f)
 
+    if "driver" not in device:
+       return []
+
     if robot_namespace != "":
         frame_id = robot_namespace + "_" + device["name"] + "_link"
     else:
