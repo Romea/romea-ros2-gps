@@ -2,7 +2,7 @@
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:arg name="prefix" default=""/>
-  <xacro:arg name="name" default="imu"/>
+  <xacro:arg name="name" default="gps"/>
   <xacro:arg name="rate" default="10"/>
   <xacro:arg name="parent_link" default="base_link"/>
   <xacro:arg name="xyz" default="0.0 0.0 0.0"/>
