@@ -56,10 +56,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-set(AMENT_CMAKE_ENVIRONMENT_HOOKS_DESC_romea_gps_gazebo
-    "prepend-non-duplicate;LD_LIBRARY_PATH;${GAZEBO_PLUGIN_PATH}")
+message(${GAZEBO_PLUGIN_PATH})
 
-ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/romea_gps_gazebo.sh.in")
+ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/${PROJECT_NAME}.dsv.in")
 
 
 install(DIRECTORY include/
