@@ -12,33 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// std
+#include <iostream>
+#include <memory>
+#include <string>
+
+// romea
 #include "romea_gps_gazebo/gazebo_ros_gps_sensor.hpp"
 #include <romea_core_gps/nmea/GGAFrame.hpp>
 #include <romea_core_gps/nmea/RMCFrame.hpp>
 
+// ros
 #include <builtin_interfaces/msg/time.hpp>
 #include <gazebo_ros/conversions/builtin_interfaces.hpp>
 #include <gazebo_ros/conversions/geometry_msgs.hpp>
 #include <gazebo_ros/node.hpp>
 #include <gazebo_ros/utils.hpp>
+
 #ifdef IGN_PROFILER_ENABLE
 #include <ignition/common/Profiler.hh>
 #endif
+
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <nmea_msgs/msg/sentence.hpp>
 
-#include <iostream>
-#include <memory>
-#include <string>
 
 namespace  {
 
-const double DEFAULT_DHOP=1;
-const unsigned char DEFAUlT_FIX_STATUS=0;
-const unsigned short DEFAULT_SERVICE= 15;
-const rclcpp::Time GGA_STAMP_OFFSET= rclcpp::Time(0,0);
-const rclcpp::Time RMC_STAMP_OFFSET= rclcpp::Time(0,5000000);
+const double DEFAULT_DHOP = 1;
+const unsigned char DEFAUlT_FIX_STATUS = 0;
+const unsigned short DEFAULT_SERVICE  = 15;
+const rclcpp::Time GGA_STAMP_OFFSET = rclcpp::Time(0, 0);
+const rclcpp::Time RMC_STAMP_OFFSET = rclcpp::Time(0, 5000000);
 }
 
 namespace romea
@@ -130,19 +136,19 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
         "~/vel", qos.get_publisher_qos("~/vel", rclcpp::SensorDataQoS().reliable()));
 
   // Init vel message
-  impl_->vel_msg_= std::make_shared<geometry_msgs::msg::TwistStamped>();
+  impl_->vel_msg_ = std::make_shared<geometry_msgs::msg::TwistStamped>();
   impl_->vel_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
-
 
   //  Init nmea sentence publisher
   impl_->nmea_sentence_pub_ = impl_->ros_node_->create_publisher<nmea_msgs::msg::Sentence>(
-        "~/nmea_sentence", qos.get_publisher_qos("~/nmea_sentence", rclcpp::SensorDataQoS().reliable()));
+        "~/nmea_sentence",
+        qos.get_publisher_qos("~/nmea_sentence", rclcpp::SensorDataQoS().reliable()));
 
   // Init nmea messages
-  impl_->nmea_gga_sentence_msg_= std::make_shared<nmea_msgs::msg::Sentence>();
+  impl_->nmea_gga_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();
   impl_->nmea_gga_sentence_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
-  impl_->nmea_rmc_sentence_msg_= std::make_shared<nmea_msgs::msg::Sentence>();
+  impl_->nmea_rmc_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();
   impl_->nmea_rmc_sentence_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
 
@@ -167,28 +173,28 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
   double v_north = sensor_->VelocityNorth();
   double v_up = sensor_->VelocityUp();
 
-  romea::GGAFrame gga_frame;
-  gga_frame.fixTime =romea::FixTime(stamp.sec+GGA_STAMP_OFFSET.seconds(),
-                                    stamp.nanosec+GGA_STAMP_OFFSET.nanoseconds());
+  GGAFrame gga_frame;
+  gga_frame.fixTime  = romea::FixTime(stamp.sec+GGA_STAMP_OFFSET.seconds(),
+                                      stamp.nanosec+GGA_STAMP_OFFSET.nanoseconds());
   gga_frame.talkerId = romea::TalkerId::GP;
-  gga_frame.latitude = latitude/180.*M_PI;
-  gga_frame.longitude = longitude/180.*M_PI;
+  gga_frame.latitude = Latitude(latitude/180.*M_PI);
+  gga_frame.longitude = Longitude(longitude/180.*M_PI);
   gga_frame.altitudeAboveGeoid = altitude;
   gga_frame.fixQuality = romea::FixQuality::SIMULATION_FIX;
   gga_frame.geoidHeight = 0;
-  gga_frame.horizontalDilutionOfPrecision =DEFAULT_DHOP;
+  gga_frame.horizontalDilutionOfPrecision = DEFAULT_DHOP;
   gga_frame.numberSatellitesUsedToComputeFix = 0;
   nmea_gga_sentence_msg_->sentence = gga_frame.toNMEA();
   nmea_sentence_pub_->publish(*nmea_gga_sentence_msg_);
 
   romea::RMCFrame rmc_frame;
-  rmc_frame.fixTime =romea::FixTime(stamp.sec+RMC_STAMP_OFFSET.seconds(),
-                                    stamp.nanosec+RMC_STAMP_OFFSET.nanoseconds());
+  rmc_frame.fixTime = romea::FixTime(stamp.sec+RMC_STAMP_OFFSET.seconds(),
+                                     stamp.nanosec+RMC_STAMP_OFFSET.nanoseconds());
   rmc_frame.status = romea::RMCFrame::Status::Void;
   rmc_frame.talkerId = romea::TalkerId::GP;
-  rmc_frame.latitude = latitude/180.*M_PI;
-  rmc_frame.longitude = longitude/180.*M_PI;
-  rmc_frame.trackAngleTrue = M_PI_2-std::atan2(v_north,v_east);
+  rmc_frame.latitude = Latitude(latitude/180.*M_PI);
+  rmc_frame.longitude = Longitude(longitude/180.*M_PI);
+  rmc_frame.trackAngleTrue = M_PI_2 - std::atan2(v_north, v_east);
   rmc_frame.speedOverGroundInMeterPerSecond = std::sqrt(v_east*v_east + v_north*v_north);
   nmea_rmc_sentence_msg_->sentence = rmc_frame.toNMEA();
   nmea_sentence_pub_->publish(*nmea_rmc_sentence_msg_);
@@ -221,4 +227,4 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
 
 GZ_REGISTER_SENSOR_PLUGIN(GazeboRosGpsSensor)
 
-} // namespace gazebo
+}  // namespace romea

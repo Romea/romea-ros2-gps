@@ -24,8 +24,6 @@ def launch_setup(context, *args, **kwargs):
 
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
 
-    with open(description_yaml_file) as f:
-        device = yaml.safe_load(f)
 
     if "driver" not in device:
        return []

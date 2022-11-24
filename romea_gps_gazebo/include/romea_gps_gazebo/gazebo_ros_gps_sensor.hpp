@@ -1,25 +1,14 @@
-// Copyright 2018 Open Source Robotics Foundation, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+#ifndef ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
+#define ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
 
-#ifndef ROMEA_GAZEBO_ROS_GPS_SENSOR_HPP_
-#define ROMEA_PLUGINS__GAZEBO_ROS_GPS_SENSOR_HPP_
+// std
+#include <memory>
 
+// ros
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/sensors/GpsSensor.hh>
 #include <gazebo/common/Events.hh>
 
-#include <memory>
 
 namespace romea
 {
@@ -50,6 +39,7 @@ class GazeboRosGpsSensor : public gazebo::SensorPlugin
 public:
   /// Constructor.
   GazeboRosGpsSensor();
+
   /// Destructor.
   virtual ~GazeboRosGpsSensor();
 
@@ -61,6 +51,6 @@ private:
   std::unique_ptr<GazeboRosGpsSensorPrivate> impl_;
 };
 
-}  // namespace gazebo_plugins
+}  // namespace romea
 
-#endif  // GAZEBO_PLUGINS__GAZEBO_ROS_GPS_SENSOR_HPP_
+#endif  // ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
