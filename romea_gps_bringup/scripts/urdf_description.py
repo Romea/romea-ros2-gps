@@ -16,6 +16,6 @@ if __name__ == "__main__":
   else:
     prefix=parameters["robot_namespace"]+"_";
 
-  description_yaml_file=parameters["description_yaml_file"]
+  meta_description_filename=parameters["meta_description_filename"]
 
-  print(romea_gps_bringup.urdf_description(prefix,description_yaml_file))
+  print(romea_gps_bringup.urdf_description(prefix,meta_description_filename))
