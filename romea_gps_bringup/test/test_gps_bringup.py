@@ -60,4 +60,4 @@ def test_get_parent_link(meta_description):
     assert meta_description.get_parent_link() == "base_link"
 
 def test_get_xyz(meta_description):
-    assert meta_description.get_xyz() == [0.0, 0.0, 1.5]
+    assert meta_description.get_xyz() == [1.0, 2.0, 3.0]
