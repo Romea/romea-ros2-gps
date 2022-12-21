@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import romea_gps_bringup
+from romea_common_bringup import robot_urdf_prefix
+from romea_gps_bringup import urdf_description
 import sys
 
 if __name__ == "__main__":
@@ -16,6 +17,6 @@ if __name__ == "__main__":
   else:
     prefix=parameters["robot_namespace"]+"_";
 
+  prefix=robot_urdf_prefix(parameters["robot_namespace"]);
   meta_description_filename=parameters["meta_description_filename"]
-
-  print(romea_gps_bringup.urdf_description(prefix,meta_description_filename))
+  print(urdf_description(prefix,meta_description_filename))

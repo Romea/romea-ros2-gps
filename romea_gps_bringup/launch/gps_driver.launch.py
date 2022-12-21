@@ -11,6 +11,8 @@ from launch_ros.actions import PushRosNamespace
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+
+from romea_commong_bringup import device_link_name
 from romea_gps_bringup import GPSMetaDescription
 
 def get_robot_namespace(context):
@@ -34,10 +36,6 @@ def launch_setup(context, *args, **kwargs):
         return []
 
     gps_name = meta_description.get_name()
-    if robot_namespace != "":
-        frame_id = robot_namespace + "_" + gps_name + "_link"
-    else:
-        frame_id = gps_name + "_link"
 
     driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -57,7 +55,7 @@ def launch_setup(context, *args, **kwargs):
             "device": meta_description.get_driver_device(),
             "baudrate": str(meta_description.get_driver_baudrate()),
             "rate": str(meta_description.get_rate()),
-            "frame_id": frame_id,
+            "frame_id": device_link_name(robot_namespace,gps_name),
         }.items(),
     )
 
