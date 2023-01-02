@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-from ament_index_python.packages import get_package_share_directory
 from romea_common_bringup import MetaDescription
 import romea_gps_description
-import yaml
 
 
 class GPSMetaDescription:
@@ -41,7 +39,7 @@ class GPSMetaDescription:
         return self.meta_description.get("mountpoint", "ntrip")
 
     def get_ntrip_username(self):
-        return self.meta_description.get("username", "ntrip",)
+        return self.meta_description.get("username", "ntrip")
 
     def get_ntrip_password(self):
         return self.meta_description.get("password", "ntrip")
@@ -53,7 +51,7 @@ class GPSMetaDescription:
         return self.meta_description.get("model", "configuration")
 
     def get_rate(self):
-        return self.meta_description.get("rate","configuration")
+        return self.meta_description.get("rate", "configuration")
 
     def get_parent_link(self):
         return self.meta_description.get("parent_link", "geometry")

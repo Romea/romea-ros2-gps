@@ -1,12 +1,10 @@
 from launch import LaunchDescription
 
-from launch.actions import (
-    DeclareLaunchArgument,
-    OpaqueFunction,
-)
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
+
 
 def launch_setup(context, *args, **kwargs):
 
@@ -18,21 +16,22 @@ def launch_setup(context, *args, **kwargs):
     driver = LaunchDescription()
 
     driver_node = Node(
-            package='romea_ublox_driver',
-            executable='ublox_driver_node',
-            name='driver',
-            output='screen',
-            parameters= [
-              {"device" : device},
-              {"baudrate" : int(baudrate)},
-              {"frame_id": frame_id},
-              {"rate" : int(rate)},
-            ]
+        package="romea_ublox_driver",
+        executable="ublox_driver_node",
+        name="driver",
+        output="screen",
+        parameters=[
+            {"device": device},
+            {"baudrate": int(baudrate)},
+            {"frame_id": frame_id},
+            {"rate": int(rate)},
+        ],
     )
 
     driver.add_action(driver_node)
 
     return [driver]
+
 
 def generate_launch_description():
 

@@ -28,22 +28,20 @@ find_package(serial REQUIRED)
 
 
 add_library(${PROJECT_NAME} SHARED
-   src/gps_data.cpp
-   src/gps_data_conversions.cpp
-   src/gps_data_diagnostics.cpp
-   src/gps_serial_interface.cpp
- )
+  src/gps_data.cpp
+  src/gps_data_conversions.cpp
+  src/gps_data_diagnostics.cpp
+  src/gps_serial_interface.cpp)
 
 ament_target_dependencies(${PROJECT_NAME}
-    rclcpp
-    sensor_msgs
-    geometry_msgs
-    nmea_msgs
-    romea_core_common
-    romea_core_gps
-    romea_common_utils
-    serial
-    )
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  nmea_msgs
+  romea_core_common
+  romea_core_gps
+  romea_common_utils
+  serial)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

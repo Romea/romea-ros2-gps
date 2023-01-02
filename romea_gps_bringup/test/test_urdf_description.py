@@ -2,8 +2,6 @@ import os
 import pytest
 import subprocess
 
-from romea_gps_bringup import urdf_description
-
 from ament_index_python import get_package_prefix
 
 import xml.etree.ElementTree as ET
@@ -29,6 +27,7 @@ def urdf():
             encoding="utf-8",
         )
     )
+
 
 def test_gps_name(urdf):
     assert urdf.find("link").get("name") == "robot_gps_link"

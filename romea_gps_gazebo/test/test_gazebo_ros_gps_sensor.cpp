@@ -1,28 +1,19 @@
-// Copyright 2018 Open Source Robotics Foundation, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+// Add license
 
+// ros
 #include <gazebo/test/ServerFixture.hh>
 #include <gazebo_ros/node.hpp>
 #include <gazebo_ros/testing_utils.hpp>
 #include <rclcpp/rclcpp.hpp>
-
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 
+// romea core
 #include <romea_core_gps/nmea/GGAFrame.hpp>
 #include <romea_core_gps/nmea/RMCFrame.hpp>
 
+// std
 #include <memory>
 
 #define tol 10e-4
@@ -55,7 +46,7 @@ TEST_F(GazeboRosGpsSensorTest, checkNavsatMessages)
 
   sensor_msgs::msg::NavSatFix::SharedPtr nmea_sentence_msg = nullptr;
   std::shared_ptr<romea::GGAFrame> gga_frame = nullptr;
-  std::shared_ptr<romea::RMCFrame> rmc_frame= nullptr;
+  std::shared_ptr<romea::RMCFrame> rmc_frame = nullptr;
 
   auto fix_sub = node->create_subscription<sensor_msgs::msg::NavSatFix>(
     "/gps/nmea_sentence", rclcpp::SensorDataQoS(),
@@ -71,18 +62,15 @@ TEST_F(GazeboRosGpsSensorTest, checkNavsatMessages)
   // Step until a gps message will have been published
   int sleep{0};
   int max_sleep{1000};
-  do
-  {
+  do {
     world->Step(100);
     rclcpp::spin_some(node);
     gazebo::common::Time::MSleep(100);
     sleep++;
 
-    if (nmea_sentence_msg != nullptr)
-    {
+    if (nmea_sentence_msg != nullptr) {
 
     }
-
   }  while (sleep < max_sleep && nullptr == fix_msg);
 
 //  EXPECT_LT(0u, fix_sub->get_publisher_count());
@@ -123,7 +111,6 @@ TEST_F(GazeboRosGpsSensorTest, checkNavsatMessages)
 //  while (sleep < max_sleep && (nullptr == fix_msg || fix_msg->altitude < 150));
 
 
-
 //  // Check that GPS output reflects the position change
 //  auto post_movement_fix_msg = std::make_shared<sensor_msgs::msg::NavSatFix>(*fix_msg);
 //  ASSERT_NE(nullptr, post_movement_fix_msg);
@@ -136,7 +123,6 @@ TEST_F(GazeboRosGpsSensorTest, checkNavsatMessages)
 //  EXPECT_NEAR(post_movement_vel_msg->twist.linear.x, 1.0 ,10*tol);
 //  EXPECT_NEAR(post_movement_vel_msg->twist.linear.y, 2.0 ,10*tol);
 //  EXPECT_NEAR(post_movement_vel_msg->twist.linear.z, 3.0 ,10*tol); // why error is greater than tol ?
-
 }
 
 
@@ -183,8 +169,7 @@ TEST_F(GazeboRosGpsSensorTest, CheckNmeaMessages)
   // Step until a gps message will have been published
   int sleep{0};
   int max_sleep{1000};
-  do
-  {
+  do {
     world->Step(100);
     rclcpp::spin_some(node);
     gazebo::common::Time::MSleep(100);
@@ -217,17 +202,15 @@ TEST_F(GazeboRosGpsSensorTest, CheckNmeaMessages)
   ignition::math::Pose3d box_pose;
   box_pose.Pos() = {100.0, 200.0, 300.0};
   link->SetWorldPose(box_pose);
-  link->SetWorldTwist({1,2,3},{0,0,0});
+  link->SetWorldTwist({1, 2, 3}, {0, 0, 0});
 
   sleep = 0;
-  do{
+  do {
     world->Step(50);
     rclcpp::spin_some(node);
     gazebo::common::Time::MSleep(100);
     sleep++;
-  }
-  while (sleep < max_sleep && (nullptr == fix_msg || fix_msg->altitude < 150));
-
+  } while (sleep < max_sleep && (nullptr == fix_msg || fix_msg->altitude < 150));
 
 
   // Check that GPS output reflects the position change
@@ -239,9 +222,9 @@ TEST_F(GazeboRosGpsSensorTest, CheckNmeaMessages)
 
   auto post_movement_vel_msg = std::make_shared<geometry_msgs::msg::TwistStamped>(*vel_msg);
   ASSERT_NE(nullptr, post_movement_vel_msg);
-  EXPECT_NEAR(post_movement_vel_msg->twist.linear.x, 1.0 ,10*tol);
-  EXPECT_NEAR(post_movement_vel_msg->twist.linear.y, 2.0 ,10*tol);
-  EXPECT_NEAR(post_movement_vel_msg->twist.linear.z, 3.0 ,10*tol); // why error is greater than tol ?
+  EXPECT_NEAR(post_movement_vel_msg->twist.linear.x, 1.0, 10 * tol);
+  EXPECT_NEAR(post_movement_vel_msg->twist.linear.y, 2.0, 10 * tol);
+  EXPECT_NEAR(post_movement_vel_msg->twist.linear.z, 3.0, 10 * tol); // why error is greater than tol ?
 
 }
 

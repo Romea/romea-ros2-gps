@@ -9,7 +9,6 @@
     It also publishs velocities and orientation data as nmea navsat driver does.
   </description>
 
-  <author>Jean Laneurit</author>
   <maintainer email="jean.laneurit@inrae.fr">Jean Laneurit</maintainer>
 
   <license> TODO</license>

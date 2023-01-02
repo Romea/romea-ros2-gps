@@ -1,7 +1,3 @@
-cache:
-  paths:
-    - ccache/
-
 before_script:
  # Install ssh-agent if not already installed, it is required by Docker.
  - 'apt-get -qq update -y'
@@ -16,11 +12,11 @@ before_script:
  # you will overwrite your user's SSH config.
  - mkdir -p ~/.ssh
  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+ # create workspace
  - rm -rf ${CI_PROJECT_DIR}/workspace/src >/dev/null 2>&1
  - mkdir -p ${CI_PROJECT_DIR}/workspace/src
  - cd ${CI_PROJECT_DIR}/workspace
  - vcs import src < ${CI_PROJECT_DIR}/${CI_PROJECT_NAME}.repos
-#  - rosdep install --from-paths src --ignore-src -r -y
  - rosdep install --from-paths src --ignore-src -y --as-root apt:false
 
 # galatic

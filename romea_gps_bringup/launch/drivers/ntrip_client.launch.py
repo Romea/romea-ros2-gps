@@ -1,12 +1,10 @@
 from launch import LaunchDescription
 
-from launch.actions import (
-    DeclareLaunchArgument,
-    OpaqueFunction,
-)
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
+
 
 def launch_setup(context, *args, **kwargs):
 
@@ -19,17 +17,17 @@ def launch_setup(context, *args, **kwargs):
     driver = LaunchDescription()
 
     ntrip_client_node = Node(
-        package='ntrip_client',
-        executable='ntrip_ros.py',
-        output='screen',
+        package="ntrip_client",
+        executable="ntrip_ros.py",
+        output="screen",
         name="ntrip_client",
-        parameters= [
-          {"host" : host},
-          {"port" : int(port)},
-          {"mountpoint": mountpoint},
-          {"username" : username},
-          {"password" : password},
-          {"authenticate" : username!='' and password!=''},
+        parameters=[
+            {"host": host},
+            {"port": int(port)},
+            {"mountpoint": mountpoint},
+            {"username": username},
+            {"password": password},
+            {"authenticate": username != "" and password != ""},
         ],
         remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
     )
@@ -37,6 +35,7 @@ def launch_setup(context, *args, **kwargs):
     driver.add_action(ntrip_client_node)
 
     return [driver]
+
 
 def generate_launch_description():
 

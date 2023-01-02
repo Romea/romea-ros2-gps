@@ -1,14 +1,17 @@
-#ifndef ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
-#define ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
+// Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+// Add license
 
-// std
-#include <memory>
+
+#ifndef ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_
+#define ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_
 
 // ros
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/sensors/GpsSensor.hh>
 #include <gazebo/common/Events.hh>
 
+// std
+#include <memory>
 
 namespace romea
 {
@@ -53,4 +56,4 @@ private:
 
 }  // namespace romea
 
-#endif  // ROMEA_GPS_GAZEBO_GAZEBO_ROS_GPS_SENSOR_HPP_
+#endif  // ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_

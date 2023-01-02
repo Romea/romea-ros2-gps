@@ -15,6 +15,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from romea_commong_bringup import device_link_name
 from romea_gps_bringup import GPSMetaDescription
 
+
 def get_robot_namespace(context):
     return LaunchConfiguration("robot_namespace").perform(context)
 
@@ -44,9 +45,7 @@ def launch_setup(context, *args, **kwargs):
                     [
                         FindPackageShare("romea_gps_bringup"),
                         "launch",
-                        "drivers/"
-                        + meta_description.get_driver_pkg()
-                        + ".launch.py",
+                        "drivers/" + meta_description.get_driver_pkg() + ".launch.py",
                     ]
                 )
             ]
@@ -55,7 +54,7 @@ def launch_setup(context, *args, **kwargs):
             "device": meta_description.get_driver_device(),
             "baudrate": str(meta_description.get_driver_baudrate()),
             "rate": str(meta_description.get_rate()),
-            "frame_id": device_link_name(robot_namespace,gps_name),
+            "frame_id": device_link_name(robot_namespace, gps_name),
         }.items(),
     )
 
@@ -94,9 +93,9 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     declared_arguments = []
- 
+
     declared_arguments.append(DeclareLaunchArgument("meta_description_filename"))
- 
+
     declared_arguments.append(
         DeclareLaunchArgument("robot_namespace", default_value="")
     )
