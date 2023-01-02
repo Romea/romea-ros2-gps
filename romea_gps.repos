@@ -5,7 +5,7 @@ repositories:
     version: devel
   romea_core/romea_gps:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_gps.git
     version: devel
 
   romea_ros2/tools/romea_common:
