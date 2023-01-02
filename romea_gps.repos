@@ -1,0 +1,23 @@
+repositories:
+  romea_core/romea_common:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    version: devel
+  romea_core/romea_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    version: devel
+
+  romea_ros2/tools/romea_common:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_common.git
+    version: main
+  romea_ros2/interface/romea_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/romea_gps.git
+    version: main
+
+  third_party/serial:
+    type: git
+    url: https://github.com/RoverRobotics-forks/serial-ros2.git
+    version: master
