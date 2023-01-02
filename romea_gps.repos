@@ -19,5 +19,5 @@ repositories:
 
   third_party/serial:
     type: git
-    url: https://github.com/RoverRobotics-forks/serial-ros2.git
+    url: git@gitlab-ssh.irstea.fr:jean.laneurit/serial-ros2.git
     version: master
