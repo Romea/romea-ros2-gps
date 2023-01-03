@@ -13,6 +13,8 @@
 #include <string>
 
 // local
+#include "romea_gps_utils/gps_data_conversions.hpp"
+#include "romea_gps_utils/gps_data_diagnostics.hpp"
 #include "romea_gps_utils/gps_data.hpp"
 
 namespace romea

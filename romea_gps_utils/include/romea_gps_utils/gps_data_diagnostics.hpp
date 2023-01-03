@@ -29,4 +29,4 @@ private:
 
 }  // namespace romea
 
-#endif  // ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_ 
+#endif  // ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_

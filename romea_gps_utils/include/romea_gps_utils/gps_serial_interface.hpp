@@ -16,7 +16,8 @@
 #include <memory>
 #include <string>
 
-namespace romea {
+namespace romea
+{
 
 class GpsSerialInterface
 {

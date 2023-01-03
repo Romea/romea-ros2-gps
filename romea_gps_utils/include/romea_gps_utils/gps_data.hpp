@@ -12,15 +12,21 @@
 #include <romea_common_utils/publishers/stamped_data_publisher.hpp>
 #include <romea_common_utils/publishers/diagnostic_publisher.hpp>
 
+// romea core
+#include <romea_core_gps/nmea/GGAFrame.hpp>
+#include <romea_core_gps/nmea/RMCFrame.hpp>
+#include <romea_core_gps/nmea/GSVFrame.hpp>
+
 // std
 #include <memory>
 #include <string>
 
 // local
-#include "gps_data_conversions.hpp"
-#include "gps_data_diagnostics.hpp"
+#include "romea_gps_utils/gps_data_diagnostics.hpp"
 
-namespace romea {
+
+namespace romea
+{
 
 class GpsData
 {
@@ -36,14 +42,17 @@ protected:
 
   void init_timer_(std::shared_ptr<rclcpp::Node> node);
 
-  void process_gga_frame_(const rclcpp::Time &stamp,
-                          const std::string & nmea_sentence);
+  void process_gga_frame_(
+    const rclcpp::Time & stamp,
+    const std::string & nmea_sentence);
 
-  void process_rmc_frame_(const rclcpp::Time &stamp,
-                          const std::string & nmea_sentence);
+  void process_rmc_frame_(
+    const rclcpp::Time & stamp,
+    const std::string & nmea_sentence);
 
-  void process_gsv_frame_(const rclcpp::Time &stamp,
-                          const std::string & nmea_sentence);
+  void process_gsv_frame_(
+    const rclcpp::Time & stamp,
+    const std::string & nmea_sentence);
 
 
   bool can_be_converted_to_fix_msg_(const GGAFrame & gga_frame);
