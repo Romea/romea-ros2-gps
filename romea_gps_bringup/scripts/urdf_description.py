@@ -1,8 +1,5 @@
-# Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
-# Add license
+#!/usr/bin/env python3
 
-
-# !/usr/bin/env python3
 from romea_common_bringup import robot_urdf_prefix
 from romea_gps_bringup import urdf_description
 import sys
