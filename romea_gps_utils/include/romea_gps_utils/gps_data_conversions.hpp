@@ -11,6 +11,7 @@
 #include <nmea_msgs/msg/sentence.hpp>
 
 // romea core
+#include <romea_core_gps/GPSReceiverEUREs.hpp>
 #include <romea_core_gps/nmea/NMEAParsing.hpp>
 #include <romea_core_gps/nmea/GGAFrame.hpp>
 #include <romea_core_gps/nmea/RMCFrame.hpp>

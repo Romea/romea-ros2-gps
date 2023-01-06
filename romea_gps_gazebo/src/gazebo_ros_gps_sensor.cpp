@@ -1,12 +1,14 @@
 // Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 // Add license
 
-// ros
-#include <builtin_interfaces/msg/time.hpp>
+// gazebo
 #include <gazebo_ros/conversions/builtin_interfaces.hpp>
 #include <gazebo_ros/conversions/geometry_msgs.hpp>
 #include <gazebo_ros/node.hpp>
 #include <gazebo_ros/utils.hpp>
+
+// ros
+#include <builtin_interfaces/msg/time.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <nmea_msgs/msg/sentence.hpp>
@@ -27,8 +29,8 @@ namespace
 {
 
 const double DEFAULT_DHOP = 1;
-const unsigned char DEFAUlT_FIX_STATUS = 0;
-const unsigned short DEFAULT_SERVICE = 15;
+const uint8_t DEFAUlT_FIX_STATUS = 0;
+const uint16_t DEFAULT_SERVICE = 15;
 const rclcpp::Time GGA_STAMP_OFFSET = rclcpp::Time(0, 0);
 const rclcpp::Time RMC_STAMP_OFFSET = rclcpp::Time(0, 5000000);
 }
@@ -104,12 +106,12 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   impl_->fix_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
   using SNT = gazebo::sensors::SensorNoiseType;
-  impl_->fix_msg_->position_covariance[0] =
-    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_LATITUDE_NOISE_METERS));
-  impl_->fix_msg_->position_covariance[4] =
-    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_LONGITUDE_NOISE_METERS));
-  impl_->fix_msg_->position_covariance[8] =
-    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_ALTITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[0] = gazebo_ros::NoiseVariance(
+    impl_->sensor_->Noise(SNT::GPS_POSITION_LATITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[4] = gazebo_ros::NoiseVariance(
+    impl_->sensor_->Noise(SNT::GPS_POSITION_LONGITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[8] = gazebo_ros::NoiseVariance(
+    impl_->sensor_->Noise(SNT::GPS_POSITION_ALTITUDE_NOISE_METERS));
   impl_->fix_msg_->position_covariance_type =
     sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL_KNOWN;
 
@@ -181,9 +183,9 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
   rmc_frame.longitude = Longitude(longitude / 180. * M_PI);
   rmc_frame.trackAngleTrue = M_PI_2 - std::atan2(v_north, v_east);
   rmc_frame.speedOverGroundInMeterPerSecond = std::sqrt(v_east * v_east + v_north * v_north);
+  rmc_frame.fixQuality = romea::FixQuality::SIMULATION_FIX;
   nmea_rmc_sentence_msg_->sentence = rmc_frame.toNMEA();
   nmea_sentence_pub_->publish(*nmea_rmc_sentence_msg_);
-
 
   fix_msg_->header.stamp = stamp;
   fix_msg_->latitude = latitude;

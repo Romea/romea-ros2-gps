@@ -1,0 +1,9 @@
+/**:
+  ros__parameters:
+    gps.gps_fix_uere: 3.0
+    gps.dgps_fix_uere: 1.0
+    gps.float_rtk_fix_uere: 0.5
+    gps.rtk_fix_uere: 0.1
+    gps.simulation_fix_uere: 0.02
+    gps.xyz: [1.0, 2.0, 3.0]
+

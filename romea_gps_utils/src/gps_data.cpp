@@ -43,8 +43,7 @@ void GpsData::init_diagnostics_(std::shared_ptr<rclcpp::Node> node)
   diagnostics_ = std::make_unique<GpsDataDiagnostics>(get_rate(node));
 
   diagnostics_publisher_ = make_diagnostic_publisher<DiagnosticReport>(
-    node, "gps", 1., "",
-    "/diagnostics", true);
+    node, "gps", 1., "", "/diagnostics", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,6 +93,7 @@ void GpsData::process_gga_frame_(
   GGAFrame gga_frame(nmea_sentence);
   diagnostics_->updateGGARate(to_romea_duration(stamp));
   if (can_be_converted_to_fix_msg_(gga_frame)) {
+    // TODO(Jean) use EURE
     fix_publisher_->publish(stamp, gga_frame);
   }
 }

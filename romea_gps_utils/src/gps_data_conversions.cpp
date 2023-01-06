@@ -37,8 +37,9 @@ void to_ros_msg(
   msg.altitude = gga_frame.altitudeAboveGeoid.value() + gga_frame.geoidHeight.value();
 
   double hdop = gga_frame.horizontalDilutionOfPrecision.value();
-  msg.position_covariance[0] = hdop * hdop;
-  msg.position_covariance[4] = hdop * hdop;
+  double std = hdop * GPSReceiverEUREs().get(*gga_frame.fixQuality);
+  msg.position_covariance[0] = std * std;
+  msg.position_covariance[4] = std * std;
   msg.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_APPROXIMATED;
 
 

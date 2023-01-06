@@ -31,6 +31,7 @@ add_library(${PROJECT_NAME} SHARED
   src/gps_data.cpp
   src/gps_data_conversions.cpp
   src/gps_data_diagnostics.cpp
+  src/gps_parameters.cpp
   src/gps_serial_interface.cpp)
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -70,17 +71,15 @@ install(
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
+  INCLUDES DESTINATION include)
 
-#install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
+if(BUILD_TESTING)
 
-#if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  list(APPEND AMENT_LINT_AUTO_EXCLUDE ament_cmake_copyright)
+  ament_lint_auto_find_test_dependencies()
+  add_subdirectory(test)
 
-#    find_package(ament_lint_auto REQUIRED)
-#    ament_lint_auto_find_test_dependencies()
-#    add_subdirectory(test)
-
-#endif()
+endif()
 
 ament_package()
