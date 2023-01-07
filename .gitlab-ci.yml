@@ -25,6 +25,7 @@ galactic_focal_build:
   stage: build
   script:
     - colcon build 
+    - source install/setup.bash 
     - colcon test --packages-select romea_gps_bringup
     - colcon test-result --verbose
 
