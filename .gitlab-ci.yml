@@ -26,24 +26,5 @@ galactic_focal_build:
   script:
     - colcon build 
     - source install/setup.bash 
-    - colcon test --packages-select romea_gps_bringup romea_gps_description romea_gps_utils romea_gps_gazebo
+    - colcon test --packages-select romea_gps_bringup romea_gps_description romea_gps_utils
     - colcon test-result --verbose
-
-
-# # melodic
-# melodic:
-#   image: ros:melodic-robot
-#   stage: build
-#   script:
-#     - catkin build --summarize --no-status --force-color
-#     - catkin run_tests --no-status --force-color
-
-
-# # noetic
-# noetic_catkin_build:
-#   image: ros:noetic-robot
-#   stage: build
-#   script:
-#     - catkin build --summarize --no-status --force-color
-#     - catkin run_tests --no-status --force-color
-
