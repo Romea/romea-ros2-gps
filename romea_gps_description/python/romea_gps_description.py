@@ -1,8 +1,6 @@
 # Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 # Add license
 
-# !/usr/bin/env python3
-
 import xacro
 
 from ament_index_python.packages import get_package_share_directory
