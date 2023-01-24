@@ -5,16 +5,17 @@
 #ifndef ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
 #define ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
 
-// ros
-#include <rclcpp/rclcpp.hpp>
-
-// serial
-#include <serial/serial.h>
-
 // std
 #include <optional>
 #include <memory>
 #include <string>
+
+// ros
+#include "rclcpp/rclcpp.hpp"
+
+// serial
+#include "serial/serial.h"
+
 
 namespace romea
 {

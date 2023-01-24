@@ -5,7 +5,7 @@
 #define ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_
 
 // romea core
-#include <romea_core_common/diagnostic/CheckupRate.hpp>
+#include "romea_core_common/diagnostic/CheckupRate.hpp"
 
 namespace romea
 {

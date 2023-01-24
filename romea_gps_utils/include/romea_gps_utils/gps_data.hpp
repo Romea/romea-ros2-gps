@@ -5,21 +5,21 @@
 #ifndef ROMEA_GPS_UTILS__GPS_DATA_HPP_
 #define ROMEA_GPS_UTILS__GPS_DATA_HPP_
 
-// ros
-#include <serial/serial.h>
-
-// romea ros
-#include <romea_common_utils/publishers/stamped_data_publisher.hpp>
-#include <romea_common_utils/publishers/diagnostic_publisher.hpp>
-
-// romea core
-#include <romea_core_gps/nmea/GGAFrame.hpp>
-#include <romea_core_gps/nmea/RMCFrame.hpp>
-#include <romea_core_gps/nmea/GSVFrame.hpp>
-
 // std
 #include <memory>
 #include <string>
+
+// serial
+#include "serial/serial.h"
+
+// romea core
+#include "romea_core_gps/nmea/GGAFrame.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
+#include "romea_core_gps/nmea/GSVFrame.hpp"
+
+// romea ros
+#include "romea_common_utils/publishers/stamped_data_publisher.hpp"
+#include "romea_common_utils/publishers/diagnostic_publisher.hpp"
 
 // local
 #include "romea_gps_utils/gps_data_diagnostics.hpp"

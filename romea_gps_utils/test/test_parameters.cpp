@@ -1,16 +1,17 @@
 // Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 // Add license
 
-// gtest
-#include <gtest/gtest.h>
 
 // std
 #include <string>
 #include <memory>
 
+// gtest
+#include "gtest/gtest.h"
+
 // local
-#include "romea_gps_utils/gps_parameters.hpp"
 #include "../test/test_helper.h"
+#include "romea_gps_utils/gps_parameters.hpp"
 
 class TestGPSParameters : public ::testing::Test
 {
