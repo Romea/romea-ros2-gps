@@ -25,7 +25,7 @@ TEST(TestGPSDataConversions, to_nmea_msg)
   EXPECT_STREQ(msg.sentence.c_str(), sentence.c_str());
   EXPECT_STREQ(msg.header.frame_id.c_str(), frame_id.c_str());
   EXPECT_EQ(msg.header.stamp.sec, 1);
-  EXPECT_EQ(msg.header.stamp.nanosec, 2);
+  EXPECT_EQ(msg.header.stamp.nanosec, 2u);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ TEST(TestGPSDataConversions, to_navsat_fix_msg)
 
   EXPECT_STREQ(msg.header.frame_id.c_str(), frame_id.c_str());
   EXPECT_EQ(msg.header.stamp.sec, 1);
-  EXPECT_EQ(msg.header.stamp.nanosec, 2);
+  EXPECT_EQ(msg.header.stamp.nanosec, 2u);
 }
 
 //-----------------------------------------------------------------------------
