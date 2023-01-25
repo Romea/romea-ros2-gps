@@ -53,7 +53,7 @@ public:
   void reset() {gga_frame_.reset(); rmc_frame_.reset();}
 
 private:
-  void listen_nmea_(nmea_msgs::msg::Sentence::SharedPtr msg)
+  void listen_nmea_(nmea_msgs::msg::Sentence::ConstSharedPtr msg)
   {
     std::cout << msg->sentence << std::endl;
     switch (romea::NMEAParsing::extractSentenceId(msg->sentence)) {
@@ -108,12 +108,12 @@ public:
   void reset() {fix_msg_.reset(); vel_msg_.reset();}
 
 private:
-  void listen_fix_(sensor_msgs::msg::NavSatFix::SharedPtr msg)
+  void listen_fix_(sensor_msgs::msg::NavSatFix::ConstSharedPtr msg)
   {
     fix_msg_ = *msg;
   }
 
-  void listen_vel_(geometry_msgs::msg::TwistStamped::SharedPtr msg)
+  void listen_vel_(geometry_msgs::msg::TwistStamped::ConstSharedPtr msg)
   {
     vel_msg_ = *msg;
   }
