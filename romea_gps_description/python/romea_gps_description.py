@@ -6,7 +6,7 @@ import xacro
 from ament_index_python.packages import get_package_share_directory
 
 
-def urdf(prefix, name, type, model, rate, parent_link, xyz):
+def urdf(prefix, name, type, model, rate, parent_link, xyz, ros_namespace):
 
     xacro_file = (
         get_package_share_directory("romea_gps_description")
@@ -25,6 +25,7 @@ def urdf(prefix, name, type, model, rate, parent_link, xyz):
             "rate": str(rate),
             "parent_link": parent_link,
             "xyz": " ".join(map(str, xyz)),
+            "ros_namespace": ros_namespace
         },
     )
 

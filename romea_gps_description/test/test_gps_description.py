@@ -16,7 +16,11 @@ def urdf_xml():
     rate = "10"
     parent_link = "base_link"
     xyz = [1.0, 2.0, 3.0]
-    return ET.fromstring(urdf(prefix, name, type, model, rate, parent_link, xyz))
+    ros_namespace = "ns"
+    return ET.fromstring(urdf(prefix, name,
+                              type, model, rate,
+                              parent_link, xyz,
+                              ros_namespace))
 
 
 def test_gps_name(urdf_xml):
@@ -33,3 +37,7 @@ def test_gps_parent_link(urdf_xml):
 
 def test_gps_rate(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/update_rate").text == "10"
+
+
+def test_plugin_namespace(urdf_xml):
+    assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"

@@ -1,15 +1,16 @@
 name: "gps"
+namespace: "ns"
 driver:
   pkg: "romea_ublox_driver"
-  device:  "/dev/ttyACM0"
+  device: "/dev/ttyACM0"
   baudrate: 115200
 ntrip:
- pkg: "ntrip_client"
- host: caster.centipede.fr
- port: 2101
- username: centipede
- password: centipede
- mountpoint: MAGC
+  pkg: "ntrip_client"
+  host: caster.centipede.fr
+  port: 2101
+  username: centipede
+  password: centipede
+  mountpoint: MAGC
 configuration:
   type: drotek
   model: f9p
@@ -20,4 +21,4 @@ geometry:
 records:
   nmea_sentence: true
   gps_fix: false
-  vel: false  
+  vel: false

@@ -46,3 +46,7 @@ def test_gps_parent_link(urdf):
 
 def test_gps_rate(urdf):
     assert urdf.find("gazebo/sensor/update_rate").text == "10"
+
+
+def test_plugin_namespace(urdf):
+    assert urdf.find("gazebo/sensor/plugin/ros/namespace").text == "/robot/ns/gps"

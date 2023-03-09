@@ -99,7 +99,7 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
 
   //  Init fix publisher
   impl_->fix_pub_ = impl_->ros_node_->create_publisher<sensor_msgs::msg::NavSatFix>(
-    "~/fix", qos.get_publisher_qos("~/fix", rclcpp::SensorDataQoS().reliable()));
+    "fix", qos.get_publisher_qos("fix", rclcpp::SensorDataQoS().reliable()));
 
   // Init fix msg
   impl_->fix_msg_ = std::make_shared<sensor_msgs::msg::NavSatFix>();
@@ -123,7 +123,7 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
 
   //  Init vel publisher
   impl_->vel_pub_ = impl_->ros_node_->create_publisher<geometry_msgs::msg::TwistStamped>(
-    "~/vel", qos.get_publisher_qos("~/vel", rclcpp::SensorDataQoS().reliable()));
+    "vel", qos.get_publisher_qos("vel", rclcpp::SensorDataQoS().reliable()));
 
   // Init vel message
   impl_->vel_msg_ = std::make_shared<geometry_msgs::msg::TwistStamped>();
@@ -131,8 +131,7 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
 
   //  Init nmea sentence publisher
   impl_->nmea_sentence_pub_ = impl_->ros_node_->create_publisher<nmea_msgs::msg::Sentence>(
-    "~/nmea_sentence",
-    qos.get_publisher_qos("~/nmea_sentence", rclcpp::SensorDataQoS().reliable()));
+    "nmea_sentence", qos.get_publisher_qos("nmea_sentence", rclcpp::SensorDataQoS().reliable()));
 
   // Init nmea messages
   impl_->nmea_gga_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();

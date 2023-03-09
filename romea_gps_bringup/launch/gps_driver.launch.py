@@ -40,6 +40,7 @@ def launch_setup(context, *args, **kwargs):
         return []
 
     gps_name = meta_description.get_name()
+    gps_namespace = str(meta_description.get_namespace() or "")
 
     driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -61,7 +62,12 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    actions = [PushRosNamespace(robot_namespace), PushRosNamespace(gps_name), driver]
+    actions = [
+        PushRosNamespace(robot_namespace),
+        PushRosNamespace(gps_namespace),
+        PushRosNamespace(gps_name),
+        driver,
+    ]
 
     if meta_description.has_ntrip_configuration():
 

@@ -1,7 +1,7 @@
 # Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 # Add license
 
-from romea_common_bringup import MetaDescription
+from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
 import romea_gps_description
 
 
@@ -11,6 +11,9 @@ class GPSMetaDescription:
 
     def get_name(self):
         return self.meta_description.get("name")
+
+    def get_namespace(self):
+        return self.meta_description.get_or("namespace", None)
 
     def has_driver_configuration(self):
         return self.meta_description.exists("driver")
@@ -61,16 +64,23 @@ class GPSMetaDescription:
         return self.meta_description.get("xyz", "geometry")
 
 
-def urdf_description(prefix, meta_description_filename):
+def urdf_description(robot_namespace, meta_description_filename):
 
     meta_description = GPSMetaDescription(meta_description_filename)
 
+    ros_namespace = device_namespace(
+        robot_namespace,
+        meta_description.get_namespace(),
+        meta_description.get_name()
+    )
+
     return romea_gps_description.urdf(
-        prefix,
+        robot_urdf_prefix(robot_namespace),
         meta_description.get_name(),
         meta_description.get_type(),
         meta_description.get_model(),
         meta_description.get_rate(),
         meta_description.get_parent_link(),
         meta_description.get_xyz(),
+        ros_namespace
     )
