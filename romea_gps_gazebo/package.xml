@@ -3,11 +3,9 @@
 <package format="3">
   <name>romea_gps_gazebo</name>
   <version>0.1.0</version>
-  <description>
-    Gazebo plugin for nmea GPS.
-    It is based on the gps plugin of package gazebo_plugins to which we have added publication of GGA and RMC nmea_sentences.
-    It also publishs velocities and orientation data as nmea navsat driver does.
-  </description>
+  <description> Gazebo plugin for nmea GPS. It is based on the gps plugin of package gazebo_plugins
+    to which we have added publication of GGA and RMC nmea_sentences. It also publishs velocities
+    and orientation data as nmea navsat driver does. </description>
 
   <maintainer email="jean.laneurit@inrae.fr">Jean Laneurit</maintainer>
 
@@ -15,6 +13,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>rclcpp</depend>
   <depend>romea_core_common</depend>
   <depend>romea_core_gps</depend>
   <depend>sensor_msgs</depend>
@@ -23,7 +22,6 @@
   <depend>gazebo_dev</depend>
   <depend>gazebo_msgs</depend>
   <depend>gazebo_ros</depend>
-  <depend>rclcpp</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>

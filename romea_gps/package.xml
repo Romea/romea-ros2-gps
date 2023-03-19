@@ -15,8 +15,8 @@
 
   <exec_depend>romea_gps_bringup</exec_depend>
   <exec_depend>romea_gps_description</exec_depend>
-<!--  <exec_depend>romea_nmea_gps_driver</exec_depend>-->
   <exec_depend>romea_gps_gazebo</exec_depend>
+  <exec_depend>romea_gps_utils</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
