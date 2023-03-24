@@ -20,7 +20,7 @@ The romea_bringup package provides  :
 
  - a python module able to load and parse GPS meta-description file as well as to create URDF description of the GPS Receiver according a given meta-description.
 
- - a ros2 python executable able to create GPS URDF description file via command line according a given meta-description file  :
+ - a ros2 python executable able to create GPS URDF description via command line according a given meta-description file  :
 
   ```console
   ros2 run romea_gps_bringup urdf_description.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
@@ -31,7 +31,7 @@ The romea_bringup package provides  :
    - *robot_namespace* is the name of the robot 
    - *meta_description_file_path* is the absolute path of meta-description file    
 
-   This URDF  can be directly concatened with mobile base and other sensor URDFs to create a complete URDF description of the robot system.  
+   This URDF  can be directly concatened with mobile base and other sensor URDFs to create a complete URDF description of the robot.  
 
    
 
@@ -39,7 +39,7 @@ The romea_bringup package provides  :
 
 # 2) GPS meta-description #
 
-As seen below GPS meta-description file is a yaml file constituted by six items. The first item is the name of sensor defined by user. The second one is the configuration of ROS2 driver used to control GPS receiver (see section 4 for more explanations). The third item is the configuration of ROS2 driver used to deal with NTRIP communication in order to broadcast differential corrections to GPS receiver (see section 5 for more explanations). The fourth item provides basics specifications of the GPS receiver and the fifth item specifies where the GPS receiver antenna is located on the robot, these informations will be used to create URDF description and by user to configure its algorithms.  Finally, the last item gives the topics to be recorded into the ROS bag during experiments or simulation. Thanks to remappings into launch files, GPS topics are always the same names for each drivers or simulator plugins.       
+As seen below GPS meta-description file is a yaml file constituted by six items. The first item is the name of sensor defined by user. The second one is the configuration of ROS2 driver used to control GPS receiver (see section 4 for more explanations). The third item is the configuration of ROS2 driver used to deal with NTRIP communication in order to broadcast differential corrections to GPS receiver (see section 5 for more explanations). The fourth item provides basics specifications of the GPS receiver and the fifth item specifies where the GPS receiver antenna is located on the robot, these informations will be used to create URDF description and by user to configure its algorithms.  Finally, the last item gives the topics to be recorded into the ROS bag during experiments or simulation. Thanks to remappings written into launch files, GPS topics are always the same names for each drivers or simulator plugins.       
 
 Example :
 ```yaml
@@ -70,13 +70,15 @@ records: # topic to be recorded
 
 # 4) Supported GPS receiver models
 
-|  Type  |   Model    |
+Supported GPS receiver are listed in the following table :
+
+|  type  |   model    |
 | :----: | :--------: |
 | drotek |    f9p     |
 | astech | proflex800 |
 | ublox  |   evk_m8   |
 
-
+You can find specifications of each receiver in config directory of romea_gps_description package.
 
 # 5) Supported GPS receiver ROS2 drivers
 
@@ -106,7 +108,7 @@ For each driver a python launch file with the name of the ROS2 package is provid
 
 # 4) Supported NTRIP client ROS2 drivers
 
-Only ROS [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client) driver is supported for moment. In order to used it, you can specify ntrip item like this   
+Only ROS [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client) driver is supported for the moment. In order to used it, you can specify ntrip item like this:  
 
 ```yaml
   pkg: "ntrip_client"  # ROS package name  
