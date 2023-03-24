@@ -10,8 +10,8 @@ from romea_gps_bringup import GPSMetaDescription
 
 @pytest.fixture(scope="module")
 def meta_description():
-    meta_description_filename = os.path.join(os.getcwd(), "test_gps_bringup.yaml")
-    return GPSMetaDescription(meta_description_filename)
+    meta_description_file_path = os.path.join(os.getcwd(), "test_gps_bringup.yaml")
+    return GPSMetaDescription(meta_description_file_path)
 
 
 def test_get_name(meta_description):

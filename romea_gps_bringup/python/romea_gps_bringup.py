@@ -6,8 +6,8 @@ import romea_gps_description
 
 
 class GPSMetaDescription:
-    def __init__(self, meta_description_filename):
-        self.meta_description = MetaDescription("gps", meta_description_filename)
+    def __init__(self, meta_description_file_path):
+        self.meta_description = MetaDescription("gps", meta_description_file_path)
 
     def get_name(self):
         return self.meta_description.get("name")
@@ -64,9 +64,9 @@ class GPSMetaDescription:
         return self.meta_description.get("xyz", "geometry")
 
 
-def urdf_description(robot_namespace, meta_description_filename):
+def urdf_description(robot_namespace, meta_description_file_path):
 
-    meta_description = GPSMetaDescription(meta_description_filename)
+    meta_description = GPSMetaDescription(meta_description_file_path)
 
     ros_namespace = device_namespace(
         robot_namespace,

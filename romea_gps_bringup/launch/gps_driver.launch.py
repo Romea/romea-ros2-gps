@@ -24,11 +24,11 @@ def get_robot_namespace(context):
 
 
 def get_meta_description(context):
-    gps_meta_description_filename = LaunchConfiguration(
-        "meta_description_filename"
+    gps_meta_description_file_path = LaunchConfiguration(
+        "meta_description_file_path"
     ).perform(context)
 
-    return GPSMetaDescription(gps_meta_description_filename)
+    return GPSMetaDescription(gps_meta_description_file_path)
 
 
 def launch_setup(context, *args, **kwargs):
@@ -103,7 +103,7 @@ def generate_launch_description():
 
     declared_arguments = []
 
-    declared_arguments.append(DeclareLaunchArgument("meta_description_filename"))
+    declared_arguments.append(DeclareLaunchArgument("meta_description_file_path"))
 
     declared_arguments.append(
         DeclareLaunchArgument("robot_namespace", default_value="")
