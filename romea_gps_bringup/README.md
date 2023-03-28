@@ -1,6 +1,6 @@
 # 1) Overview #
 
-The romea_bringup package provides  : 
+The romea_gps_bringup package provides  : 
 
  - launch files able to launch ros2 receiver drivers according a meta-description file provided by user (see next section for GPS meta-description file overview), supported drivers are :
 
@@ -44,7 +44,7 @@ As seen below GPS meta-description file is a yaml file constituted by six items.
 Example :
 ```yaml
   name: "gps"  # name of the gps given by user
-  driver: " gps driver configuration"
+  driver: # gps driver configuration
     pkg: "romea_ublox_driver"  # ros2 driver package choiced by user and its parameters 
     device:  "/dev/ttyACM0"
     baudrate: 115200
