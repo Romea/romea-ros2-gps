@@ -60,12 +60,12 @@ Example :
     model: f9p  # model of GPS receiver
     rate: 10 # frame rate in hz
 geometry: # geometry configuration 
-  parent_link: "base_link"  # name of parent where is located the GPS antenna
+  parent_link: "base_link"  # name of parent link where is located the GPS antenna
   xyz: [0.0, 0.0, 1.5]  #and it position in meters
 records: # topic to be recorded
-  nmea: true
-  gps_fix: false
-  vel: false
+  nmea: true # nmea sentences will be recorded into bag
+  gps_fix: false # gps_fix topic will not be recorded into bag
+  vel: false # vel topic will not be recorded into bag
 ```
 
 # 4) Supported GPS receiver models
@@ -100,7 +100,7 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
     baudrate: 115200 # serial baudrate
 ```
 
-For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps_driver.launch.py the corresponding driver is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always the same and are called:
+For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps_driver.launch.py the corresponding driver is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
 
 - nmea(nmea_msgs/sentence)
 - gps_fix(sensor_msgs/NavSatFix)
