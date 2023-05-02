@@ -16,6 +16,7 @@
 // std
 #include <memory>
 #include <string>
+#include <cmath>
 
 // romea core
 #include "romea_core_common/time/Time.hpp"
@@ -28,6 +29,8 @@
 #include "romea_gps_utils/gps_data_conversions.hpp"
 #include "romea_gps_utils/gps_data_diagnostics.hpp"
 #include "romea_gps_utils/gps_data.hpp"
+
+#include "romea_core_common/geodesy/LambertConverter.hpp"
 
 namespace romea
 {
@@ -101,10 +104,31 @@ void GpsData::process_gga_frame_(
   const rclcpp::Time & stamp,
   const std::string & nmea_sentence)
 {
-//  std::cout << " process_gga_frame_ " << std::endl;
+  std::cout << " process_gga_frame_ " << std::endl;
   GGAFrame gga_frame(nmea_sentence);
   diagnostics_->updateGGARate(to_romea_duration(stamp));
   if (can_be_converted_to_fix_msg_(gga_frame)) {
+    romea::LambertConverter::SecantProjectionParameters parameters;
+    parameters.longitude0 = 3.0 / 180. * M_PI;
+    parameters.latitude0 = 46.0 / 180. * M_PI;
+    parameters.latitude1 = 45.25 / 180. * M_PI;
+    parameters.latitude2 = 46.75 / 180. * M_PI;
+    parameters.x0 = 1700000;
+    parameters.y0 = 5200000;
+
+    LambertConverter converter(parameters, EarthEllipsoid::GRS80);
+    WGS84Coordinates wgs84Coordinates;
+    wgs84Coordinates.latitude = gga_frame.latitude->toDouble();
+    wgs84Coordinates.longitude = gga_frame.longitude->toDouble();
+    // std::cout << wgs84Coordinates << std::endl;
+    Eigen::Vector2d position = converter.toLambert(wgs84Coordinates);
+    std::cout << std::setprecision(10) << " position : " << position.x() << " " << position.y() <<
+      std::endl;
+    std::cout << " borne voisin distanc e : " << position.x() - 1707862.78 <<
+      " " << position.y() - 5166011.93 << std::endl;
+    std::cout << " borne edf distance : " << position.x() - 1707865.72 <<
+      " " << position.y() - 5165988.47 << std::endl;
+
     // TODO(Jean) use EURE
     fix_publisher_->publish(stamp, gga_frame);
   }
