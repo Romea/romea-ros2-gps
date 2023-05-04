@@ -104,31 +104,9 @@ void GpsData::process_gga_frame_(
   const rclcpp::Time & stamp,
   const std::string & nmea_sentence)
 {
-  std::cout << " process_gga_frame_ " << std::endl;
   GGAFrame gga_frame(nmea_sentence);
   diagnostics_->updateGGARate(to_romea_duration(stamp));
   if (can_be_converted_to_fix_msg_(gga_frame)) {
-    romea::LambertConverter::SecantProjectionParameters parameters;
-    parameters.longitude0 = 3.0 / 180. * M_PI;
-    parameters.latitude0 = 46.0 / 180. * M_PI;
-    parameters.latitude1 = 45.25 / 180. * M_PI;
-    parameters.latitude2 = 46.75 / 180. * M_PI;
-    parameters.x0 = 1700000;
-    parameters.y0 = 5200000;
-
-    LambertConverter converter(parameters, EarthEllipsoid::GRS80);
-    WGS84Coordinates wgs84Coordinates;
-    wgs84Coordinates.latitude = gga_frame.latitude->toDouble();
-    wgs84Coordinates.longitude = gga_frame.longitude->toDouble();
-    // std::cout << wgs84Coordinates << std::endl;
-    Eigen::Vector2d position = converter.toLambert(wgs84Coordinates);
-    std::cout << std::setprecision(10) << " position : " << position.x() << " " << position.y() <<
-      std::endl;
-    std::cout << " borne voisin distanc e : " << position.x() - 1707862.78 <<
-      " " << position.y() - 5166011.93 << std::endl;
-    std::cout << " borne edf distance : " << position.x() - 1707865.72 <<
-      " " << position.y() - 5165988.47 << std::endl;
-
     // TODO(Jean) use EURE
     fix_publisher_->publish(stamp, gga_frame);
   }
@@ -139,8 +117,6 @@ void GpsData::process_rmc_frame_(
   const rclcpp::Time & stamp,
   const std::string & nmea_sentence)
 {
-//  std::cout << " process_rmc_frame_ " << std::endl;
-
   RMCFrame rmc_frame(nmea_sentence);
   diagnostics_->updateRMCRate(to_romea_duration(stamp));
   if (can_be_converted_to_vel_msg_(rmc_frame)) {
@@ -153,8 +129,6 @@ void GpsData::process_gsv_frame_(
   const rclcpp::Time & stamp,
   const std::string & nmea_sentence)
 {
-//  std::cout << " process_gsv_frame_ " << std::endl;
-
   GSVFrame gsv_frame(nmea_sentence);
   if (gsv_frame.sentenceNumber == gsv_frame.numberOfSentences) {
     diagnostics_->updateGSVRate(to_romea_duration(stamp));
@@ -164,8 +138,6 @@ void GpsData::process_gsv_frame_(
 //-----------------------------------------------------------------------------
 void GpsData::process_nmea_sentence(const std::string & nmea_sentence)
 {
-//  std::cout << nmea_sentence<<std::endl;
-
   rclcpp::Time stamp = clock_->now();
   nmea_sentence_publisher_->publish(stamp, nmea_sentence);
 
