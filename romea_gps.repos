@@ -11,11 +11,11 @@ repositories:
   romea_ros2/tools/romea_common:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_common.git
-    version: main
+    version: devel
   romea_ros2/interfaces/sensors/romea_gps:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_gps.git
-    version: main
+    version: devel
 
   third_party/serial:
     type: git
