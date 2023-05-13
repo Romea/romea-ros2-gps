@@ -76,7 +76,7 @@ class GPSMetaDescription:
         return self.meta_description.get("xyz", "geometry")
 
 
-def urdf_description(robot_namespace, meta_description_file_path):
+def urdf_description(robot_namespace, mode, meta_description_file_path):
 
     meta_description = GPSMetaDescription(meta_description_file_path)
 
@@ -88,6 +88,7 @@ def urdf_description(robot_namespace, meta_description_file_path):
 
     return romea_gps_description.urdf(
         robot_urdf_prefix(robot_namespace),
+        mode,
         meta_description.get_name(),
         meta_description.get_type(),
         meta_description.get_model(),

@@ -2,6 +2,7 @@
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:arg name="prefix" default="" />
+  <xacro:arg name="mode" default="simulation_gazebo" />
   <xacro:arg name="name" default="gps" />
   <xacro:arg name="rate" default="10" />
   <xacro:arg name="parent_link" default="base_link" />
@@ -11,6 +12,7 @@
   <xacro:include filename="$(find romea_gps_description)/urdf/gps.xacro" />
   <xacro:gps_sensor
     prefix="$(arg prefix)"
+    mode="$(arg mode)"
     xyz="$(arg xyz)"
     parent_link="$(arg parent_link)"
     rate="$(arg rate)"

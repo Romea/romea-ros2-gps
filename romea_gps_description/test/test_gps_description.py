@@ -21,6 +21,7 @@ from romea_gps_description import urdf
 @pytest.fixture(scope="module")
 def urdf_xml():
     prefix = "robot_"
+    mode = "simulation"
     name = "gps"
     type = "drotek"
     model = "f9p"
@@ -28,7 +29,7 @@ def urdf_xml():
     parent_link = "base_link"
     xyz = [1.0, 2.0, 3.0]
     ros_namespace = "ns"
-    return ET.fromstring(urdf(prefix, name,
+    return ET.fromstring(urdf(prefix, mode, name,
                               type, model, rate,
                               parent_link, xyz,
                               ros_namespace))
