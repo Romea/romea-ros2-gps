@@ -1,0 +1,23 @@
+repositories:
+  romea_core/romea_common:
+    type: git
+    url: https://github.com/Romea/romea-core-common.git
+    version: main
+  romea_core/romea_gps:
+    type: git
+    url: https://github.com/Romea/romea-core-gps.git
+    version: main
+
+  romea_ros2/tools/romea_common:
+    type: git
+    url: https://github.com/Romea/romea-ros2-common.git
+    version: devel
+  romea_ros2/interfaces/sensors/romea_gps:
+    type: git
+    url: https://github.com/Romea/romea-ros2-gps.git
+    version: devel
+
+  third_party/serial:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:jean.laneurit/serial-ros2.git
+    version: master
