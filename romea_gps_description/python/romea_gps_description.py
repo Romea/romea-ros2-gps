@@ -20,14 +20,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def urdf(prefix, mode, name, type, model, rate, parent_link, xyz, ros_namespace):
 
-    xacro_file = (
-        get_package_share_directory("romea_gps_description")
-        + "/urdf/"
-        + type
-        + "_"
-        + model
-        + ".xacro.urdf"
-    )
+    xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
 
     urdf_xml = xacro.process_file(
         xacro_file,
