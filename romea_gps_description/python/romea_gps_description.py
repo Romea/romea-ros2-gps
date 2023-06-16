@@ -14,8 +14,43 @@
 
 
 import xacro
+import yaml
 
 from ament_index_python.packages import get_package_share_directory
+
+
+def get_gps_specifications_file_path(type, model):
+    return (
+        get_package_share_directory("romea_gps_description")
+        + "/config/"
+        + type
+        + "_"
+        + model
+        + "_specifications.yaml"
+    )
+
+
+def get_gps_specifications(type, model):
+
+    with open(get_gps_specifications_file_path(type, model)) as f:
+        return yaml.safe_load(f)
+
+
+def get_gps_geometry_file_path(type, model):
+    return (
+        get_package_share_directory("romea_gps_description")
+        + "/config/"
+        + type
+        + "_"
+        + model
+        + "_geometry.yaml"
+    )
+
+
+def get_gps_geometry(type, model):
+
+    with open(get_gps_geometry_file_path(type, model)) as f:
+        return yaml.safe_load(f)
 
 
 def urdf(prefix, mode, name, type, model, rate, parent_link, xyz, ros_namespace):
