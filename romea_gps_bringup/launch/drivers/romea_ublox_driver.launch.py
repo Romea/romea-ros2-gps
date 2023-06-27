@@ -41,6 +41,7 @@ def launch_setup(context, *args, **kwargs):
             {"frame_id": frame_id},
             {"rate": int(rate)},
         ],
+        remappings=[("nmea", "nmea_sentence")],
     )
 
     driver.add_action(driver_node)
