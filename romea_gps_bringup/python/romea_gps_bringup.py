@@ -19,7 +19,8 @@ import romea_gps_description
 
 class GPSMetaDescription:
     def __init__(self, meta_description_file_path):
-        self.meta_description = MetaDescription("gps", meta_description_file_path)
+        self.meta_description = MetaDescription(
+            "gps", meta_description_file_path)
 
     def get_name(self):
         return self.meta_description.get("name")
@@ -74,6 +75,10 @@ class GPSMetaDescription:
 
     def get_xyz(self):
         return self.meta_description.get("xyz", "geometry")
+
+
+def load_meta_description(meta_description_file_path):
+    return GPSMetaDescription(meta_description_file_path)
 
 
 def get_gps_specifications(meta_description):
