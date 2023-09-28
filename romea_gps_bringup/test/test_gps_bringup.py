@@ -95,3 +95,10 @@ def test_get_parent_link(meta_description):
 
 def test_get_xyz(meta_description):
     assert meta_description.get_xyz() == [1.0, 2.0, 3.0]
+
+
+def test_get_records(meta_description):
+    records = meta_description.get_records()
+    assert records["nmea_sentence"] is True
+    assert records["gps_fix"] is False
+    assert records["vel"] is False
