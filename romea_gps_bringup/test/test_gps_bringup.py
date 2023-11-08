@@ -89,7 +89,7 @@ def test_get_rate(meta_description):
     assert meta_description.get_rate() == 10
 
 def test_get_dual_antenna(meta_description):
-    assert meta_description.get_rate() == True
+    assert meta_description.get_dual_antenna() is True
 
 
 def test_get_parent_link(meta_description):
