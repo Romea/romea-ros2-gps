@@ -25,6 +25,7 @@
 namespace romea
 {
 
+void declare_gps_dual_antenna(rclcpp::Node::SharedPtr node);
 void declare_gps_gps_fix_eure(rclcpp::Node::SharedPtr node);
 void declare_gps_dgps_fix_eure(rclcpp::Node::SharedPtr node);
 void declare_gps_float_rtk_fix_eure(rclcpp::Node::SharedPtr node);
@@ -32,6 +33,7 @@ void declare_gps_rtk_fix_eure(rclcpp::Node::SharedPtr node);
 void declare_gps_simulation_fix_eure(rclcpp::Node::SharedPtr node);
 void declare_gps_antenna_body_position(rclcpp::Node::SharedPtr node);
 
+bool gps_gps_dual_antenna(rclcpp::Node::SharedPtr node);
 double get_gps_gps_fix_eure(rclcpp::Node::SharedPtr node);
 double get_gps_dgps_fix_eure(rclcpp::Node::SharedPtr node);
 double get_gps_float_rtk_fix_eure(rclcpp::Node::SharedPtr node);

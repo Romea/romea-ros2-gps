@@ -53,7 +53,7 @@ def get_gps_geometry(type, model):
         return yaml.safe_load(f)
 
 
-def urdf(prefix, mode, name, type, model, rate, parent_link, xyz, ros_namespace):
+def urdf(prefix, mode, name, type, model, rate, dual_antenna, parent_link, xyz, ros_namespace):
 
     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
 
@@ -64,6 +64,7 @@ def urdf(prefix, mode, name, type, model, rate, parent_link, xyz, ros_namespace)
             "mode": mode,
             "name": name,
             "rate": str(rate),
+            "dual_antenna": str(dual_antenna),
             "parent_link": parent_link,
             "xyz": " ".join(map(str, xyz)),
             "ros_namespace": ros_namespace

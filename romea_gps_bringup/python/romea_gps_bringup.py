@@ -70,6 +70,9 @@ class GPSMetaDescription:
     def get_rate(self):
         return self.meta_description.get("rate", "configuration")
 
+    def get_dual_antenna(self):
+        return self.meta_description.get_or("dual_antenna", "configuration", False)
+
     def get_parent_link(self):
         return self.meta_description.get("parent_link", "geometry")
 
@@ -116,6 +119,7 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
         meta_description.get_type(),
         meta_description.get_model(),
         meta_description.get_rate(),
+        meta_description.get_dual_antenna(),
         meta_description.get_parent_link(),
         meta_description.get_xyz(),
         ros_namespace

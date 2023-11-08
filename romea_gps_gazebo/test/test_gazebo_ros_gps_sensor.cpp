@@ -13,25 +13,26 @@
 // limitations under the License.
 
 
-// gazebo
-#include <gazebo/test/ServerFixture.hh>
-#include <gazebo_ros/node.hpp>
-#include <gazebo_ros/testing_utils.hpp>
-
-// ros
-#include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/nav_sat_fix.hpp>
-#include <geometry_msgs/msg/twist_stamped.hpp>
-#include <nmea_msgs/msg/sentence.hpp>
-
-// romea core
-#include <romea_core_gps/nmea/NMEAParsing.hpp>
-#include <romea_core_gps/nmea/GGAFrame.hpp>
-#include <romea_core_gps/nmea/RMCFrame.hpp>
-
 // std
 #include <memory>
 #include <string>
+
+// gazebo
+#include "gazebo/test/ServerFixture.hh"
+#include "gazebo_ros/node.hpp"
+#include "gazebo_ros/testing_utils.hpp"
+
+// ros
+#include "rclcpp/rclcpp.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
+#include "nmea_msgs/msg/sentence.hpp"
+
+// romea core
+#include "romea_core_gps/nmea/NMEAParsing.hpp"
+#include "romea_core_gps/nmea/GGAFrame.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
+
 
 // local
 #include "../test/test_helper.h"
@@ -200,7 +201,7 @@ public:
       std::cout << link->WorldLinearVel().Y() << " ";
       std::cout << link->WorldLinearVel().Z() << std::endl;
     }  while (sleep < max_sleep &&
-      !(listener.ok() && std::abs(box->WorldPose().Pos().Z() - z) < 1));
+    !(listener.ok() && std::abs(box->WorldPose().Pos().Z() - z) < 1));
 
     ASSERT_LT(sleep, max_sleep);
   }

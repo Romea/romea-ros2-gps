@@ -13,26 +13,28 @@
 // limitations under the License.
 
 
-// gazebo
-#include <gazebo_ros/conversions/builtin_interfaces.hpp>
-#include <gazebo_ros/conversions/geometry_msgs.hpp>
-#include <gazebo_ros/node.hpp>
-#include <gazebo_ros/utils.hpp>
-
-// ros
-#include <builtin_interfaces/msg/time.hpp>
-#include <sensor_msgs/msg/nav_sat_fix.hpp>
-#include <geometry_msgs/msg/twist_stamped.hpp>
-#include <nmea_msgs/msg/sentence.hpp>
-
-// romea core
-#include <romea_core_gps/nmea/GGAFrame.hpp>
-#include <romea_core_gps/nmea/RMCFrame.hpp>
-
 // std
 #include <iostream>
 #include <memory>
 #include <string>
+
+// gazebo
+#include "gazebo_ros/conversions/builtin_interfaces.hpp"
+#include "gazebo_ros/conversions/geometry_msgs.hpp"
+#include "gazebo_ros/node.hpp"
+#include "gazebo_ros/utils.hpp"
+
+// ros
+#include "builtin_interfaces/msg/time.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
+#include "nmea_msgs/msg/sentence.hpp"
+
+// romea core
+#include "romea_core_common/math/EulerAngles.hpp"
+#include "romea_core_gps/nmea/GGAFrame.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
+#include "romea_core_gps/nmea/HDTFrame.hpp"
 
 // local
 #include "romea_gps_gazebo/gazebo_ros_gps_sensor.hpp"
@@ -45,7 +47,9 @@ const uint8_t DEFAUlT_FIX_STATUS = 0;
 const uint16_t DEFAULT_SERVICE = 15;
 const gazebo::common::Time GGA_STAMP_OFFSET = gazebo::common::Time(0, 0);
 const gazebo::common::Time RMC_STAMP_OFFSET = gazebo::common::Time(0, 5000000);
-}
+const gazebo::common::Time HDT_STAMP_OFFSET = gazebo::common::Time(0, 5000000);
+
+}  // namespace
 
 namespace romea
 {
@@ -53,6 +57,9 @@ namespace romea
 class GazeboRosGpsSensorPrivate
 {
 public:
+  /// enable dual_antenna
+  bool dual_antenna_{false};
+
   /// Node for ros communication
   gazebo_ros::Node::SharedPtr ros_node_;
 
@@ -66,6 +73,7 @@ public:
   geometry_msgs::msg::TwistStamped::SharedPtr vel_msg_;
   nmea_msgs::msg::Sentence::SharedPtr nmea_gga_sentence_msg_;
   nmea_msgs::msg::Sentence::SharedPtr nmea_rmc_sentence_msg_;
+  nmea_msgs::msg::Sentence::SharedPtr nmea_hdt_sentence_msg_;
 
   /// GPS sensor this plugin is attached to
   gazebo::sensors::GpsSensorPtr sensor_;
@@ -107,6 +115,10 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   unsigned int service = DEFAULT_SERVICE;
   if (_sdf->HasElement("service")) {
     _sdf->GetElement("service")->GetValue()->Get(service);
+  }
+
+  if (_sdf->HasElement("dual_antenna")) {
+    _sdf->GetElement("dual_antenna")->GetValue()->Get(impl_->dual_antenna_);
   }
 
   //  Init fix publisher
@@ -152,6 +164,8 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   impl_->nmea_rmc_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();
   impl_->nmea_rmc_sentence_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
+  impl_->nmea_hdt_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();
+  impl_->nmea_hdt_sentence_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
   impl_->sensor_update_event_ = impl_->sensor_->ConnectUpdated(
     std::bind(&GazeboRosGpsSensorPrivate::OnUpdate, impl_.get()));
@@ -201,6 +215,18 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
   nmea_rmc_sentence_msg_->header.stamp = rmc_stamp;
   nmea_sentence_pub_->publish(*nmea_rmc_sentence_msg_);
 
+  if (dual_antenna_) {
+    auto hdt_stamp = gazebo_ros::Convert<builtin_interfaces::msg::Time>(
+      sensor_stamp + HDT_STAMP_OFFSET);
+
+    romea::HDTFrame hdt_frame;
+    hdt_frame.talkerId = romea::TalkerId::GP;
+    hdt_frame.heading = romea::between0And2Pi(M_PI_2 - sensor_->Pose().Yaw());
+    hdt_frame.trueNorth = true;
+    nmea_rmc_sentence_msg_->header.stamp = hdt_stamp;
+    nmea_hdt_sentence_msg_->sentence = hdt_frame.toNMEA();
+    nmea_sentence_pub_->publish(*nmea_hdt_sentence_msg_);
+  }
 
   fix_msg_->header.stamp = gga_stamp;
   fix_msg_->latitude = latitude;

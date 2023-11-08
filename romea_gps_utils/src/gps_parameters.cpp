@@ -22,6 +22,7 @@
 
 namespace
 {
+const char gps_dual_antenna_param_name[] = "gps.dual_antenna";
 const char gps_fix_uere_param_name[] = "gps.gps_fix_uere";
 const char dgps_fix_uere_param_name[] = "gps.dgps_fix_uere";
 const char float_rtk_fix_uere_param_name[] = "gps.float_rtk_fix_uere";
@@ -31,6 +32,12 @@ const char simulation_fix_uere_param_name[] = "gps.simulation_fix_uere";
 
 namespace romea
 {
+
+//-----------------------------------------------------------------------------
+void declare_gps_dual_antenna(rclcpp::Node::SharedPtr node)
+{
+  declare_parameter_with_default<double>(node, gps_dual_antenna_param_name, false);
+}
 
 //-----------------------------------------------------------------------------
 void declare_gps_gps_fix_eure(rclcpp::Node::SharedPtr node)
@@ -69,11 +76,16 @@ void declare_gps_antenna_body_position(rclcpp::Node::SharedPtr node)
 }
 
 //-----------------------------------------------------------------------------
+double get_gps_dual_antenna(rclcpp::Node::SharedPtr node)
+{
+  return get_parameter<bool>(node, gps_dual_antenna_param_name);
+}
+
+//-----------------------------------------------------------------------------
 double get_gps_gps_fix_eure(rclcpp::Node::SharedPtr node)
 {
   return get_parameter<double>(node, gps_fix_uere_param_name);
 }
-
 
 //-----------------------------------------------------------------------------
 double get_gps_dgps_fix_eure(rclcpp::Node::SharedPtr node)

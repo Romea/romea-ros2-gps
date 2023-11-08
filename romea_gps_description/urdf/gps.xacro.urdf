@@ -5,6 +5,7 @@
   <xacro:arg name="mode" default="simulation_gazebo" />
   <xacro:arg name="name" default="gps" />
   <xacro:arg name="rate" default="10" />
+  <xacro:arg name="dual_antenna" default="false" />
   <xacro:arg name="parent_link" default="base_link" />
   <xacro:arg name="xyz" default="0.0 0.0 0.0" />
   <xacro:arg name="ros_namespace" default="/" />
@@ -16,6 +17,7 @@
     xyz="$(arg xyz)"
     parent_link="$(arg parent_link)"
     rate="$(arg rate)"
+    dual_antenna="$(arg dual_antenna)"
     name="$(arg name)"
     ros_namespace="$(arg ros_namespace)" />
 

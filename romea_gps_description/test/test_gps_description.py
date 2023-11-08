@@ -25,7 +25,8 @@ def urdf_xml():
     name = "gps"
     type = "drotek"
     model = "f9p"
-    rate = "10"
+    dual_antenna=False
+    rate = 10
     parent_link = "base_link"
     xyz = [1.0, 2.0, 3.0]
     ros_namespace = "ns"
@@ -50,6 +51,8 @@ def test_gps_parent_link(urdf_xml):
 def test_gps_rate(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/update_rate").text == "10"
 
+def test_plugin_namespace(urdf):
+    assert urdf.find("gazebo/sensor/plugin/dual_antenna").text == "False"
 
 def test_plugin_namespace(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"

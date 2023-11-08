@@ -15,13 +15,13 @@
 #ifndef ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_
 #define ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_
 
-// ros
-#include <gazebo/common/Plugin.hh>
-#include <gazebo/sensors/GpsSensor.hh>
-#include <gazebo/common/Events.hh>
-
 // std
 #include <memory>
+
+// ros
+#include "gazebo/common/Plugin.hh"
+#include "gazebo/sensors/GpsSensor.hh"
+#include "gazebo/common/Events.hh"
 
 namespace romea
 {

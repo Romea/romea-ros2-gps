@@ -3,7 +3,7 @@
 
   <xacro:macro
     name="gps_sensor"
-    params="prefix mode xyz parent_link rate name ros_namespace">
+    params="prefix mode xyz parent_link rate dual_antenna name ros_namespace">
 
     <xacro:property name="link_name" value="${prefix}${name}_link" />
     <xacro:property name="joint_name" value="${prefix}${name}_joint" />
@@ -87,6 +87,7 @@
             <ros>
               <namespace>${ros_namespace}</namespace>
             </ros>
+            <dual_antenna>${dual_antenna}</dual_antenna>
           </plugin>
         </sensor>
       </gazebo>
