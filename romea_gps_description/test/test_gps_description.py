@@ -35,7 +35,6 @@ def urdf_xml():
                               parent_link, xyz,
                               ros_namespace))
 
-
 def test_gps_name(urdf_xml):
     assert urdf_xml.find("link").get("name") == "robot_gps_link"
 
@@ -51,8 +50,10 @@ def test_gps_parent_link(urdf_xml):
 def test_gps_rate(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/update_rate").text == "10"
 
+
 def test_plugin_namespace(urdf):
     assert urdf.find("gazebo/sensor/plugin/dual_antenna").text == "False"
+
 
 def test_plugin_namespace(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"
