@@ -88,6 +88,7 @@ def test_get_model(meta_description):
 def test_get_rate(meta_description):
     assert meta_description.get_rate() == 10
 
+
 def test_get_dual_antenna(meta_description):
     assert meta_description.get_dual_antenna() is True
 

@@ -64,5 +64,6 @@ def test_gps_rate(urdf):
 def test_plugin_namespace(urdf):
     assert urdf.find("gazebo/sensor/plugin/ros/namespace").text == "/robot/ns/gps"
 
-def test_plugin_namespace(urdf):
+
+def test_plugin_dual_antenna(urdf):
     assert urdf.find("gazebo/sensor/plugin/dual_antenna").text == "True"
