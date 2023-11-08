@@ -31,7 +31,7 @@ def urdf_xml():
     xyz = [1.0, 2.0, 3.0]
     ros_namespace = "ns"
     return ET.fromstring(urdf(prefix, mode, name,
-                              type, model, rate,
+                              type, model, rate, dual_antenna
                               parent_link, xyz,
                               ros_namespace))
 
