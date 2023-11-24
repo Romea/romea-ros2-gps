@@ -63,7 +63,7 @@ void to_ros_msg(
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
   } else if (fix_quality == core::FixQuality::DGPS_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_SBAS_FIX;
-  } else if (fix_quality == core::FixQuality::FLOAT_RTK_FIX ||
+  } else if (fix_quality == core::FixQuality::FLOAT_RTK_FIX || // NOLINT
     fix_quality == core::FixQuality::RTK_FIX)
   {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
