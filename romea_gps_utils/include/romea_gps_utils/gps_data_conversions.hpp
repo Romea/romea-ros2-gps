@@ -35,6 +35,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 void to_ros_msg(
   const rclcpp::Time & stamp,
@@ -45,16 +47,17 @@ void to_ros_msg(
 void to_ros_msg(
   const rclcpp::Time & stamp,
   const std::string & frame_id,
-  const GGAFrame & gga_frame,
+  const core::GGAFrame & gga_frame,
   sensor_msgs::msg::NavSatFix & msg);
 
 void to_ros_msg(
   const rclcpp::Time & stamp,
   const std::string & frame_id,
-  const RMCFrame & rmc_frame,
+  const core::RMCFrame & rmc_frame,
   geometry_msgs::msg::TwistStamped & msg);
 
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_UTILS__GPS_DATA_CONVERSIONS_HPP_

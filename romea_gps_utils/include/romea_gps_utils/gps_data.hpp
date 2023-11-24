@@ -37,6 +37,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class GpsData
 {
@@ -65,9 +67,9 @@ protected:
     const std::string & nmea_sentence);
 
 
-  bool can_be_converted_to_fix_msg_(const GGAFrame & gga_frame);
+  bool can_be_converted_to_fix_msg_(const core::GGAFrame & gga_frame);
 
-  bool can_be_converted_to_vel_msg_(const RMCFrame & rmc_frame);
+  bool can_be_converted_to_vel_msg_(const core::RMCFrame & rmc_frame);
 
   void timer_callback_();
 
@@ -76,12 +78,13 @@ protected:
   std::shared_ptr<rclcpp::TimerBase> timer_;
 
   std::unique_ptr<GpsDataDiagnostics> diagnostics_;
-  std::shared_ptr<StampedPublisherBase<GGAFrame>> fix_publisher_;
-  std::shared_ptr<StampedPublisherBase<RMCFrame>> vel_publisher_;
+  std::shared_ptr<StampedPublisherBase<core::GGAFrame>> fix_publisher_;
+  std::shared_ptr<StampedPublisherBase<core::RMCFrame>> vel_publisher_;
   std::shared_ptr<StampedPublisherBase<std::string>> nmea_sentence_publisher_;
-  std::shared_ptr<StampedPublisherBase<DiagnosticReport>> diagnostics_publisher_;
+  std::shared_ptr<StampedPublisherBase<core::DiagnosticReport>> diagnostics_publisher_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_UTILS__GPS_DATA_HPP_

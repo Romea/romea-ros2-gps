@@ -27,6 +27,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 GpsSerialInterface::GpsSerialInterface(std::shared_ptr<rclcpp::Node> node)
@@ -63,12 +65,13 @@ std::optional<std::string> GpsSerialInterface::read_nmea_sentence()
   std::string raw_sentence;
 
   read(raw_sentence);
-  NMEAParsing::removeCRLF(raw_sentence);
-  if (NMEAParsing::isNMEASentence(raw_sentence)) {
+  core::NMEAParsing::removeCRLF(raw_sentence);
+  if (core::NMEAParsing::isNMEASentence(raw_sentence)) {
     return raw_sentence;
   } else {
     return std::nullopt;
   }
 }
 
+}  // namespace ros2
 }  // namespace romea

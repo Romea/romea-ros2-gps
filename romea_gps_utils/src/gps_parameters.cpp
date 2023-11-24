@@ -32,6 +32,8 @@ const char simulation_fix_uere_param_name[] = "gps.simulation_fix_uere";
 
 namespace romea
 {
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 void declare_gps_dual_antenna(rclcpp::Node::SharedPtr node)
@@ -118,4 +120,5 @@ Eigen::Vector3d get_gps_antenna_body_position(rclcpp::Node::SharedPtr node)
 }
 
 
+}  // namespace ros2
 }  // namespace romea

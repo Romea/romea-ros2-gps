@@ -20,6 +20,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 void to_ros_msg(
@@ -37,7 +39,7 @@ void to_ros_msg(
 void to_ros_msg(
   const rclcpp::Time & stamp,
   const std::string & frame_id,
-  const GGAFrame & gga_frame,
+  const core::GGAFrame & gga_frame,
   sensor_msgs::msg::NavSatFix & msg)
 {
   msg.header.stamp = stamp;
@@ -48,32 +50,34 @@ void to_ros_msg(
   msg.altitude = gga_frame.altitudeAboveGeoid.value() + gga_frame.geoidHeight.value();
 
   double hdop = gga_frame.horizontalDilutionOfPrecision.value();
-  double std = hdop * GPSReceiverEUREs().get(*gga_frame.fixQuality);
+  double std = hdop * core::GPSReceiverEUREs().get(*gga_frame.fixQuality);
   msg.position_covariance[0] = std * std;
   msg.position_covariance[4] = std * std;
   msg.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_APPROXIMATED;
 
 
-  FixQuality fix_quality = gga_frame.fixQuality.value();
-  if (fix_quality == FixQuality::INVALID_FIX) {
+  core::FixQuality fix_quality = gga_frame.fixQuality.value();
+  if (fix_quality == core::FixQuality::INVALID_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
-  } else if (fix_quality == FixQuality::GPS_FIX) {
+  } else if (fix_quality == core::FixQuality::GPS_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
-  } else if (fix_quality == FixQuality::DGPS_FIX) {
+  } else if (fix_quality == core::FixQuality::DGPS_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_SBAS_FIX;
-  } else if (fix_quality == FixQuality::FLOAT_RTK_FIX || fix_quality == FixQuality::RTK_FIX) {
+  } else if (fix_quality == core::FixQuality::FLOAT_RTK_FIX ||
+    fix_quality == core::FixQuality::RTK_FIX)
+  {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
   }
 
-  TalkerId talker_id = gga_frame.talkerId;
+  core::TalkerId talker_id = gga_frame.talkerId;
 
-  if (talker_id == TalkerId::GP) {
+  if (talker_id == core::TalkerId::GP) {
     msg.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
-  } else if (talker_id == TalkerId::GL) {
+  } else if (talker_id == core::TalkerId::GL) {
     msg.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GLONASS;
-  } else if (talker_id == TalkerId::GA) {
+  } else if (talker_id == core::TalkerId::GA) {
     msg.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GALILEO;
-  } else if (talker_id == TalkerId::GB || talker_id == TalkerId::BD) {
+  } else if (talker_id == core::TalkerId::GB || talker_id == core::TalkerId::BD) {
     msg.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_COMPASS;
   }
 }
@@ -82,7 +86,7 @@ void to_ros_msg(
 void to_ros_msg(
   const rclcpp::Time & stamp,
   const std::string & frame_id,
-  const RMCFrame & rmc_frame,
+  const core::RMCFrame & rmc_frame,
   geometry_msgs::msg::TwistStamped & msg)
 {
   msg.header.stamp = stamp;
@@ -94,4 +98,5 @@ void to_ros_msg(
     std::cos(rmc_frame.trackAngleTrue.value());
 }
 
+}  // namespace ros2
 }  // namespace romea

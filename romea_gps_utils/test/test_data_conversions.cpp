@@ -30,7 +30,7 @@ TEST(TestGPSDataConversions, to_nmea_msg)
   std::string sentence = "bar";
   rclcpp::Time stamp(1, 2);
 
-  romea::to_ros_msg(stamp, frame_id, sentence, msg);
+  romea::ros2::to_ros_msg(stamp, frame_id, sentence, msg);
 
   EXPECT_STREQ(msg.sentence.c_str(), sentence.c_str());
   EXPECT_STREQ(msg.header.frame_id.c_str(), frame_id.c_str());
@@ -44,17 +44,17 @@ TEST(TestGPSDataConversions, to_navsat_fix_msg)
   sensor_msgs::msg::NavSatFix msg;
   rclcpp::Time stamp(1, 2);
   std::string frame_id = "foo";
-  romea::GGAFrame frame;
-  frame.latitude = romea::Latitude(45 / 180. * M_PI);
-  frame.longitude = romea::Longitude(3 / 180. * M_PI);
+  romea::core::GGAFrame frame;
+  frame.latitude = romea::core::Latitude(45 / 180. * M_PI);
+  frame.longitude = romea::core::Longitude(3 / 180. * M_PI);
   frame.altitudeAboveGeoid = 50.0;
   frame.geoidHeight = 350.0;
   frame.horizontalDilutionOfPrecision = 2.0;
-  frame.talkerId = romea::TalkerId::GP;
-  frame.fixQuality = romea::FixQuality::RTK_FIX;
+  frame.talkerId = romea::core::TalkerId::GP;
+  frame.fixQuality = romea::core::FixQuality::RTK_FIX;
 
 
-  romea::to_ros_msg(stamp, frame_id, frame, msg);
+  romea::ros2::to_ros_msg(stamp, frame_id, frame, msg);
 
   EXPECT_DOUBLE_EQ(msg.latitude, 45.);
   EXPECT_DOUBLE_EQ(msg.longitude, 3.);

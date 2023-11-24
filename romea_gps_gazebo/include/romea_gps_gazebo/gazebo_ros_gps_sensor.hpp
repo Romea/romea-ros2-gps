@@ -25,6 +25,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class GazeboRosGpsSensorPrivate;
 
@@ -64,6 +66,7 @@ private:
   std::unique_ptr<GazeboRosGpsSensorPrivate> impl_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_GAZEBO__GAZEBO_ROS_GPS_SENSOR_HPP_

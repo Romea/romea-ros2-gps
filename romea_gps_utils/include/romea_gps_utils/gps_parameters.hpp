@@ -24,6 +24,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 void declare_gps_dual_antenna(rclcpp::Node::SharedPtr node);
 void declare_gps_gps_fix_eure(rclcpp::Node::SharedPtr node);
@@ -42,6 +44,7 @@ double get_gps_simulation_fix_eure(rclcpp::Node::SharedPtr node);
 Eigen::Vector3d get_gps_antenna_body_position(rclcpp::Node::SharedPtr node);
 
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_UTILS__GPS_PARAMETERS_HPP_

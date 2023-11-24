@@ -21,24 +21,27 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class GpsDataDiagnostics
 {
 public:
   explicit GpsDataDiagnostics(const double & desired_rate);
 
-  void updateGGARate(const romea::Duration & duration);
-  void updateRMCRate(const romea::Duration & duration);
-  void updateGSVRate(const romea::Duration & duration);
+  void updateGGARate(const core::Duration & duration);
+  void updateRMCRate(const core::Duration & duration);
+  void updateGSVRate(const core::Duration & duration);
 
-  DiagnosticReport makeReport(const romea::Duration & duration);
+  core::DiagnosticReport makeReport(const core::Duration & duration);
 
 private:
-  CheckupEqualToRate gga_rate_diagnostic_;
-  CheckupEqualToRate rmc_rate_diagnostic_;
-  CheckupGreaterThanRate gsv_rate_diagnostic_;
+  core::CheckupEqualToRate gga_rate_diagnostic_;
+  core::CheckupEqualToRate rmc_rate_diagnostic_;
+  core::CheckupGreaterThanRate gsv_rate_diagnostic_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_

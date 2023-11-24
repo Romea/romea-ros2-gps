@@ -29,6 +29,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class GpsSerialInterface
 {
@@ -47,6 +49,7 @@ protected:
   int baudrate_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_

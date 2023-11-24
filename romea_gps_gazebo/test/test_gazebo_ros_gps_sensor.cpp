@@ -60,8 +60,8 @@ public:
     rclcpp::spin_some(node_);
   }
 
-  std::optional<romea::GGAFrame> get_gga_frame() {return gga_frame_.value();}
-  std::optional<romea::RMCFrame> get_rmc_frame() {return rmc_frame_.value();}
+  std::optional<romea::core::GGAFrame> get_gga_frame() {return gga_frame_.value();}
+  std::optional<romea::core::RMCFrame> get_rmc_frame() {return rmc_frame_.value();}
   bool ok() {return gga_frame_.has_value() && rmc_frame_.has_value();}
   void reset() {gga_frame_.reset(); rmc_frame_.reset();}
 
@@ -69,12 +69,12 @@ private:
   void listen_nmea_(nmea_msgs::msg::Sentence::ConstSharedPtr msg)
   {
     std::cout << msg->sentence << std::endl;
-    switch (romea::NMEAParsing::extractSentenceId(msg->sentence)) {
-      case romea::NMEAParsing::SentenceID::GGA:
-        gga_frame_ = romea::GGAFrame(msg->sentence);
+    switch (romea::core::NMEAParsing::extractSentenceId(msg->sentence)) {
+      case romea::core::NMEAParsing::SentenceID::GGA:
+        gga_frame_ = romea::core::GGAFrame(msg->sentence);
         break;
-      case romea::NMEAParsing::SentenceID::RMC:
-        rmc_frame_ = romea::RMCFrame(msg->sentence);
+      case romea::core::NMEAParsing::SentenceID::RMC:
+        rmc_frame_ = romea::core::RMCFrame(msg->sentence);
         break;
       default:
         break;
@@ -85,8 +85,8 @@ private:
   std::shared_ptr<rclcpp::Node> node_;
   std::shared_ptr<rclcpp::Subscription<nmea_msgs::msg::Sentence>> nmea_sub_;
 
-  std::optional<romea::GGAFrame> gga_frame_;
-  std::optional<romea::RMCFrame> rmc_frame_;
+  std::optional<romea::core::GGAFrame> gga_frame_;
+  std::optional<romea::core::RMCFrame> rmc_frame_;
 };
 
 class NavSatListener
@@ -223,7 +223,7 @@ TEST_F(GazeboRosGpsSensorTest, checkNmeaMessagesAtRest)
   EXPECT_NEAR(45.0, gga_frame->latitude->toDouble() * 180 / M_PI, tol);
   EXPECT_NEAR(0.5, *gga_frame->altitudeAboveGeoid, tol);
   EXPECT_NEAR(1.0, *gga_frame->horizontalDilutionOfPrecision, tol);
-  EXPECT_EQ(*gga_frame->fixQuality, romea::FixQuality::SIMULATION_FIX);
+  EXPECT_EQ(*gga_frame->fixQuality, romea::core::FixQuality::SIMULATION_FIX);
 
   auto rmc_frame = nmea_listener.get_rmc_frame();
   ASSERT_TRUE(rmc_frame.has_value());
@@ -244,7 +244,7 @@ TEST_F(GazeboRosGpsSensorTest, checkNmeaMessagesInMovement)
   EXPECT_GT(gga_frame->latitude->toDouble() * 180 / M_PI, 45.0);
   EXPECT_NEAR(*gga_frame->altitudeAboveGeoid, 300, 1);
   EXPECT_NEAR(*gga_frame->horizontalDilutionOfPrecision, 1.0, tol);
-  EXPECT_EQ(*gga_frame->fixQuality, romea::FixQuality::SIMULATION_FIX);
+  EXPECT_EQ(*gga_frame->fixQuality, romea::core::FixQuality::SIMULATION_FIX);
 
   auto rmc_frame = nmea_listener.get_rmc_frame();
   ASSERT_TRUE(rmc_frame.has_value());

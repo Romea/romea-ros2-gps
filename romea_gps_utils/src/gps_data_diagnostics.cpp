@@ -17,6 +17,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 GpsDataDiagnostics::GpsDataDiagnostics(const double & desired_rate)
@@ -27,35 +29,36 @@ GpsDataDiagnostics::GpsDataDiagnostics(const double & desired_rate)
 }
 
 //-----------------------------------------------------------------------------
-void GpsDataDiagnostics::updateGGARate(const romea::Duration & duration)
+void GpsDataDiagnostics::updateGGARate(const core::Duration & duration)
 {
   gga_rate_diagnostic_.evaluate(duration);
 }
 
 //-----------------------------------------------------------------------------
-void GpsDataDiagnostics::updateRMCRate(const romea::Duration & duration)
+void GpsDataDiagnostics::updateRMCRate(const core::Duration & duration)
 {
   rmc_rate_diagnostic_.evaluate(duration);
 }
 
 //-----------------------------------------------------------------------------
-void GpsDataDiagnostics::updateGSVRate(const romea::Duration & duration)
+void GpsDataDiagnostics::updateGSVRate(const core::Duration & duration)
 {
   gsv_rate_diagnostic_.evaluate(duration);
 }
 
 //-----------------------------------------------------------------------------
-DiagnosticReport GpsDataDiagnostics::makeReport(const Duration & duration)
+core::DiagnosticReport GpsDataDiagnostics::makeReport(const core::Duration & duration)
 {
   gga_rate_diagnostic_.heartBeatCallback(duration);
   rmc_rate_diagnostic_.heartBeatCallback(duration);
   gsv_rate_diagnostic_.heartBeatCallback(duration);
 
-  DiagnosticReport report;
+  core::DiagnosticReport report;
   report += gga_rate_diagnostic_.getReport();
   report += rmc_rate_diagnostic_.getReport();
   report += gsv_rate_diagnostic_.getReport();
   return report;
 }
 
+}  // namespace ros2
 }  // namespace romea
