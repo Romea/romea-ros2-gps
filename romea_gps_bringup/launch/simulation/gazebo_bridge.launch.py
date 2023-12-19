@@ -27,6 +27,7 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+
 def launch_setup(context, *args, **kwargs):
     return []
 
