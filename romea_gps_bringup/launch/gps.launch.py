@@ -30,6 +30,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from romea_common_bringup import device_link_name
 from romea_gps_bringup import GPSMetaDescription
 
+
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
     if mode == "simulation":
