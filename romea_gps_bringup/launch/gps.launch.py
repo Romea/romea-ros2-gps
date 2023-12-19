@@ -34,10 +34,10 @@ from romea_gps_bringup import GPSMetaDescription
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
     if mode == "simulation":
-       return "simulation_gazebo_classic"
-    else :
-       return mode 
-
+        return "simulation_gazebo_classic"
+    else:
+        return mode
+    
 
 def get_robot_namespace(context):
     return LaunchConfiguration("robot_namespace").perform(context)
@@ -56,7 +56,7 @@ def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
-    meta_description= get_meta_description(context)
+    meta_description = get_meta_description(context)
 
     gps_name = meta_description.get_name()
     gps_namespace = str(meta_description.get_namespace() or "")
