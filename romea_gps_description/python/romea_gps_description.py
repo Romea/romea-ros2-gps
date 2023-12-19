@@ -57,6 +57,9 @@ def urdf(prefix, mode, name, type, model, rate, dual_antenna, parent_link, xyz, 
 
     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
 
+    if mode == "simulation":
+       mode += "_gazebo_classic" 
+
     urdf_xml = xacro.process_file(
         xacro_file,
         mappings={
