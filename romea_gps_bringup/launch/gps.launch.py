@@ -62,7 +62,7 @@ def launch_setup(context, *args, **kwargs):
     gps_namespace = str(meta_description.get_namespace() or "")
 
 
-    actions=[
+    actions = [
         PushRosNamespace(robot_namespace),
         PushRosNamespace(gps_namespace),
         PushRosNamespace(gps_name)
@@ -92,7 +92,7 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    if mode == "simulation_gazebo" :
+    if mode == "simulation_gazebo":
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
