@@ -19,6 +19,7 @@
 #include <string>
 
 // gazebo
+#include <gazebo/physics/physics.hh>
 #include "gazebo_ros/conversions/builtin_interfaces.hpp"
 #include "gazebo_ros/conversions/geometry_msgs.hpp"
 #include "gazebo_ros/node.hpp"
@@ -79,6 +80,8 @@ public:
 
   /// GPS sensor this plugin is attached to
   gazebo::sensors::GpsSensorPtr sensor_;
+  /// Parent link entity
+  gazebo::physics::EntityPtr sensor_parent_link_;
   /// Event triggered when sensor updates
   gazebo::event::ConnectionPtr sensor_update_event_;
 
@@ -100,6 +103,7 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   //  impl_->ros_node_ = gazebo_ros::Node::Get(_sdf, _sensor);
   impl_->ros_node_ = gazebo_ros::Node::Get(_sdf);
 
+
   // Get QoS profiles
   const gazebo_ros::QoS & qos = impl_->ros_node_->get_qos();
 
@@ -108,6 +112,9 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
     RCLCPP_ERROR(impl_->ros_node_->get_logger(), "Parent is not a GPS sensor. Exiting.");
     return;
   }
+
+  impl_->sensor_parent_link_ = gazebo::physics::get_world()->EntityByName(
+    impl_->sensor_->ParentName());
 
   unsigned int fix_status = DEFAUlT_FIX_STATUS;
   if (_sdf->HasElement("status")) {
@@ -223,7 +230,8 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
 
     core::HDTFrame hdt_frame;
     hdt_frame.talkerId = core::TalkerId::GP;
-    hdt_frame.heading = core::between0And2Pi(M_PI_2 - sensor_->Pose().Yaw());
+    hdt_frame.heading = core::between0And2Pi(
+      M_PI_2 - (sensor_->Pose() + sensor_parent_link_->WorldPose()).Yaw());
     hdt_frame.trueNorth = true;
     nmea_rmc_sentence_msg_->header.stamp = hdt_stamp;
     nmea_hdt_sentence_msg_->sentence = hdt_frame.toNMEA();
