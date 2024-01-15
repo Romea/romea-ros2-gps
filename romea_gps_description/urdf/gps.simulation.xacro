@@ -62,6 +62,7 @@
               <ros>
                 <namespace>${ros_namespace}</namespace>
               </ros>
+              <frame_name>${link_name}</frame_name>
               <dual_antenna>${dual_antenna}</dual_antenna>
             </plugin>
           </xacro:if>
