@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+import rclpy
+import socket
+import collections
+
+from romea_gps_ntrip.ntrip_node import NtripNode
+
+TIMEOUT = 10  # seconds
+
+
+class TcpNmeaNtrip(NtripNode):
+
+    def __init__(self):
+        super(TcpNmeaNtrip, self).__init__()
+        self.node.declare_parameter('gps_host', '192.168.0.50')
+        self.node.declare_parameter('gps_nmea_port', 1001)
+        self.node.declare_parameter('gps_rtcm_port', 1002)
+
+        gps_host = self.node.get_parameter('gps_host').get_parameter_value().string_value
+        gps_nmea_port = self.node.get_parameter('gps_nmea_port').get_parameter_value().integer_value
+        gps_rtcm_port = self.node.get_parameter('gps_rtcm_port').get_parameter_value().integer_value
+        self.recv_lines = collections.deque([b''])
+
+        logger = self.node.get_logger()
+
+        try:
+            self.rtcm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.rtcm_sock.settimeout(TIMEOUT)
+            self.rtcm_sock.connect((gps_host, gps_rtcm_port))
+            logger.info(f"GNSS RTCM socket connected to {gps_host}:{gps_rtcm_port}")
+        except IOError as e:
+            self.rtcm_sock.close()
+            raise RuntimeError(f"Failed to open TCP socket {gps_host}:{gps_rtcm_port}: {e}") from e
+
+        try:
+            self.nmea_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.nmea_sock.settimeout(TIMEOUT)
+            self.nmea_sock.connect((gps_host, gps_nmea_port))
+            # self.nmea_sock = BufferedSocket(self.nmea_sock, timeout=TIMEOUT)
+            logger.info(f"GNSS NMEA socket connected to {gps_host}:{gps_nmea_port}")
+        except IOError as e:
+            self.rtcm_sock.close()
+            self.nmea_sock.close()
+            raise RuntimeError(f"Failed to open TCP socket {gps_host}:{gps_nmea_port}: {e}") from e
+
+
+    def send_rtcm_data(self, buffer):
+        self.rtcm_sock.send(buffer)
+
+    def recv_nmea_data(self):
+        # The recv_lines list contains an empty element at the end if the last obtained sentence
+        # ends with b'\n'. This element is merged with the first line of the next recv()
+        while len(self.recv_lines) < 2:
+            buffer = self.nmea_sock.recv(4096)
+            lines = buffer.split(b'\n')
+            self.recv_lines[-1] += lines[0]
+            self.recv_lines += lines[1:]
+
+        return self.recv_lines.popleft().strip()
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    nmea_ntrip = TcpNmeaNtrip()
+
+    try:
+        nmea_ntrip.start_ntrip()
+        nmea_ntrip.run_nmea_reader()
+    except RuntimeError as e:
+        nmea_ntrip.node.get_logger().error(e)
+
+
+if __name__ == "__main__":
+    main()

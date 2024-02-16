@@ -19,7 +19,7 @@ class NtripNode:
         self.node.declare_parameter('port', 2101)
         self.node.declare_parameter('user', 'centipede')
         self.node.declare_parameter('password', 'centipede')
-        self.node.declare_parameter('mountpoint')
+        self.node.declare_parameter('mountpoint', '')
         self.node.declare_parameter('frame_id', 'gps_link')
 
         self.type = self.node.get_parameter('type').get_parameter_value().string_value
@@ -31,6 +31,8 @@ class NtripNode:
         self.frame_id = self.node.get_parameter('frame_id').get_parameter_value().string_value
 
         self.type = self.type.lower()
+        if self.mountpoint == '':
+            self.mountpoint = None
 
         self.nmea_pub = self.node.create_publisher(Sentence, 'nmea_sentence', 30)
         self.ntrip_client = NtripClient(host, port, user, password, self.type == "ntrip")
@@ -41,7 +43,7 @@ class NtripNode:
             data = self.recv_nmea_data()
 
             sentence = Sentence()
-            sentence.header.stamp = self.node.get_clock().now()
+            sentence.header.stamp = self.node.get_clock().now().to_msg()
             sentence.header.frame_id = self.frame_id
 
             try:
