@@ -28,7 +28,9 @@ find_package(romea_gps_utils REQUIRED)
 find_package(romea_common_utils REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
-  src/gps_serial_driver.cpp)
+  src/gps_serial_driver.cpp
+  src/gps_tcp_driver.cpp
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -53,6 +55,11 @@ ament_target_dependencies(${PROJECT_NAME}
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN "romea::ros2::GpsSerialDriver"
   EXECUTABLE serial_driver_node
+)
+
+rclcpp_components_register_node(${PROJECT_NAME}
+  PLUGIN "romea::ros2::GpsTcpDriver"
+  EXECUTABLE tcp_driver_node
 )
 
 install(TARGETS
