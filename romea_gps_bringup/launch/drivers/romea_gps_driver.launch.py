@@ -20,6 +20,8 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
+import yaml
+
 
 def launch_setup(context, *args, **kwargs):
 
@@ -30,13 +32,18 @@ def launch_setup(context, *args, **kwargs):
 
     driver = LaunchDescription()
 
+    print(f'config_path: {config_path}')
+    with open(config_path, 'r') as file:
+        config_parameters = yaml.safe_load(file)
+
     driver_node = Node(
         package="romea_gps_driver",
         executable=executable,
         name="gps_driver",
+        exec_name="gps_driver",
         output="screen",
         parameters=[
-            config_path,
+            config_parameters,
             {
                 "frame_id": frame_id,
                 "rate": int(rate),

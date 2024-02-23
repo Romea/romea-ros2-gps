@@ -58,7 +58,6 @@ def generate_yaml_temp_file(prefix: str, data: dict):
     fd, filepath = tempfile.mkstemp(prefix=prefix + '_', suffix='.yaml')
     with os.fdopen(fd, 'w') as file:
         file.write(yaml.safe_dump(data))
-    os.close(fd)
 
     return filepath
 
