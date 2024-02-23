@@ -34,11 +34,11 @@ class GPSMetaDescription:
     def get_driver_pkg(self):
         return self.meta_description.get("pkg", "driver")
 
-    def get_driver_device(self):
-        return self.meta_description.get("device", "driver")
+    def get_driver_executable(self):
+        return self.meta_description.get("executable", "driver")
 
-    def get_driver_baudrate(self):
-        return self.meta_description.get("baudrate", "driver")
+    def get_driver_parameters(self):
+        return self.meta_description.get("parameters", "driver")
 
     def has_ntrip_configuration(self):
         return self.meta_description.exists("ntrip")

@@ -23,23 +23,24 @@ from launch.substitutions import LaunchConfiguration
 
 def launch_setup(context, *args, **kwargs):
 
-    device = LaunchConfiguration("device").perform(context)
-    baudrate = LaunchConfiguration("baudrate").perform(context)
+    executable = LaunchConfiguration("executable").perform(context)
+    config_path = LaunchConfiguration("config_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
     rate = LaunchConfiguration("rate").perform(context)
 
     driver = LaunchDescription()
 
     driver_node = Node(
-        package="romea_ublox_driver",
-        executable="ublox_driver_node",
-        name="driver",
+        package="romea_gps_driver",
+        executable=executable,
+        name="gps_driver",
         output="screen",
         parameters=[
-            {"device": device},
-            {"baudrate": int(baudrate)},
-            {"frame_id": frame_id},
-            {"rate": int(rate)},
+            config_path,
+            {
+                "frame_id": frame_id,
+                "rate": int(rate),
+            },
         ],
         remappings=[("nmea", "nmea_sentence")],
     )
@@ -51,11 +52,12 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("device"))
-    declared_arguments.append(DeclareLaunchArgument("baudrate"))
-    declared_arguments.append(DeclareLaunchArgument("frame_id"))
-    declared_arguments.append(DeclareLaunchArgument("rate"))
+    declared_arguments = [
+        DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("config_path"),
+        DeclareLaunchArgument("frame_id"),
+        DeclareLaunchArgument("rate"),
+    ]
 
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]

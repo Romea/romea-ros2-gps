@@ -54,19 +54,20 @@ ament_target_dependencies(${PROJECT_NAME}
 
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN "romea::ros2::GpsSerialDriver"
-  EXECUTABLE serial_driver_node
+  EXECUTABLE serial_node
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN "romea::ros2::GpsTcpDriver"
-  EXECUTABLE tcp_driver_node
+  EXECUTABLE tcp_client_node
 )
 
 install(TARGETS
   ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  RUNTIME DESTINATION bin
+)
 
 
 if(BUILD_TESTING)
