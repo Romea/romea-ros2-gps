@@ -39,7 +39,7 @@ def launch_setup(context, *args, **kwargs):
     driver_node = Node(
         package="romea_gps_driver",
         executable=executable,
-        name="gps_driver",
+        name="driver",
         exec_name="gps_driver",
         output="screen",
         parameters=[

@@ -99,6 +99,25 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
+        actions.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    PathJoinSubstitution([
+                        FindPackageShare("romea_gps_bringup"),
+                        "launch",
+                        "drivers/" + meta_description.get_ntrip_pkg() + ".launch.py",
+                    ])
+                ]),
+                launch_arguments={
+                    "host": meta_description.get_ntrip_host(),
+                    "port": str(meta_description.get_ntrip_port()),
+                    "mountpoint": meta_description.get_ntrip_mountpoint(),
+                    "username": meta_description.get_ntrip_username(),
+                    "password": meta_description.get_ntrip_password(),
+                }.items(),
+            )
+        )
+
     if mode == "simulation_gazebo":
         actions.append(
             IncludeLaunchDescription(

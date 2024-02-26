@@ -36,6 +36,7 @@ def launch_setup(context, *args, **kwargs):
         executable="ntrip_ros.py",
         output="screen",
         name="ntrip_client",
+        exec_name="ntrip_client",
         parameters=[
             {"host": host},
             {"port": int(port)},

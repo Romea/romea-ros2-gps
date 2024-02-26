@@ -53,6 +53,7 @@ GpsTcpDriver::get_node_base_interface() const
 //-----------------------------------------------------------------------------
 void GpsTcpDriver::rtcm_callback_(mavros_msgs::msg::RTCM::SharedPtr msg)
 {
+  // RCLCPP_INFO(node_->get_logger(), "RTCM data received (size = %luB)", msg->data.size());
   gps_interface_.write_rtcm(msg->data);
 }
 
@@ -61,6 +62,7 @@ void GpsTcpDriver::thread_callback()
 {
   while (rclcpp::ok()) {
     auto nmea_sentence = gps_interface_.read_nmea_sentence();
+    // RCLCPP_INFO(node_->get_logger(), "NMEA sentence received");
     if (nmea_sentence.has_value()) {
       gps_data_.process_nmea_sentence(nmea_sentence.value());
     }

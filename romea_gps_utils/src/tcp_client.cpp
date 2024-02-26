@@ -82,14 +82,14 @@ void TcpClient::recvlines()
   FD_ZERO(&set);
   FD_SET(socket_, &set);
 
-  timeout.tv_sec  = timeout_ / 1'000'000;
-  timeout.tv_usec = timeout_ % 1'000'000;
+  timeout.tv_sec  = timeout_ / 1000;
+  timeout.tv_usec = (timeout_ % 1000) * 1000;
 
   if(select(socket_ + 1, &set, NULL, NULL, &timeout)) {
     int size;
     char rstr[BUFSIZ];
     do {
-      size = ::recv(socket_, rstr, BUFSIZ, MSG_DONTWAIT);
+      size = ::recv(socket_, rstr, BUFSIZ, 0);
       if(size > 0) buffer_ << rstr;
       if(size < 0) throw std::runtime_error(strerror(errno));
     } while(size > 0 && rstr[size - 1] != '\n');
