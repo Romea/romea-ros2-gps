@@ -18,7 +18,7 @@
 #include <string>
 
 // romea ros
-#include <romea_common_utils/qos.hpp>
+#include "romea_common_utils/qos.hpp"
 
 // local
 #include "romea_gps_driver/gps_serial_driver.hpp"
@@ -71,5 +71,5 @@ void GpsSerialDriver::thread_callback()
 }  // namespace ros2
 }  // namespace romea
 
-#include <rclcpp_components/register_node_macro.hpp>
+#include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(romea::ros2::GpsSerialDriver)

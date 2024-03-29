@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
-#define ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
+#ifndef ROMEA_GPS_UTILS__GPS_TCP_INTERFACE_HPP_
+#define ROMEA_GPS_UTILS__GPS_TCP_INTERFACE_HPP_
 
 // std
 #include <optional>
 #include <memory>
 #include <string>
+#include <vector>
 
 // ros
-#include <rclcpp/rclcpp.hpp>
-
-// serial
-#include <serial/serial.h>
+#include "rclcpp/rclcpp.hpp"
 
 // local
 #include "romea_gps_utils/tcp_client.hpp"
@@ -56,4 +54,4 @@ protected:
 }  // namespace ros2
 }  // namespace romea
 
-#endif  // ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
+#endif  // ROMEA_GPS_UTILS__GPS_TCP_INTERFACE_HPP_

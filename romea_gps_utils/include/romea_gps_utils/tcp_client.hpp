@@ -24,12 +24,13 @@ namespace romea
 namespace ros2
 {
 
-class TcpClient 
+class TcpClient
 {
 public:
-  TcpClient(long timeout_ms): timeout_{timeout_ms}, socket_{-1} {}
+  explicit TcpClient(long timeout_ms) // NOLINT
+  : timeout_{timeout_ms}, socket_{-1} {}
   ~TcpClient();
-  
+
   void connect(std::string const & ip, int port);
   std::size_t send(const std::vector<std::uint8_t> & data) const;
   std::string readline();
@@ -38,10 +39,9 @@ private:
   void recvlines();
 
 private:
-  long timeout_;
-  int  socket_;
+  long timeout_; // NOLINT
+  int socket_;
   std::stringstream buffer_;
-
 };
 
 }  // namespace ros2

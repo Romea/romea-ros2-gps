@@ -15,12 +15,13 @@
 // std
 #include <memory>
 #include <string>
+#include <vector>
 
 // romea core
-#include <romea_core_gps/nmea/NMEAParsing.hpp>
+#include "romea_core_gps/nmea/NMEAParsing.hpp"
 
 // romea ros
-#include <romea_common_utils/params/sensor_parameters.hpp>
+#include "romea_common_utils/params/sensor_parameters.hpp"
 
 // local
 #include "romea_gps_utils/gps_tcp_interface.hpp"
@@ -31,8 +32,8 @@ namespace ros2
 {
 
 //-----------------------------------------------------------------------------
-GpsTcpInterface::GpsTcpInterface(std::shared_ptr<rclcpp::Node> node):
-  client_{3000},
+GpsTcpInterface::GpsTcpInterface(std::shared_ptr<rclcpp::Node> node)
+: client_{3000},
   rtcm_client_{3000}
 {
   declare_ip(node);
@@ -42,7 +43,7 @@ GpsTcpInterface::GpsTcpInterface(std::shared_ptr<rclcpp::Node> node):
   auto const & logger = node->get_logger();
   std::string addr = get_ip(node);
   int nmea_port = get_parameter<int>(node, "nmea_port");
-  int rtcm_port =  get_parameter<int>(node, "rtcm_port");
+  int rtcm_port = get_parameter<int>(node, "rtcm_port");
 
   client_.connect(addr, nmea_port);
   RCLCPP_INFO(logger, "GNSS NMEA: Connected to %s:%d", addr.c_str(), nmea_port);

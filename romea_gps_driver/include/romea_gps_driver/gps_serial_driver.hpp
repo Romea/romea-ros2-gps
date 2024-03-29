@@ -13,8 +13,8 @@
 // limitations under the License.
 
 
-#ifndef ROMEA_GPS_DRIVER__GPS_DRIVER_DRIVER_HPP_
-#define ROMEA_GPS_DRIVER__GPS_DRIVER_DRIVER_HPP_
+#ifndef ROMEA_GPS_DRIVER__GPS_SERIAL_DRIVER_HPP_
+#define ROMEA_GPS_DRIVER__GPS_SERIAL_DRIVER_HPP_
 
 // ros
 #include <rclcpp/rclcpp.hpp>
@@ -64,4 +64,4 @@ private:
 }  // namespace ros2
 }  // namespace romea
 
-#endif   // ROMEA_GPS_DRIVER__GPS_DRIVER_DRIVER_HPP_
+#endif   // ROMEA_GPS_DRIVER__GPS_SERIAL_DRIVER_HPP_
