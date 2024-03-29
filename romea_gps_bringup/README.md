@@ -82,25 +82,41 @@ You can find specifications of each receiver in config directory of romea_gps_de
 
 # 5) Supported GPS receiver ROS2 drivers
 
-Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver) and  [romea_ublox_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_ublox). In order to used one of them, you can specify driver item in GPS meta-description file like this:
+Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver) and  [romea_gps_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_gps). In order to used one of them, you can specify driver item in GPS meta-description file like this:
 
 - Nmea Navsat driver:
 
 ```yaml
   pkg: "nmea_navsat_driver"  # ROS2 package name  
+  parameters: # node parameters
     device:  "/dev/ttyUSB0"  # serial device
     baudrate: 115200 # serial baudrate
 ```
 
-* Romea ublox driver:
+* Romea gps driver using serial connection:
 
 ```yaml
-  pkg: "romea_ublox_driver"  # ROS2  package name  
+  pkg: "romea_gps_driver"  # ROS2  package name
+  executable:   executable: "serial_node"
+  parameters: # node parameters
     device:  "/dev/ttyACM0"  # serial device
     baudrate: 115200 # serial baudrate
 ```
 
-For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps_driver.launch.py the corresponding driver is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
+* Romea gps driver using tcp connection:
+
+```yaml
+  pkg: "romea_gps_driver"  # ROS2  package name
+  executable: "tcp_client_node"
+  parameters: # node parameters
+    ip: 192.168.0.50
+    nmea_port: 1001
+    rtcm_port: 1002
+```
+
+
+
+For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps.launch.py the corresponding driver node is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
 
 - nmea(nmea_msgs/sentence)
 - gps_fix(sensor_msgs/NavSatFix)
