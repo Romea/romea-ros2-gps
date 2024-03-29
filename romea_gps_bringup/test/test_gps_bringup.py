@@ -38,15 +38,17 @@ def test_has_driver_configuration(meta_description):
 
 
 def test_get_driver_pkg(meta_description):
-    assert meta_description.get_driver_pkg() == "romea_ublox_driver"
+    assert meta_description.get_driver_pkg() == "romea_gps_driver"
 
 
-def test_get_driver_device(meta_description):
-    assert meta_description.get_driver_device() == "/dev/ttyACM0"
+def test_get_driver_executable(meta_description):
+    assert meta_description.get_driver_executable() == "serial_node"
 
 
-def test_get_driver_baudrate(meta_description):
-    assert meta_description.get_driver_baudrate() == 115200
+def test_get_driver_parameters(meta_description):
+    parameters = meta_description.get_driver_parameters()
+    assert parameters["device"] == "/dev/ttyACM0"
+    assert parameters["baudrate"] == 115200
 
 
 def test_has_ntrip_configuration(meta_description):

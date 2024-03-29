@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import yaml
 
 from launch import LaunchDescription
 
@@ -23,18 +24,27 @@ from launch.substitutions import LaunchConfiguration
 
 def launch_setup(context, *args, **kwargs):
 
-    port = LaunchConfiguration("device").perform(context)
-    baudrate = LaunchConfiguration("baudrate").perform(context)
+    config_path = LaunchConfiguration("config_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
 
     drivers = LaunchDescription()
+
+    print(f'config_path: {config_path}')
+    with open(config_path, 'r') as file:
+        config_parameters = yaml.safe_load(file)
 
     nmea_driver_node = Node(
         package="nmea_navsat_driver",
         executable="nmea_topic_serial_reader",
         output="screen",
         name="nmea_driver",
-        parameters=[{"port": port}, {"baud": int(baudrate)}, {"frame_id": frame_id}],
+        parameters=[
+            config_parameters,
+            {
+                "frame_id": frame_id,
+            },
+        ],
+        # parameters=[{"port": port}, {"baud": int(baudrate)}, {"frame_id": frame_id}],
         remappings=[("nmea_sentence", "nmea")],
     )
 
@@ -55,11 +65,12 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("device"))
-    declared_arguments.append(DeclareLaunchArgument("baudrate"))
-    declared_arguments.append(DeclareLaunchArgument("frame_id"))
-    declared_arguments.append(DeclareLaunchArgument("rate"))  # just to be compatible
+    declared_arguments = [
+        DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("config_path"),
+        DeclareLaunchArgument("frame_id"),
+        DeclareLaunchArgument("rate"),
+    ]
 
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
