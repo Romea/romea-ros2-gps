@@ -20,14 +20,19 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
+import yaml
+
 
 def launch_setup(context, *args, **kwargs):
 
-    host = LaunchConfiguration("host").perform(context)
-    port = LaunchConfiguration("port").perform(context)
-    mountpoint = LaunchConfiguration("mountpoint").perform(context)
-    username = LaunchConfiguration("username").perform(context)
-    password = LaunchConfiguration("password").perform(context)
+    executable = LaunchConfiguration("executable").perform(context)
+    config_path = LaunchConfiguration("config_path").perform(context)
+
+    assert executable == "ntrip_ros.py"
+
+    print(f'config_path: {config_path}')
+    with open(config_path, 'r') as file:
+        config_parameters = yaml.safe_load(file)
 
     driver = LaunchDescription()
 
@@ -38,12 +43,8 @@ def launch_setup(context, *args, **kwargs):
         name="ntrip_client",
         exec_name="ntrip_client",
         parameters=[
-            {"host": host},
-            {"port": int(port)},
-            {"mountpoint": mountpoint},
-            {"username": username},
-            {"password": password},
-            {"authenticate": username != "" and password != ""},
+            config_parameters,
+            {"authenticate": "username" in config_parameters and "password" in config_parameters},
         ],
         remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
     )
@@ -56,12 +57,8 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("host"))
-    declared_arguments.append(DeclareLaunchArgument("port"))
-    declared_arguments.append(DeclareLaunchArgument("mountpoint"))
-    declared_arguments.append(DeclareLaunchArgument("username"))
-    declared_arguments.append(DeclareLaunchArgument("password"))
-
+    declared_arguments.append(DeclareLaunchArgument("executable"))
+    declared_arguments.append(DeclareLaunchArgument("configuration_file_path"))
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
     )

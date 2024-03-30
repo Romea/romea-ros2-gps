@@ -37,8 +37,8 @@ def test_has_driver_configuration(meta_description):
     assert meta_description.has_driver_configuration() is True
 
 
-def test_get_driver_pkg(meta_description):
-    assert meta_description.get_driver_pkg() == "romea_gps_driver"
+def test_get_driver_package(meta_description):
+    assert meta_description.get_driver_package() == "romea_gps_driver"
 
 
 def test_get_driver_executable(meta_description):
@@ -55,28 +55,21 @@ def test_has_ntrip_configuration(meta_description):
     assert meta_description.has_ntrip_configuration() is True
 
 
-def test_get_ntrip_pkg(meta_description):
-    assert meta_description.get_ntrip_pkg() == "ntrip_client"
+def test_get_ntrip_package(meta_description):
+    assert meta_description.get_ntrip_package() == "ntrip_client"
 
 
-def test_get_ntrip_host(meta_description):
-    assert meta_description.get_ntrip_host() == "caster.centipede.fr"
+def test_get_ntrip_executable(meta_description):
+    assert meta_description.get_ntrip_executable() == "ntrip_ros.py"
 
 
-def test_get_ntrip_port(meta_description):
-    assert meta_description.get_ntrip_port() == 2101
-
-
-def test_get_ntrip_mountpoint(meta_description):
-    assert meta_description.get_ntrip_mountpoint() == "MAGC"
-
-
-def test_get_ntrip_username(meta_description):
-    assert meta_description.get_ntrip_username() == "centipede"
-
-
-def test_get_ntrip_password(meta_description):
-    assert meta_description.get_ntrip_password() == "centipede"
+def test_get_ntrip_parameter(meta_description):
+    parameters = meta_description.get_ntrip_parameters()
+    assert parameters["host"] == "caster.centipede.fr"
+    assert parameters["port"] == 2101
+    assert parameters["username"] == "centipede"
+    assert parameters["password"] == "centipede"
+    assert parameters["mountpoint"] == "MAGC"
 
 
 def test_get_type(meta_description):

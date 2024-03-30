@@ -77,7 +77,7 @@ def launch_setup(context, *args, **kwargs):
         PushRosNamespace(gps_name),
     ]
 
-    if mode == "live" and meta_description.get_driver_pkg() is not None:
+    if mode == "live" and meta_description.get_driver_package() is not None:
         parameters = meta_description.get_driver_parameters()
         config_path = generate_yaml_temp_file('gps_driver', parameters)
 
@@ -87,7 +87,7 @@ def launch_setup(context, *args, **kwargs):
                     PathJoinSubstitution([
                         FindPackageShare("romea_gps_bringup"),
                         "launch",
-                        "drivers/" + meta_description.get_driver_pkg() + ".launch.py",
+                        "drivers/" + meta_description.get_driver_package() + ".launch.py",
                     ])
                 ]),
                 launch_arguments={
@@ -98,6 +98,9 @@ def launch_setup(context, *args, **kwargs):
                 }.items(),
             )
         )
+
+        parameters = meta_description.get_driver_parameters()
+        config_path = generate_yaml_temp_file('ntrip_client', parameters)
 
         actions.append(
             IncludeLaunchDescription(

@@ -31,8 +31,8 @@ class GPSMetaDescription:
     def has_driver_configuration(self):
         return self.meta_description.exists("driver")
 
-    def get_driver_pkg(self):
-        return self.meta_description.get("pkg", "driver")
+    def get_driver_package(self):
+        return self.meta_description.get("package", "driver")
 
     def get_driver_executable(self):
         return self.meta_description.get("executable", "driver")
@@ -43,8 +43,14 @@ class GPSMetaDescription:
     def has_ntrip_configuration(self):
         return self.meta_description.exists("ntrip")
 
-    def get_ntrip_pkg(self):
-        return self.meta_description.get("pkg", "ntrip")
+    def get_ntrip_package(self):
+        return self.meta_description.get("package", "ntrip")
+
+    def get_ntrip_executable(self):
+        return self.meta_description.get("executable", "ntrip")
+
+    def get_ntrip_parameters(self):
+        return self.meta_description.get("parameters", "ntrip")
 
     def get_ntrip_host(self):
         return self.meta_description.get("host", "ntrip")
