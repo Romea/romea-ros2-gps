@@ -26,7 +26,7 @@ import yaml
 def launch_setup(context, *args, **kwargs):
 
     executable = LaunchConfiguration("executable").perform(context)
-    config_path = LaunchConfiguration("config_path").perform(context)
+    config_path = LaunchConfiguration("configuration_file_path").perform(context)
 
     assert executable == "ntrip_ros.py"
 
@@ -35,6 +35,8 @@ def launch_setup(context, *args, **kwargs):
         config_parameters = yaml.safe_load(file)
 
     driver = LaunchDescription()
+
+    print(config_parameters)
 
     ntrip_client_node = Node(
         package="ntrip_client",

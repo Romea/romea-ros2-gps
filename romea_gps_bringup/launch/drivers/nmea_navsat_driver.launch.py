@@ -24,9 +24,11 @@ from launch.substitutions import LaunchConfiguration
 
 def launch_setup(context, *args, **kwargs):
 
-    config_path = LaunchConfiguration("config_path").perform(context)
+    executable = LaunchConfiguration("executable").perform(context)
+    config_path = LaunchConfiguration("configuration_file_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
 
+    assert executable == "nmea_topic_serial_reader"
     drivers = LaunchDescription()
 
     print(f'config_path: {config_path}')
@@ -67,7 +69,7 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
-        DeclareLaunchArgument("config_path"),
+        DeclareLaunchArgument("configuration_file_path"),
         DeclareLaunchArgument("frame_id"),
         DeclareLaunchArgument("rate"),
     ]

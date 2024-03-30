@@ -77,9 +77,9 @@ def launch_setup(context, *args, **kwargs):
         PushRosNamespace(gps_name),
     ]
 
-    if mode == "live" and meta_description.get_driver_package() is not None:
-        parameters = meta_description.get_driver_parameters()
-        config_path = generate_yaml_temp_file('gps_driver', parameters)
+    if mode == "live" and meta_description.has_driver_configuration():
+        driver_parameters = meta_description.get_driver_parameters()
+        driver_config_path = generate_yaml_temp_file('gps_driver', driver_parameters)
 
         actions.append(
             IncludeLaunchDescription(
@@ -91,7 +91,7 @@ def launch_setup(context, *args, **kwargs):
                     ])
                 ]),
                 launch_arguments={
-                    "config_path": config_path,
+                    "configuration_file_path": driver_config_path,
                     "executable": meta_description.get_driver_executable(),
                     "rate": str(meta_description.get_rate()),
                     "frame_id": device_link_name(robot_namespace, gps_name),
@@ -99,8 +99,9 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-        parameters = meta_description.get_driver_parameters()
-        config_path = generate_yaml_temp_file('ntrip_client', parameters)
+    if mode == "live" and meta_description.has_ntrip_configuration():
+        ntrip_parameters = meta_description.get_ntrip_parameters()
+        ntrip_config_file_path = generate_yaml_temp_file('ntrip_client', ntrip_parameters)
 
         actions.append(
             IncludeLaunchDescription(
@@ -108,15 +109,12 @@ def launch_setup(context, *args, **kwargs):
                     PathJoinSubstitution([
                         FindPackageShare("romea_gps_bringup"),
                         "launch",
-                        "drivers/" + meta_description.get_ntrip_pkg() + ".launch.py",
+                        "drivers/" + meta_description.get_ntrip_package() + ".launch.py",
                     ])
                 ]),
                 launch_arguments={
-                    "host": meta_description.get_ntrip_host(),
-                    "port": str(meta_description.get_ntrip_port()),
-                    "mountpoint": meta_description.get_ntrip_mountpoint(),
-                    "username": meta_description.get_ntrip_username(),
-                    "password": meta_description.get_ntrip_password(),
+                    "configuration_file_path": ntrip_config_file_path,
+                    "executable": meta_description.get_ntrip_executable(),
                 }.items(),
             )
         )
