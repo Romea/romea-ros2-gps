@@ -201,7 +201,7 @@ public:
       std::cout << link->WorldLinearVel().Y() << " ";
       std::cout << link->WorldLinearVel().Z() << std::endl;
     }  while (sleep < max_sleep &&
-    !(listener.ok() && std::abs(box->WorldPose().Pos().Z() - z) < 1));
+      !(listener.ok() && std::abs(box->WorldPose().Pos().Z() - z) < 1));
 
     ASSERT_LT(sleep, max_sleep);
   }

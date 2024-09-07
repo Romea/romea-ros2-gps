@@ -15,7 +15,7 @@
 
   <exec_depend>romea_gps_bringup</exec_depend>
   <exec_depend>romea_gps_description</exec_depend>
-  <exec_depend>romea_gps_gazebo</exec_depend>
+  <exec_depend condition="$ROS_DISTRO &lt;= iron">romea_gps_gazebo_classic</exec_depend>
   <exec_depend>romea_gps_utils</exec_depend>
 
   <export>
