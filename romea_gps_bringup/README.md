@@ -1,3 +1,5 @@
+# Romea GPS Bringup #
+
 # 1) Overview #
 
 The romea_gps_bringup package provides  : 
@@ -43,18 +45,22 @@ As seen below GPS meta-description file is a yaml file constituted by six items.
 
 Example :
 ```yaml
-  name: "gps"  # name of the gps given by user
+  name: gps  # name of the gps given by user
   driver: # gps driver configuration
-    pkg: "romea_ublox_driver"  # ros2 driver package choiced by user and its parameters 
-    device:  "/dev/ttyACM0"
-    baudrate: 115200
+    package: romea_gps_driver  # ros2 driver package choiced by user and its parameters 
+    executable: serial_node
+    parameters:
+      device:  /dev/ttyACM0
+      baudrate: 115200
   ntrip:  # ntrip driver configuration (optional)
-    pkg: "ntrip_client"  # ros2 driver package choiced by user and its parameters 
-    host: caster.centipede.fr
-    port: 2101
-    username: centipede # optional
-    password: centipede # optional
-    mountpoint: MAGC
+    package: "ntrip_client"  # ros2 driver package choiced by user and its parameters
+    executable: ntrip_ros.py
+    parameters: 
+      host: caster.centipede.fr
+      port: 2101
+      username: centipede # optional
+      password: centipede # optional
+      mountpoint: MAGC
  configuration: # GPS basic specifications
     type: drotek  #  type of GPS receiver
     model: f9p  # model of GPS receiver
@@ -77,6 +83,7 @@ Supported GPS receiver are listed in the following table :
 | drotek |    f9p     |
 | astech | proflex800 |
 | ublox  |   evk_m8   |
+| septentrio  |   AsteriX   |
 
 You can find specifications of each receiver in config directory of romea_gps_description package.
 
@@ -87,17 +94,18 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
 - Nmea Navsat driver:
 
 ```yaml
-  pkg: "nmea_navsat_driver"  # ROS2 package name  
+  package: nmea_navsat_driver  # ROS2 package name
+  executable:  nmea_topic_driver
   parameters: # node parameters
-    device:  "/dev/ttyUSB0"  # serial device
+    device:  /dev/ttyUSB0  # serial device
     baudrate: 115200 # serial baudrate
 ```
 
 * Romea gps driver using serial connection:
 
 ```yaml
-  pkg: "romea_gps_driver"  # ROS2  package name
-  executable:   executable: "serial_node"
+  package: "romea_gps_driver"  # ROS2  package name
+  executable: serial_node
   parameters: # node parameters
     device:  "/dev/ttyACM0"  # serial device
     baudrate: 115200 # serial baudrate
@@ -106,14 +114,13 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
 * Romea gps driver using tcp connection:
 
 ```yaml
-  pkg: "romea_gps_driver"  # ROS2  package name
-  executable: "tcp_client_node"
+  package: romea_gps_driver  # ROS2  package name
+  executable: tcp_client_node
   parameters: # node parameters
     ip: 192.168.0.50
     nmea_port: 1001
     rtcm_port: 1002
 ```
-
 
 
 For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps.launch.py the corresponding driver node is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
@@ -127,7 +134,9 @@ For each driver a python launch file with the name of the ROS2 package is provid
 Only ROS [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client) driver is supported for the moment. In order to used it, you can specify ntrip item like this:  
 
 ```yaml
-  pkg: "ntrip_client"  # ROS package name  
+  package: "ntrip_client"  # ros2 driver package choiced by user and its parameters
+  executable: ntrip_ros.py
+  parameters: 
     host: caster.centipede.fr : 
     port: 2101
     username: centipede # optional
