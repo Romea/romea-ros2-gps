@@ -1,4 +1,4 @@
-# Romea ROS2 GPS Description #
+# ROMEA GPS Description #
 
 # 1 Overview #
 

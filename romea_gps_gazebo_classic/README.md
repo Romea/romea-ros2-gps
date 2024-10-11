@@ -1,4 +1,4 @@
-# Romea RPS GPS Gazebo Classic # 
+# ROMEA GPS Gazebo Classic # 
 
 # 1) Overview 
 

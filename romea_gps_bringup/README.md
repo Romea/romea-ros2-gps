@@ -1,4 +1,4 @@
-# Romea GPS Bringup #
+# ROMEA GPS Bringup #
 
 # 1) Overview #
 
