@@ -12,7 +12,7 @@ This stack contains several ROS2 packages for working with GPS receivers, both i
 6. build packages
    - catkin build for ROS1
    - colcon build for ROS2
-7. create your application using this library
+7. see bringup package to launch gps
 
 ## **Contributing**
 
