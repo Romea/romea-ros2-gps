@@ -45,8 +45,8 @@ def launch_setup(context, *args, **kwargs):
         name="ntrip_client",
         exec_name="ntrip_client",
         parameters=[
-            config_parameters,
             {"authenticate": "username" in config_parameters and "password" in config_parameters},
+            config_parameters,
         ],
         remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
     )

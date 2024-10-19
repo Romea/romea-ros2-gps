@@ -43,11 +43,11 @@ def launch_setup(context, *args, **kwargs):
         exec_name="gps_driver",
         output="screen",
         parameters=[
-            config_parameters,
             {
                 "frame_id": frame_id,
                 "rate": int(rate),
             },
+            config_parameters,
         ],
         remappings=[("nmea", "nmea_sentence")],
     )

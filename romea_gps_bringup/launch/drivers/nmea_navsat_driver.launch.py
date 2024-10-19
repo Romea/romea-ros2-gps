@@ -41,10 +41,10 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
         name="nmea_driver",
         parameters=[
-            config_parameters,
             {
                 "frame_id": frame_id,
             },
+            config_parameters,
         ],
         # parameters=[{"port": port}, {"baud": int(baudrate)}, {"frame_id": frame_id}],
         remappings=[("nmea_sentence", "nmea")],
