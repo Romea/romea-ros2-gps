@@ -4,7 +4,7 @@
 
 The romea_gps_bringup package provides  : 
 
- - launch files able to launch ros2 receiver drivers according a meta-description file provided by user (see next section for GPS meta-description file overview), supported drivers are :
+ - **Launch files** for launching ROS 2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
 
    - [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)
    - [romea_ublox_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_ublox)
@@ -20,9 +20,9 @@ The romea_gps_bringup package provides  :
    - *robot_namespace* is the name of the robot 
    - *meta_description_file_path* is the absolute path of meta-description file    
 
- - a python module able to load and parse GPS meta-description file as well as to create URDF description of the GPS Receiver according a given meta-description.
+ - A **Python Module** able to load and parse GPS meta-description file as well as to create URDF description of the GPS Receiver according a given meta-description.
 
- - a ros2 python executable able to create GPS URDF description via command line according a given meta-description file  :
+ - A **ROS2 python executable** able to create GPS URDF description via command line:
 
   ```console
   ros2 run romea_gps_bringup urdf_description.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
@@ -33,7 +33,7 @@ The romea_gps_bringup package provides  :
    - *robot_namespace* is the name of the robot 
    - *meta_description_file_path* is the absolute path of meta-description file    
 
-   This URDF  can be directly concatened with mobile base and other sensor URDFs to create a complete URDF description of the robot.  
+   This URDF can be combined with other URDFs (e.g., for the mobile base and other sensors) to create a complete robot description.  
 
    
 
@@ -41,7 +41,13 @@ The romea_gps_bringup package provides  :
 
 # 2) GPS meta-description #
 
-As seen below GPS meta-description file is a yaml file constituted by six items. The first item is the name of sensor defined by user. The second one is the configuration of ROS2 driver used to control GPS receiver (see section 4 for more explanations). The third item is the configuration of ROS2 driver used to deal with NTRIP communication in order to broadcast differential corrections to GPS receiver (see section 5 for more explanations). The fourth item provides basics specifications of the GPS receiver and the fifth item specifies where the GPS receiver antenna is located on the robot, these informations will be used to create URDF description and by user to configure its algorithms.  Finally, the last item gives the topics to be recorded into the ROS bag during experiments or simulation. Thanks to remappings written into launch files, GPS topics are always the same names for each drivers or simulator plugins.       
+The GPS meta-description file is a YAML file with six main items:
+- **name**: Name of the GPS sensor (defined by the user).
+- **driver**: Configuration for the ROS 2 driver controlling the GPS receiver (see Section 5).
+- **ntrip**: Configuration for the ROS 2 NTRIP driver, if needed, to broadcast differential corrections (see Section 4).
+- **configuration**: Basic specifications of the GPS receiver.
+- **geometry**: Location of the GPS receiver antenna on the robot for URDF generation.
+- **records**: Topics to be recorded during experiments or simulation. Remappings ensure the GPS topics have consistent names across drivers and simulation.
 
 Example :
 ```yaml
@@ -76,7 +82,7 @@ records: # topic to be recorded
 
 # 4) Supported GPS receiver models
 
-Supported GPS receiver are listed in the following table :
+The following GPS receivers are supported:
 
 |  type  |   model    |
 | :----: | :--------: |
@@ -91,7 +97,7 @@ You can find specifications of each receiver in config directory of romea_gps_de
 
 Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver) and  [romea_gps_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_gps). In order to used one of them, you can specify driver item in GPS meta-description file like this:
 
-- Nmea Navsat driver:
+- **Nmea Navsat driver**:
 
 ```yaml
   package: nmea_navsat_driver  # ROS2 package name
@@ -101,7 +107,7 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
     baudrate: 115200 # serial baudrate
 ```
 
-* Romea gps driver using serial connection:
+- **Romea gps driver using serial connection**:
 
 ```yaml
   package: "romea_gps_driver"  # ROS2  package name
@@ -111,7 +117,7 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
     baudrate: 115200 # serial baudrate
 ```
 
-* Romea gps driver using tcp connection:
+- **Romea gps driver using tcp connection**:
 
 ```yaml
   package: romea_gps_driver  # ROS2  package name
@@ -123,7 +129,7 @@ Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_n
 ```
 
 
-For each driver a python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is red by the main launch file called gps.launch.py the corresponding driver node is automatically launched taking into account parameters define by user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
+For each driver, a Python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is read by gps_driver.launch.py, the correct driver node is launched with the parameters set by the user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
 
 - nmea(nmea_msgs/sentence)
 - gps_fix(sensor_msgs/NavSatFix)
@@ -131,7 +137,7 @@ For each driver a python launch file with the name of the ROS2 package is provid
 
 # 4) Supported NTRIP client ROS2 drivers
 
-Only ROS [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client) driver is supported for the moment. In order to used it, you can specify ntrip item like this:  
+Currently, the only supported NTRIP client is [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client). To configure it, specify the NTRIP section as follows::  
 
 ```yaml
   package: "ntrip_client"  # ros2 driver package choiced by user and its parameters

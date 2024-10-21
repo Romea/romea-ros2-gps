@@ -9,9 +9,7 @@ This stack contains several ROS2 packages for working with GPS receivers, both i
 3. mkdir src
 4. wget https://raw.githubusercontent.com/Romea/romea-ros2-gps/refs/heads/main/romea_gps_public.repos
 5. vcs import src < romea_gps_public.repos
-6. build packages
-   - catkin build for ROS1
-   - colcon build for ROS2
+6. colcon build
 7. see bringup package to launch gps
 
 ## **Contributing**
