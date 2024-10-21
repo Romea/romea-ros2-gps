@@ -42,11 +42,11 @@ The romea_gps_bringup package provides  :
 # 2) GPS meta-description #
 
 The GPS meta-description file is a YAML file with six main items:
-- **name**: Name of the GPS sensor (defined by the user).
-- **driver**: Configuration for the ROS 2 driver controlling the GPS receiver (see Section 5).
-- **ntrip**: Configuration for the ROS 2 NTRIP driver, if needed, to broadcast differential corrections (see Section 4).
+- **name**: A user-defined name for the GPS receiver.
+- **driver**: Specifies ROS 2 driver driver and its paramters (see Section 5).
+- **ntrip**: Specifies ROS 2 NTRIP driver and it's parameters, if needed, to broadcast differential corrections (see Section 4).
 - **configuration**: Basic specifications of the GPS receiver.
-- **geometry**: Location of the GPS receiver antenna on the robot for URDF generation.
+- **geometry**: Describes the location of the GPS receiver antenna on the robot for URDF generation.
 - **records**: Topics to be recorded during experiments or simulation. Remappings ensure the GPS topics have consistent names across drivers and simulation.
 
 Example :
