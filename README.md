@@ -1,4 +1,4 @@
-# ROMEA ROS2 GPS Stack
+# romea_ros2_gps #
 
 This stack contains several ROS2 packages for working with GPS receivers, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
 
@@ -31,8 +31,8 @@ This project is released under the Apache License 2.0. See the LICENSE file for 
 
 ## **Authors**
 
-The Romea ROS2 GPS stack was developed by **Jean Laneurit** in the context of various research projects carried out at INRAE.
+The romea_ros2_gps stack was developed by **Jean Laneurit** in the context of various research projects carried out at INRAE.
 
 ## **Contact**
 
-If you have any questions or comments about Romea ROS2 GPS stack, please contact **[Jean Laneurit](mailto:jean.laneurit@inrae.fr)** 
+If you have any questions or comments about romea_ros2_gps stack, please contact **[Jean Laneurit](mailto:jean.laneurit@inrae.fr)** 
