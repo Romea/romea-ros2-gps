@@ -1,4 +1,4 @@
-# ROMEA GPS Description #
+# romea_gps_description #
 
 # 1 Overview #
 

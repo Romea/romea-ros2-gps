@@ -1,4 +1,4 @@
-# ROMEA GPS Gazebo Classic # 
+# romea_gps_gazebo_classic # 
 
 # 1) Overview 
 

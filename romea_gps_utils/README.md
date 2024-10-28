@@ -1,4 +1,4 @@
-# ROMEA GPS Utils #
+# romea_gps_utils #
 
 The romea_gps_utils package is a library offering various tools for working with GPS receivers in ROS2. It includes utilities to:
 - Read GPS configuration parameters from the ROS2 parameter server.

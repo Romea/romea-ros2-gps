@@ -1,4 +1,4 @@
-# ROMEA GPS Bringup #
+# romea_gps_bringup #
 
 # 1) Overview #
 
@@ -12,7 +12,7 @@ The romea_gps_bringup package provides  :
    It is possible to launch a driver via command line : 
 
     ```console
-    ros2 launch romea_gps_bringup gps_driver.launch.py robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
+    ros2 launch romea_gps_bringup gps.launch.py mode:=live robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
     ```
 
    where :
