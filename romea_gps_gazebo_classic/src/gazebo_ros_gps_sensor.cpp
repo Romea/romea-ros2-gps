@@ -233,7 +233,7 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
     hdt_frame.heading = core::between0And2Pi(
       M_PI_2 - (sensor_->Pose() + sensor_parent_link_->WorldPose()).Yaw());
     hdt_frame.trueNorth = true;
-    nmea_rmc_sentence_msg_->header.stamp = hdt_stamp;
+    nmea_hdt_sentence_msg_->header.stamp = hdt_stamp;
     nmea_hdt_sentence_msg_->sentence = hdt_frame.toNMEA();
     nmea_sentence_pub_->publish(*nmea_hdt_sentence_msg_);
   }
