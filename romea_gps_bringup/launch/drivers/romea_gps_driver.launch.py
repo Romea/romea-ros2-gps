@@ -30,7 +30,7 @@ def launch_setup(context, *args, **kwargs):
     executable = LaunchConfiguration("executable").perform(context)
     config_path = LaunchConfiguration("configuration_file_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
-    rate = LaunchConfiguration("rate").perform(context)
+    # rate = LaunchConfiguration("rate").perform(context)
 
     driver = LaunchDescription()
 
@@ -47,7 +47,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             {
                 "frame_id": frame_id,
-                "rate": int(rate),
+                # "rate": int(rate),
             },
             config_parameters,
         ],
@@ -64,8 +64,8 @@ def generate_launch_description():
     declared_arguments = [
         DeclareLaunchArgument("executable"),
         DeclareLaunchArgument("configuration_file_path"),
+        DeclareLaunchArgument("component_container", default_value=""),
         DeclareLaunchArgument("frame_id"),
-        DeclareLaunchArgument("rate"),
     ]
 
     return LaunchDescription(

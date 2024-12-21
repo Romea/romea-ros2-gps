@@ -17,7 +17,7 @@
 import os
 import pytest
 
-from romea_gps_bringup import GPSMetaDescription
+from romea_gps_meta_bringup import GPSMetaDescription
 
 
 @pytest.fixture(scope="module")

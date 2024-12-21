@@ -59,9 +59,12 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("executable"))
-    declared_arguments.append(DeclareLaunchArgument("configuration_file_path"))
+    declared_arguments = [
+        DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("configuration_file_path"),
+        DeclareLaunchArgument("component_container", default_value=""),
+    ]
+
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
     )

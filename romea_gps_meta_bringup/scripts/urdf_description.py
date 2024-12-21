@@ -16,7 +16,7 @@
 
 # flake8: noqa Q000
 
-from romea_gps_bringup import urdf_description
+from romea_gps_meta_bringup import urdf_description
 import sys
 
 if __name__ == "__main__":
