@@ -28,6 +28,7 @@ import yaml
 def launch_setup(context, *args, **kwargs):
 
     executable = LaunchConfiguration("executable").perform(context)
+    executable_namespace = LaunchConfiguration("executable_namespace").perform(context)
     config_path = LaunchConfiguration("configuration_file_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
     # rate = LaunchConfiguration("rate").perform(context)
@@ -43,6 +44,7 @@ def launch_setup(context, *args, **kwargs):
         executable=executable,
         name="driver",
         exec_name="gps_driver",
+        namespace=executable_namespace,
         output="screen",
         parameters=[
             {
@@ -63,6 +65,7 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("executable_namespace"),
         DeclareLaunchArgument("configuration_file_path"),
         DeclareLaunchArgument("component_container", default_value=""),
         DeclareLaunchArgument("frame_id"),

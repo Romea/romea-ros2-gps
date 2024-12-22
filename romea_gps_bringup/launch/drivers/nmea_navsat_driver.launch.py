@@ -27,6 +27,7 @@ from launch.substitutions import LaunchConfiguration
 def launch_setup(context, *args, **kwargs):
 
     executable = LaunchConfiguration("executable").perform(context)
+    executable_namespace = LaunchConfiguration("executable").perform(context)
     config_path = LaunchConfiguration("configuration_file_path").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
 
@@ -59,6 +60,7 @@ def launch_setup(context, *args, **kwargs):
         executable="nmea_topic_driver",
         name="topic_driver",
         output="screen",
+        namespace=executable_namespace,
         remappings=[("nmea_sentence", "nmea")],
     )
 
@@ -71,6 +73,7 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("executable_namespace"),
         DeclareLaunchArgument("configuration_file_path"),
         DeclareLaunchArgument("component_container", default_value=""),
         DeclareLaunchArgument("frame_id"),
