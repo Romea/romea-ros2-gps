@@ -28,14 +28,13 @@ def launch_setup(context, *args, **kwargs):
 
     executable = LaunchConfiguration("executable").perform(context)
     executable_namespace = LaunchConfiguration("executable").perform(context)
-    config_path = LaunchConfiguration("configuration_file_path").perform(context)
-    frame_id = LaunchConfiguration("frame_id").perform(context)
+    configuration_file_path = LaunchConfiguration("configuration_file_path").perform(context)
 
     assert executable == "nmea_topic_serial_reader"
     drivers = LaunchDescription()
 
-    print(f'config_path: {config_path}')
-    with open(config_path, 'r') as file:
+    print(f'config_path: {configuration_file_path}')
+    with open(configuration_file_path, 'r') as file:
         config_parameters = yaml.safe_load(file)
 
     nmea_driver_node = Node(
@@ -43,13 +42,8 @@ def launch_setup(context, *args, **kwargs):
         executable="nmea_topic_serial_reader",
         output="screen",
         name="nmea_driver",
-        parameters=[
-            {
-                "frame_id": frame_id,
-            },
-            config_parameters,
-        ],
-        # parameters=[{"port": port}, {"baud": int(baudrate)}, {"frame_id": frame_id}],
+        namespace=executable_namespace,
+        parameters=[config_parameters],
         remappings=[("nmea_sentence", "nmea")],
     )
 
@@ -73,10 +67,9 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
-        DeclareLaunchArgument("executable_namespace"),
-        DeclareLaunchArgument("configuration_file_path"),
+        DeclareLaunchArgument("executable_namespace", default_value=""),
         DeclareLaunchArgument("component_container", default_value=""),
-        DeclareLaunchArgument("frame_id"),
+        DeclareLaunchArgument("configuration_file_path"),
     ]
 
     return LaunchDescription(

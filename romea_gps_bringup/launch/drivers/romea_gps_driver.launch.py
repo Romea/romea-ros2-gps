@@ -29,14 +29,12 @@ def launch_setup(context, *args, **kwargs):
 
     executable = LaunchConfiguration("executable").perform(context)
     executable_namespace = LaunchConfiguration("executable_namespace").perform(context)
-    config_path = LaunchConfiguration("configuration_file_path").perform(context)
-    frame_id = LaunchConfiguration("frame_id").perform(context)
-    # rate = LaunchConfiguration("rate").perform(context)
+    configuration_file_path = LaunchConfiguration("configuration_file_path").perform(context)
 
     driver = LaunchDescription()
 
-    print(f'config_path: {config_path}')
-    with open(config_path, 'r') as file:
+    print(f'config_path: {configuration_file_path}')
+    with open(configuration_file_path, 'r') as file:
         config_parameters = yaml.safe_load(file)
 
     driver_node = Node(
@@ -46,13 +44,7 @@ def launch_setup(context, *args, **kwargs):
         exec_name="gps_driver",
         namespace=executable_namespace,
         output="screen",
-        parameters=[
-            {
-                "frame_id": frame_id,
-                # "rate": int(rate),
-            },
-            config_parameters,
-        ],
+        parameters=[config_parameters],
         remappings=[("nmea", "nmea_sentence")],
     )
 
@@ -65,10 +57,9 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
-        DeclareLaunchArgument("executable_namespace"),
-        DeclareLaunchArgument("configuration_file_path"),
+        DeclareLaunchArgument("executable_namespace", default_value=""),
         DeclareLaunchArgument("component_container", default_value=""),
-        DeclareLaunchArgument("frame_id"),
+        DeclareLaunchArgument("configuration_file_path"),
     ]
 
     return LaunchDescription(

@@ -28,7 +28,7 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
-from romea_common_bringup import device_link_name
+from romea_common_bringup import device_link_name, device_namespace
 from romea_gps_meta_bringup import GPSMetaDescription
 
 import tempfile
@@ -71,16 +71,19 @@ def launch_setup(context, *args, **kwargs):
 
     gps_name = meta_description.get_name()
     gps_namespace = str(meta_description.get_namespace() or "")
+    gps_full_namespace = device_namespace(robot_namespace, gps_namespace, gps_name)
+    gps_frame_id = device_link_name(robot_namespace, gps_name)
 
-    actions = [
-        PushRosNamespace(robot_namespace),
-        PushRosNamespace(gps_namespace),
-        PushRosNamespace(gps_name),
-    ]
-
+    actions = []
     if mode == "live" and meta_description.has_driver_configuration():
-        driver_parameters = meta_description.get_driver_parameters()
-        driver_config_path = generate_yaml_temp_file('gps_driver', driver_parameters)
+
+        gps_executable = meta_description.get_driver_executable()
+        gps_executable_parameters = meta_description.get_driver_parameters()
+        gps_executable_parameters["frame_id"] = gps_frame_id
+
+        gps_configuration_file_path = generate_yaml_temp_file(
+            'gps_driver', gps_executable_parameters
+        )
 
         actions.append(
             IncludeLaunchDescription(
@@ -92,17 +95,21 @@ def launch_setup(context, *args, **kwargs):
                     ])
                 ]),
                 launch_arguments={
-                    "configuration_file_path": driver_config_path,
-                    "executable": meta_description.get_driver_executable(),
-                    "rate": str(meta_description.get_rate()),
-                    "frame_id": device_link_name(robot_namespace, gps_name),
+                    "executable": gps_executable,
+                    "executable_namespace": gps_full_namespace,
+                    "configuration_file_path": gps_configuration_file_path,
                 }.items(),
             )
         )
 
     if mode == "live" and meta_description.has_ntrip_configuration():
-        ntrip_parameters = meta_description.get_ntrip_parameters()
-        ntrip_config_file_path = generate_yaml_temp_file('ntrip_client', ntrip_parameters)
+
+        ntrip_executable = meta_description.get_ntrip_executable()
+        ntrip_executable_parameters = meta_description.get_ntrip_parameters()
+        
+        ntrip_configuration_file_path = generate_yaml_temp_file(
+            'ntrip_client', ntrip_executable_parameters
+        )
 
         actions.append(
             IncludeLaunchDescription(
@@ -114,8 +121,9 @@ def launch_setup(context, *args, **kwargs):
                     ])
                 ]),
                 launch_arguments={
-                    "configuration_file_path": ntrip_config_file_path,
-                    "executable": meta_description.get_ntrip_executable(),
+                    "executable": ntrip_executable,
+                    "executable_namespace": gps_full_namespace,
+                    "configuration_file_path": ntrip_configuration_file_path,
                 }.items(),
             )
         )

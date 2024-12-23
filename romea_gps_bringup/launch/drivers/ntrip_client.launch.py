@@ -63,7 +63,7 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("executable"),
-        DeclareLaunchArgument("executable_namespace"),
+        DeclareLaunchArgument("executable_namespace", default_value=""),
         DeclareLaunchArgument("configuration_file_path"),
         DeclareLaunchArgument("component_container", default_value=""),
     ]
