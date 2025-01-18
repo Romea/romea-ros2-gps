@@ -68,6 +68,9 @@ class GPSMetaDescription:
     def get_ntrip_password(self):
         return self.meta_description.get("password", "ntrip")
 
+    def get_configuration(self):
+        return self.meta_description.get("configuration")
+
     def get_type(self):
         return self.meta_description.get("type", "configuration")
 
@@ -79,6 +82,9 @@ class GPSMetaDescription:
 
     def get_dual_antenna(self):
         return self.meta_description.get_or("dual_antenna", "configuration", False)
+
+    def get_geometry(self):
+        return self.meta_description.get("geometry")
 
     def get_parent_link(self):
         return self.meta_description.get("parent_link", "geometry")
@@ -123,11 +129,7 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
         robot_urdf_prefix(robot_namespace),
         mode,
         meta_description.get_name(),
-        meta_description.get_type(),
-        meta_description.get_model(),
-        meta_description.get_rate(),
-        meta_description.get_dual_antenna(),
-        meta_description.get_parent_link(),
-        meta_description.get_xyz(),
+        meta_description.get_configuration(),
+        meta_description.get_geometry(),
         ros_namespace
     )

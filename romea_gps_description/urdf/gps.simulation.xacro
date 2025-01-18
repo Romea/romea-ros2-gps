@@ -3,7 +3,12 @@
 
   <xacro:macro
     name="gps_sensor_simulation"
-    params="prefix mode link_name rate name dual_antenna ros_namespace">
+    params="prefix mode link_name name configuration ros_namespace">
+
+    <xacro:property name="rate"
+      value="${configuration['rate']}" />
+    <xacro:property name="dual_antenna"
+      value="${configuration['dual_antenna']}" />
 
     <xacro:if value="${'gazebo' in  mode}">
       <gazebo reference="${link_name}">

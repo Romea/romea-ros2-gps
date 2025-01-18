@@ -1,24 +1,36 @@
 <?xml version="1.0"?>
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="mode" default="simulation_gazebo" />
-  <xacro:arg name="name" default="gps" />
-  <xacro:arg name="rate" default="10" />
-  <xacro:arg name="dual_antenna" default="false" />
-  <xacro:arg name="parent_link" default="base_link" />
-  <xacro:arg name="xyz" default="0.0 0.0 0.0" />
+  <xacro:arg name="name" default="lidar" />
+  <xacro:arg name="sensor_config_yaml_file" default="" />
+  <xacro:arg name="geometry_config_yaml_file" default="" />
+  <xacro:arg name="mesh_visual" default="false" />
   <xacro:arg name="ros_namespace" default="/" />
 
+  <xacro:property name="sensor_config_yaml_file"
+    value="$(arg sensor_config_yaml_file)" />
+
+  <xacro:property name="configuration"
+    value="${load_yaml(sensor_config_yaml_file)}" />
+
+  <xacro:property name="geometry_config_yaml_file"
+    value="$(arg geometry_config_yaml_file)" />
+
+  <xacro:property name="geometry"
+    value="${load_yaml(geometry_config_yaml_file)}" />
+
   <xacro:include filename="$(find romea_gps_description)/urdf/gps.xacro" />
+
   <xacro:gps_sensor
     prefix="$(arg prefix)"
     mode="$(arg mode)"
-    xyz="$(arg xyz)"
-    parent_link="$(arg parent_link)"
-    rate="$(arg rate)"
-    dual_antenna="$(arg dual_antenna)"
     name="$(arg name)"
+    configuration="${configuration}"
+    geometry="${geometry}"
+    mesh_visual="$(arg mesh_visual)"
     ros_namespace="$(arg ros_namespace)" />
 
 </robot>

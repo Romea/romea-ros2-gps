@@ -23,7 +23,6 @@ from launch.actions import (
     GroupAction,
 )
 
-from launch_ros.actions import PushRosNamespace
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -106,7 +105,7 @@ def launch_setup(context, *args, **kwargs):
 
         ntrip_executable = meta_description.get_ntrip_executable()
         ntrip_executable_parameters = meta_description.get_ntrip_parameters()
-        
+
         ntrip_configuration_file_path = generate_yaml_temp_file(
             'ntrip_client', ntrip_executable_parameters
         )

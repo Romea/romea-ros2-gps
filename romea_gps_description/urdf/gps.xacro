@@ -1,38 +1,97 @@
 <?xml version="1.0"?>
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro
-    name="gps_sensor"
-    params="prefix mode xyz parent_link rate dual_antenna name ros_namespace">
+  <xacro:macro name="gps_sensor"
+    params="prefix mode name configuration geometry mesh_visual ros_namespace">
 
-    <xacro:property name="link_name" value="${prefix}${name}_link" />
-    <xacro:property name="joint_name" value="${prefix}${name}_joint" />
-    <xacro:property name="parent_link_name" value="${prefix}${parent_link}" />
+    <xacro:property name="link_name"
+      value="${prefix}${name}_link" />
+    <xacro:property name="joint_name"
+      value="${prefix}${name}_joint" />
+    <xacro:property name="parent_link_name"
+      value="${prefix}${configuration['parent_link']}" />
 
-    <xacro:property name="nmea_topic_name" value="${name}/nmea_sentence" />
-    <xacro:property name="fix_topic_name" value="${name}/fix" />
-    <xacro:property name="vel_topic_name" value="${name}/vel" />
+    <xacro:property name="xyz"
+      value="${configuration['xyz']}" />
 
-    <!-- <gazebo reference="${link_name}"> -->
-    <!-- <material>Gazebo/White</material> -->
-    <!-- </gazebo> -->
+    <xacro:property name="mass"
+      value="${geometry['mass']}" />
+    <xacro:property name="shape"
+      value="${geometry['shape']}" />
+    <xacro:property name="aabb_length"
+      value="${geometry['aabb']['length']}" />
+    <xacro:property name="aabb_width"
+      value="${geometry['aabb']['width']}" />
+    <xacro:property name="aabb_height"
+      value="${geometry['aabb']['height']}" />
+    <xacro:property name="aabb_center"
+      value="${geometry['aabb']['center']}" />
+
+    <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+      <xacro:property name="mesh_xyz"
+        value="${geometry['mesh']['xyz']}" />
+      <xacro:property name="mesh_rpy"
+        value="${geometry['mesh']['rpy']}" />
+      <xacro:property name="mesh_scale"
+        value="${geometry['mesh']['scale']}" />
+      <xacro:property name="mesh_filename"
+        value="${geometry['mesh']['filename']}" />
+    </xacro:if>
+
+
+    <xacro:property name="nmea_topic_name"
+      value="${name}/nmea_sentence" />
+    <xacro:property name="fix_topic_name"
+      value="${name}/fix" />
+    <xacro:property name="vel_topic_name"
+      value="${name}/vel" />
+
 
     <link name="${link_name}">
       <inertial>
-        <mass value="1" />
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001" />
+        <mass value="${mass}" />
+        <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" />
+        <inertia ixx="${0.0833333 * mass * (aabb_width*aabb_width + aabb_height*aabb_height)}"
+          ixy="0.0" ixz="0.0"
+          iyy="${0.0833333 * mass * (aabb_height*aabb_height + aabb_length*aabb_length)}" iyz="0.0"
+          izz="${0.0833333 * mass * (aabb_length*aabb_length + aabb_width*aabb_width)}" />
       </inertial>
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <cylinder length="0.05" radius="0.1" />
-        </geometry>
+        <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+          <origin xyz="${mesh_xyz[0]} ${mesh_xyz[1]} ${mesh_xyz[2]}"
+            rpy="${mesh_rpy[0]/180.*pi} ${mesh_rpy[1]/180.*pi} ${mesh_rpy[2]/180.*pi}" />
+          <geometry>
+            <mesh filename="${mesh_filename}"
+              scale="${mesh_scale[0]} ${mesh_scale[1]} ${mesh_scale[2]}" />
+          </geometry>
+        </xacro:if>
+        <xacro:if value="${mesh_visual == False or 'mesh' not in geometry}">
+          <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+          <xacro:if value="${shape == 'disk'}">
+            <geometry>
+              <cylinder length="${aabb_height}" radius="${aabb_length / 2.0}" />
+            </geometry>
+          </xacro:if>
+          <xacro:if value="${shape == 'patch'}">
+            <geometry>
+              <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+            </geometry>
+          </xacro:if>
+        </xacro:if>
       </visual>
+      <!-- <collision>
+        <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+        <geometry>
+          <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+        </geometry>
+      </collision> -->
+
     </link>
 
-    <joint name="${joint_name}" type="fixed">
-      <origin xyz="${xyz}" rpy="0 0 0" />
+
+    <joint
+      name="${joint_name}" type="fixed">
+      <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}" rpy="0 0 0" />
       <parent link="${parent_link_name}" />
       <child link="${link_name}" />
     </joint>
@@ -41,12 +100,11 @@
       <xacro:include filename="$(find romea_gps_description)/urdf/gps.simulation.xacro" />
       <xacro:gps_sensor_simulation
         prefix="${prefix}"
-        mode="${mode}" 
+        mode="${mode}"
         name="${name}"
-        rate="${rate}" 
-        link_name="${link_name}" 
-        dual_antenna="${dual_antenna}" 
-        ros_namespace="${ros_namespace}"/>
+        link_name="${link_name}"
+        configuration="${configuration}"
+        ros_namespace="${ros_namespace}" />
     </xacro:if>
 
   </xacro:macro>

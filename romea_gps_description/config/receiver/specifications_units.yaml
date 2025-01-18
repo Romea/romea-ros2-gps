@@ -1,0 +1,6 @@
+gps_fix_uere: m
+dgps_fix_uere: m
+float_rtk_fix_uere: m
+rtk_fix_uere: m
+simulation_fix_uere: m
+rate: Hz

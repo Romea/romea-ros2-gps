@@ -24,17 +24,27 @@ def urdf_xml():
     prefix = "robot_"
     mode = "simulation"
     name = "gps"
-    type = "drotek"
-    model = "f9p"
-    dual_antenna=False
-    rate = 10
-    parent_link = "base_link"
-    xyz = [1.0, 2.0, 3.0]
+
+    description = {
+        "type": "septentrio",
+        "model": "asterx",
+        "dual_antenna": False,
+        "antenna_model": "septentrio_polant",
+        "rate": 10,
+    }
+
+    location = {
+        "parent_link": "base_link",
+        "xyz": [1.0, 2.0, 3.0],
+    }
+
     ros_namespace = "ns"
-    return ET.fromstring(urdf(prefix, mode, name,
-                              type, model, rate, dual_antenna,
-                              parent_link, xyz,
-                              ros_namespace))
+
+    with open('/tmp/urdf', 'w') as file:
+        file.write(urdf(prefix, mode, name, description, location, ros_namespace))
+
+    return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
+
 
 def test_gps_name(urdf_xml):
     assert urdf_xml.find("link").get("name") == "robot_gps_link"
@@ -52,8 +62,8 @@ def test_gps_rate(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/update_rate").text == "10"
 
 
-def test_plugin_namespace(urdf):
-    assert urdf.find("gazebo/sensor/plugin/dual_antenna").text == "False"
+def test_has_dual_antenna(urdf_xml):
+    assert urdf_xml.find("gazebo/sensor/plugin/dual_antenna").text == "False"
 
 
 def test_plugin_namespace(urdf_xml):

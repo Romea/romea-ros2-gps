@@ -16,8 +16,8 @@ ntrip:
     password: centipede
     mountpoint: MAGC
 configuration:
-  type: drotek
-  model: f9p
+  type: septentrio
+  model: asterx
   rate: 10
   dual_antenna: true
 geometry:

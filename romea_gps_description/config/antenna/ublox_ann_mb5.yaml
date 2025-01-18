@@ -1,0 +1,7 @@
+mass: 0.173
+shape: patch
+aabb:
+  length: 0.04914
+  width: 0.04614
+  height: 0.02594
+  center: [0.0, 0.0, 0.0]

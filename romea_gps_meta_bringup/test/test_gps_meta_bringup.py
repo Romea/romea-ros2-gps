@@ -22,7 +22,7 @@ from romea_gps_meta_bringup import GPSMetaDescription
 
 @pytest.fixture(scope="module")
 def meta_description():
-    meta_description_file_path = os.path.join(os.getcwd(), "test_gps_bringup.yaml")
+    meta_description_file_path = os.path.join(os.getcwd(), "test_gps_meta_bringup.yaml")
     return GPSMetaDescription(meta_description_file_path)
 
 
@@ -74,11 +74,11 @@ def test_get_ntrip_parameter(meta_description):
 
 
 def test_get_type(meta_description):
-    assert meta_description.get_type() == "drotek"
+    assert meta_description.get_type() == "septentrio"
 
 
 def test_get_model(meta_description):
-    assert meta_description.get_model() == "f9p"
+    assert meta_description.get_model() == "asterx"
 
 
 def test_get_rate(meta_description):

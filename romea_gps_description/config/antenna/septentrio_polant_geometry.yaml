@@ -1,0 +1,7 @@
+mass: 0.447
+shape: disk
+aabb:
+  length: 0.1905
+  width: 0.1905
+  height: 0.0732
+  center: [0.0, 0.0, 0.0267]

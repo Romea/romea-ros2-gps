@@ -17,62 +17,114 @@
 import xacro
 import yaml
 
+from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
 
-def get_gps_specifications_file_path(type, model):
-    return (
-        get_package_share_directory("romea_gps_description")
-        + "/config/"
-        + type
-        + "_"
-        + model
-        + "_specifications.yaml"
-    )
+def get_gps_receiver_specifications_file_path(type, model):
+    pkg_path = get_package_share_directory('romea_gps_description')
+    return f'{pkg_path}/config/receiver/{type}_{model}_specifications.yaml'
 
 
-def get_gps_specifications(type, model):
-
-    with open(get_gps_specifications_file_path(type, model)) as f:
+def get_gps_receiver_specifications(type, model):
+    with open(get_gps_receiver_specifications_file_path(type, model)) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_geometry_file_path(type, model):
-    return (
-        get_package_share_directory("romea_gps_description")
-        + "/config/"
-        + type
-        + "_"
-        + model
-        + "_geometry.yaml"
-    )
+def get_gps_antenna_geometry_file_path(type, model):
+    pkg_path = get_package_share_directory('romea_gps_description')
+    return f'{pkg_path}/config/antenna/{type}_{model}_geometry.yaml'
 
 
-def get_gps_geometry(type, model):
-
-    with open(get_gps_geometry_file_path(type, model)) as f:
+def get_gps_antenna_geometry(type, model):
+    with open(get_gps_antenna_geometry_file_path(type, model)) as f:
         return yaml.safe_load(f)
 
 
-def urdf(prefix, mode, name, type, model, rate, dual_antenna, parent_link, xyz, ros_namespace):
+def get_gps_receiver_specification_units_file_path():
+    pkg_path = get_package_share_directory('romea_gps_description')
+    return f'{pkg_path}/config/receiver/specifications_units.yaml'
+
+
+def get_gps_receiver_specification_units():
+    with open(get_gps_receiver_specification_units_file_path()) as f:
+        return yaml.safe_load(f)
+
+
+def get_gps_receiver_complete_configuration(gps_name, gps_description):
+
+    type = gps_description["type"]
+    model = gps_description["model"]
+    gps_name = f'{type} {model} lidar called {gps_name}'
+    specifications = get_gps_receiver_specifications(type, model)
+    specifications_units = get_gps_receiver_specification_units()
+
+    gps = Device(gps_name, specifications, gps_description, specifications_units)
+
+    configuration = {}
+    configuration['rate'] = gps.get('rate')
+    configuration['gps_fix_uere'] = gps.get('gps_fix_uere')
+    configuration['dgps_fix_uere'] = gps.get('dgps_fix_uere')
+    configuration['float_rtk_fix_uere'] = gps.get('float_rtk_fix_uere')
+    configuration['rtk_fix_uere'] = gps.get('rtk_fix_uere')
+    configuration['antenna_model'] = gps.get('antenna_model')
+    configuration['dual_antenna'] = gps.get('dual_antenna')
+    return configuration
+
+
+def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
+
+    configuration = get_gps_receiver_complete_configuration(gps_name, gps_description)
+    configuration_yaml_file = '/tmp/' + prefix + gps_name + '_specifications.yaml'
+
+    with open(configuration_yaml_file, 'w') as f:
+        yaml.dump({**configuration, **gps_location}, f)
+
+    antenna_configuration = configuration["antenna_model"].split('_', 1)
+    geometry_yaml_file = get_gps_antenna_geometry_file_path(
+        antenna_configuration[0], antenna_configuration[1]
+    )
 
     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
 
-    if mode == "simulation":
-        mode += "_gazebo_classic"
+    if mode == 'simulation':
+        mode += '_gazebo_classic'
 
     urdf_xml = xacro.process_file(
         xacro_file,
         mappings={
-            "prefix": prefix,
-            "mode": mode,
-            "name": name,
-            "rate": str(rate),
-            "dual_antenna": str(dual_antenna),
-            "parent_link": parent_link,
-            "xyz": " ".join(map(str, xyz)),
-            "ros_namespace": ros_namespace
+            'prefix': prefix,
+            'mode': mode,
+            'name': gps_name,
+            'sensor_config_yaml_file': configuration_yaml_file,
+            'geometry_config_yaml_file': geometry_yaml_file,
+            'mesh_visual': str(True),
+            'ros_namespace': ros_namespace,
         },
     )
 
     return urdf_xml.toprettyxml()
+
+
+# def urdf(prefix, mode, name, type, model, rate, dual_antenna, parent_link, xyz, ros_namespace):
+
+#     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
+
+#     if mode == "simulation":
+#         mode += "_gazebo_classic"
+
+#     urdf_xml = xacro.process_file(
+#         xacro_file,
+#         mappings={
+#             "prefix": prefix,
+#             "mode": mode,
+#             "name": name,
+#             "rate": str(rate),
+#             "dual_antenna": str(dual_antenna),
+#             "parent_link": parent_link,
+#             "xyz": " ".join(map(str, xyz)),
+#             "ros_namespace": ros_namespace
+#         },
+#     )
+
+#     return urdf_xml.toprettyxml()

@@ -1,0 +1,30 @@
+# gps_fix_uere: 3.0
+# dgps_fix_uere: 0.5
+# float_rtk_fix_uere: 0.1
+# rtk_fix_uere: 0.02
+# simulation_fix_uere: 0.02
+
+gps_fix_uere: 3.0
+dgps_fix_uere: 0.5
+float_rtk_fix_uere: 0.1
+rtk_fix_uere: 0.02
+simulation_fix_uere: 0.02
+antenna_model: ashtech_ash_661
+dual_antenna: false
+rate:
+  list: [1, 2]
+# gps_fix_uere:
+#   value: 3.0
+#   unit: m
+# dgps_fix_uere:
+#   value: 0.5
+#   unit: m
+# float_rtk_fix_uere:
+#   value: 0.1
+#   unit: m
+# rtk_fix_uere:
+#   value: 0.02
+#   unit: m
+# simulation_fix_uere:
+#   value: 0.02
+#   unit: m
