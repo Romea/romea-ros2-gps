@@ -73,13 +73,6 @@ def launch_setup(context, *args, **kwargs):
     gps_name = meta_description.get_name()
     gps_namespace = str(meta_description.get_namespace() or "")
     gps_full_namespace = device_namespace(robot_namespace, gps_namespace, gps_name)
-    # gps_frame_id = device_link_name(robot_namespace, gps_name)
-
-    # user_gps_configuration = get_gps_receiver_configuration(meta_description)
-
-    # gps_configuration = get_gps_complete_receiver_configuration(
-    #     meta_description.get_type(), meta_description.get_model(), user_lidar_configuration
-    # )
 
     actions = []
     if mode == "live" and meta_description.has_driver_configuration():
@@ -88,9 +81,6 @@ def launch_setup(context, *args, **kwargs):
         gps_executable_parameters = get_complete_driver_parameters(
             meta_description, robot_namespace
         )
-
-        # gps_executable_parameters = meta_description.get_driver_parameters()
-        # gps_executable_parameters["frame_id"] = gps_frame_id
 
         gps_configuration_file_path = generate_yaml_temp_file(
             'gps_driver', gps_executable_parameters
