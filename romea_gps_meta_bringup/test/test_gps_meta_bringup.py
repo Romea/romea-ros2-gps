@@ -17,7 +17,12 @@
 import os
 import pytest
 
-from romea_gps_meta_bringup import GPSMetaDescription
+from romea_gps_meta_bringup import (
+    GPSMetaDescription,
+    get_receiver_specifications,
+    get_antenna_geometry,
+    get_complete_receiver_configuration
+)
 
 
 @pytest.fixture(scope="module")
@@ -102,3 +107,18 @@ def test_get_records(meta_description):
     assert records["nmea_sentence"] is True
     assert records["gps_fix"] is False
     assert records["vel"] is False
+
+
+def test_get_receiver_specifications(meta_description):
+    gps_specifactions = get_receiver_specifications(meta_description)
+    assert gps_specifactions['antenna_model'] == "septentrio_polant"
+
+
+def test_get_antenna_geometry(meta_description):
+    gps_geometry = get_antenna_geometry(meta_description)
+    assert gps_geometry['mass'] == 0.447
+
+
+def test_get_complete_receiver_configuration(meta_description):
+    gps_configuration = get_complete_receiver_configuration(meta_description)
+    assert gps_configuration['antenna_model'] == "septentrio_polant"

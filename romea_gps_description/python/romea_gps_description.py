@@ -51,7 +51,7 @@ def get_gps_receiver_specification_units():
         return yaml.safe_load(f)
 
 
-def get_gps_receiver_complete_configuration(gps_name, gps_description):
+def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
     type = gps_description["type"]
     model = gps_description["model"]
@@ -74,7 +74,7 @@ def get_gps_receiver_complete_configuration(gps_name, gps_description):
 
 def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
 
-    configuration = get_gps_receiver_complete_configuration(gps_name, gps_description)
+    configuration = get_gps_complete_receiver_configuration(gps_name, gps_description)
     configuration_yaml_file = '/tmp/' + prefix + gps_name + '_specifications.yaml'
 
     with open(configuration_yaml_file, 'w') as f:

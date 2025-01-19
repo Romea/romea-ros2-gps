@@ -15,7 +15,7 @@
 from ament_index_python.packages import get_package_share_directory
 
 from romea_gps_description import (
-    get_gps_receiver_complete_configuration,
+    get_gps_complete_receiver_configuration,
     get_gps_antenna_geometry_file_path,
     get_gps_antenna_geometry,
     get_gps_receiver_specifications_file_path,
@@ -58,7 +58,7 @@ def test_get_gps_receiver_complete_configuration_ok():
        "rate": 2
     }
 
-    configuration = get_gps_receiver_complete_configuration("gps", user_description)
+    configuration = get_gps_complete_receiver_configuration("gps", user_description)
 
     assert configuration["rtk_fix_uere"] == 0.02
     assert configuration["dual_antenna"] is False

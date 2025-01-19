@@ -1,0 +1,13 @@
+name: "gps"
+driver:
+  package: romea_gps_driver
+  executable: tcp_client_node
+  parameters:
+    ip: 192.168.0.50
+    nmea_port: 1001
+    rtcm_port: 1002
+configuration:
+  type: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true

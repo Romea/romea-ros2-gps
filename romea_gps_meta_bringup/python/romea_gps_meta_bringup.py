@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# flake8: noqa Q000
+from romea_common_bringup import (
+    MetaDescription,
+    robot_urdf_prefix,
+    device_namespace,
+    device_link_name
+)
 
-from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
 import romea_gps_description
 
 
@@ -103,16 +107,36 @@ def load_meta_description(meta_description_file_path):
     return GPSMetaDescription(meta_description_file_path)
 
 
-def get_gps_specifications(meta_description):
-    return romea_gps_description.get_gps_specifications(
+def get_receiver_specifications(meta_description):
+    return romea_gps_description.get_gps_receiver_specifications(
         meta_description.get_type(), meta_description.get_model()
     )
 
 
-def get_gps_geometry(meta_description):
-    return romea_gps_description.get_gps_geometry(
-        meta_description.get_type(), meta_description.get_model()
+def get_antenna_geometry(meta_description):
+    gps_configuration = get_complete_receiver_configuration(meta_description)
+    antenna_configuration = gps_configuration["antenna_model"].split('_', 1)
+    return romea_gps_description.get_gps_antenna_geometry(
+        antenna_configuration[0], antenna_configuration[1]
     )
+
+
+def get_complete_receiver_configuration(meta_description):
+    return romea_gps_description.get_gps_complete_receiver_configuration(
+        meta_description.get_name(), meta_description.get_configuration()
+    )
+
+
+def get_complete_driver_parameters(meta_description, robot_namespace):
+    gps_configuration = get_complete_receiver_configuration(meta_description)
+    frame_id = device_link_name(robot_namespace, meta_description.get_name())
+
+    executable = meta_description.get_driver_executable()
+    parameters = meta_description.get_driver_parameters()
+    parameters["frame_id"] = frame_id
+    if executable == "serial_node" or executable == "tcp_client_node":
+        parameters["rate"] = gps_configuration["rate"]
+    return parameters
 
 
 def urdf_description(robot_namespace, mode, meta_description_file_path):
