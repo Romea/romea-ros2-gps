@@ -75,7 +75,8 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description):
 def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
 
     configuration = get_gps_complete_receiver_configuration(gps_name, gps_description)
-    configuration_yaml_file = '/tmp/' + prefix + gps_name + '_specifications.yaml'
+
+    configuration_yaml_file = f'/tmp/{prefix}{gps_name}_urdf_configuration.yaml'
 
     with open(configuration_yaml_file, 'w') as f:
         yaml.dump({**configuration, **gps_location}, f)
@@ -104,27 +105,3 @@ def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
     )
 
     return urdf_xml.toprettyxml()
-
-
-# def urdf(prefix, mode, name, type, model, rate, dual_antenna, parent_link, xyz, ros_namespace):
-
-#     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
-
-#     if mode == "simulation":
-#         mode += "_gazebo_classic"
-
-#     urdf_xml = xacro.process_file(
-#         xacro_file,
-#         mappings={
-#             "prefix": prefix,
-#             "mode": mode,
-#             "name": name,
-#             "rate": str(rate),
-#             "dual_antenna": str(dual_antenna),
-#             "parent_link": parent_link,
-#             "xyz": " ".join(map(str, xyz)),
-#             "ros_namespace": ros_namespace
-#         },
-#     )
-
-#     return urdf_xml.toprettyxml()
