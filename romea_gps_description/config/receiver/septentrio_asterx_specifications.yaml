@@ -5,6 +5,7 @@ rtk_fix_uere: 0.02
 simulation_fix_uere: 0.02
 antenna_model: septentrio_polant
 dual_antenna:
+  default: false
   list: [true, false]
 rate:
   range: [1, 100]

@@ -4,7 +4,7 @@ project(romea_gps_description)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY config urdf
+  DIRECTORY config urdf launch
   DESTINATION share/${PROJECT_NAME}
 )
 
