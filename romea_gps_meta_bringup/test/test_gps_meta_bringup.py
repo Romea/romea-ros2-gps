@@ -78,8 +78,8 @@ def test_get_ntrip_parameter(meta_description):
     assert parameters["mountpoint"] == "MAGC"
 
 
-def test_get_type(meta_description):
-    assert meta_description.get_type() == "septentrio"
+def test_get_manufacturer(meta_description):
+    assert meta_description.get_manufacturer() == "septentrio"
 
 
 def test_get_model(meta_description):

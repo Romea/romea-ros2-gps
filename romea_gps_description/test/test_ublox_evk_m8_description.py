@@ -49,7 +49,7 @@ def test_get_gps_antenna_geometry_ok():
 
 def test_get_gps_receiver_complete_configuration_ok():
     user_description = {
-       "type": "ublox",
+       "manufacturer": "ublox",
        "model": "evk_m8",
        "rate": 10
     }

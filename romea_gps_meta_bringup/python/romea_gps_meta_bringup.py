@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from romea_common_bringup import (
+from romea_common_meta_bringup import (
     MetaDescription,
     robot_urdf_prefix,
     device_namespace,
@@ -75,8 +75,8 @@ class GPSMetaDescription:
     def get_configuration(self):
         return self.meta_description.get("configuration")
 
-    def get_type(self):
-        return self.meta_description.get("type", "configuration")
+    def get_manufacturer(self):
+        return self.meta_description.get("manufacturer", "configuration")
 
     def get_model(self):
         return self.meta_description.get("model", "configuration")
@@ -109,7 +109,7 @@ def load_meta_description(meta_description_file_path):
 
 def get_receiver_specifications(meta_description):
     return romea_gps_description.get_gps_receiver_specifications(
-        meta_description.get_type(), meta_description.get_model()
+        meta_description.get_manufacturer(), meta_description.get_model()
     )
 
 

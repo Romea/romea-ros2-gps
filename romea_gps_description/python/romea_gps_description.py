@@ -21,23 +21,23 @@ from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
 
-def get_gps_receiver_specifications_file_path(type, model):
+def get_gps_receiver_specifications_file_path(manufacturer, model):
     pkg_path = get_package_share_directory('romea_gps_description')
-    return f'{pkg_path}/config/receiver/{type}_{model}_specifications.yaml'
+    return f'{pkg_path}/config/receiver/{manufacturer}_{model}_specifications.yaml'
 
 
-def get_gps_receiver_specifications(type, model):
-    with open(get_gps_receiver_specifications_file_path(type, model)) as f:
+def get_gps_receiver_specifications(manufacturer, model):
+    with open(get_gps_receiver_specifications_file_path(manufacturer, model)) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_antenna_geometry_file_path(type, model):
+def get_gps_antenna_geometry_file_path(manufacturer, model):
     pkg_path = get_package_share_directory('romea_gps_description')
-    return f'{pkg_path}/config/antenna/{type}_{model}_geometry.yaml'
+    return f'{pkg_path}/config/antenna/{manufacturer}_{model}_geometry.yaml'
 
 
-def get_gps_antenna_geometry(type, model):
-    with open(get_gps_antenna_geometry_file_path(type, model)) as f:
+def get_gps_antenna_geometry(manufacturer, model):
+    with open(get_gps_antenna_geometry_file_path(manufacturer, model)) as f:
         return yaml.safe_load(f)
 
 
@@ -53,10 +53,10 @@ def get_gps_receiver_specification_units():
 
 def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
-    type = gps_description["type"]
     model = gps_description["model"]
-    gps_name = f'{type} {model} lidar called {gps_name}'
-    specifications = get_gps_receiver_specifications(type, model)
+    manufacturer = gps_description["manufacturer"]
+    gps_name = f'{manufacturer} {model} lidar called {gps_name}'
+    specifications = get_gps_receiver_specifications(manufacturer, model)
     specifications_units = get_gps_receiver_specification_units()
 
     gps = Device(gps_name, specifications, gps_description, specifications_units)

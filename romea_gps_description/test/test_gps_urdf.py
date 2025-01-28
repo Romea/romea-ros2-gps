@@ -26,7 +26,7 @@ def urdf_xml():
     name = "gps"
 
     description = {
-        "type": "septentrio",
+        "manufacturer": "septentrio",
         "model": "asterx",
         "dual_antenna": False,
         "antenna_model": "septentrio_polant",

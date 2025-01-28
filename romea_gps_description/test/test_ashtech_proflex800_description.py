@@ -52,7 +52,7 @@ def test_get_gps_antenna_geometry_ok():
 
 def test_get_gps_receiver_complete_configuration_ok():
     user_description = {
-       "type": "ashtech",
+       "manufacturer": "ashtech",
        "model": "proflex800",
        "dual_antenna": False,
        "rate": 2
