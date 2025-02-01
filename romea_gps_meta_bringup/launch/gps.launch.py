@@ -27,9 +27,7 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
-from romea_common_bringup import device_namespace
-# from romea_common_bringup import device_link_name, device_namespace
-# from romea_gps_description import get_gps_complete_receiver_configuration
+from romea_common_meta_bringup import device_namespace
 from romea_gps_bringup import GPSMetaDescription, get_complete_driver_parameters
 
 import tempfile
