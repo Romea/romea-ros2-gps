@@ -55,7 +55,7 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
     model = gps_description["model"]
     manufacturer = gps_description["manufacturer"]
-    gps_name = f'{manufacturer} {model} lidar called {gps_name}'
+    gps_name = f'{manufacturer} {model} gps called {gps_name}'
     specifications = get_gps_receiver_specifications(manufacturer, model)
     specifications_units = get_gps_receiver_specification_units()
 
