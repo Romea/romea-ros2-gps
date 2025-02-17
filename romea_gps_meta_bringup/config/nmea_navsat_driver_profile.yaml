@@ -1,0 +1,45 @@
+nmea_driver:
+  package: nmea_navsat_driver
+  executable: nmea_topic_serial_reader
+  plugin: none
+  parameters:
+    frame_id:
+      from: gps_configuration
+      remap: frame_id
+    port:
+      from: driver_configuration
+    baud:
+      from: driver_configuration
+  remappings:
+    nmea_sentence: nmea
+topic_driver:
+  package: nmea_navsat_driver
+  executable: nmea_topic_driver
+  plugin: none
+  remappings:
+    nmea_sentence: nmea
+ntrip:
+  package: ntrip_client
+  executable: ntrip_ros.py
+  plugin: none
+  parameters:
+    host:
+      from: driver_configuration
+      default: caster.centipede.fr
+    port:
+      from: driver_configuration
+      default: 2101
+    username:
+      from: driver_configuration
+      default: centipede
+    password:
+      from: driver_configuration
+      default: centipede
+    mountpoint:
+      from: driver_configuration
+    authenticate:
+      from: driver_configuration
+      default: true
+  remappings:
+    nmea: ntrip/nmea
+    rtcm: ntrip/rtcm

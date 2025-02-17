@@ -24,11 +24,11 @@ from launch.actions import (
 )
 
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
-from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.substitutions import FindPackageShare
 
 from romea_common_meta_bringup import device_namespace
-from romea_gps_bringup import GPSMetaDescription, get_complete_driver_parameters
+from romea_gps_meta_bringup import GPSMetaDescription, get_driver_launch_file_configuration
 
 import tempfile
 import yaml
@@ -48,15 +48,13 @@ def get_robot_namespace(context):
 
 
 def get_meta_description(context):
-
     meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
-
     return GPSMetaDescription(meta_description_file_path)
 
 
 def generate_yaml_temp_file(prefix: str, data: dict):
-    fd, filepath = tempfile.mkstemp(prefix=prefix + '_', suffix='.yaml')
-    with os.fdopen(fd, 'w') as file:
+    fd, filepath = tempfile.mkstemp(prefix=prefix + "_", suffix=".yaml")
+    with os.fdopen(fd, "w") as file:
         file.write(yaml.safe_dump(data))
 
     return filepath
@@ -69,78 +67,57 @@ def launch_setup(context, *args, **kwargs):
     meta_description = get_meta_description(context)
 
     gps_name = meta_description.get_name()
-    gps_namespace = str(meta_description.get_namespace() or "")
+    gps_namespace = meta_description.get_namespace()
     gps_full_namespace = device_namespace(robot_namespace, gps_namespace, gps_name)
 
     actions = []
     if mode == "live" and meta_description.has_driver_configuration():
 
-        gps_executable = meta_description.get_driver_executable()
-        gps_executable_parameters = get_complete_driver_parameters(
+        component_container = str(meta_description.get_driver_component_container() or "")
+
+        driver_configuration = get_driver_launch_file_configuration(
             meta_description, robot_namespace
         )
 
-        gps_configuration_file_path = generate_yaml_temp_file(
-            'gps_driver', gps_executable_parameters
+        driver_configuration_file_path = generate_yaml_temp_file(
+            "gps_driver", driver_configuration
         )
 
         actions.append(
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([
-                    PathJoinSubstitution([
-                        FindPackageShare("romea_gps_bringup"),
-                        "launch",
-                        "drivers/" + meta_description.get_driver_package() + ".launch.py",
-                    ])
-                ]),
+                PythonLaunchDescriptionSource(
+                    [
+                        PathJoinSubstitution(
+                            [
+                                FindPackageShare("romea_gps_bringup"),
+                                "launch",
+                                "driver.launch.py",
+                            ]
+                        )
+                    ]
+                ),
                 launch_arguments={
-                    "executable": gps_executable,
-                    "executable_namespace": gps_full_namespace,
-                    "configuration_file_path": gps_configuration_file_path,
+                    "driver_namespace": gps_full_namespace,
+                    "driver_configuration_file_path": driver_configuration_file_path,
+                    "component_container": component_container,
                 }.items(),
             )
         )
 
-    if mode == "live" and meta_description.has_ntrip_configuration():
+    # if mode == "simulation_gazebo":
+    #     actions.append(
+    #         IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource([
+    #                 PathJoinSubstitution([
+    #                     FindPackageShare("romea_gps_bringup"),
+    #                     "launch",
+    #                     "drivers/gazebo_bridge.launch.py",
+    #                 ])
+    #             ]),
+    #         )
+    #     )
 
-        ntrip_executable = meta_description.get_ntrip_executable()
-        ntrip_executable_parameters = meta_description.get_ntrip_parameters()
-
-        ntrip_configuration_file_path = generate_yaml_temp_file(
-            'ntrip_client', ntrip_executable_parameters
-        )
-
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([
-                    PathJoinSubstitution([
-                        FindPackageShare("romea_gps_bringup"),
-                        "launch",
-                        "drivers/" + meta_description.get_ntrip_package() + ".launch.py",
-                    ])
-                ]),
-                launch_arguments={
-                    "executable": ntrip_executable,
-                    "executable_namespace": gps_full_namespace,
-                    "configuration_file_path": ntrip_configuration_file_path,
-                }.items(),
-            )
-        )
-
-    if mode == "simulation_gazebo":
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([
-                    PathJoinSubstitution([
-                        FindPackageShare("romea_gps_bringup"),
-                        "launch",
-                        "drivers/gazebo_bridge.launch.py",
-                    ])
-                ]),
-            )
-        )
-
-    # add launch viewer
+    # # add launch viewer
 
     return [GroupAction(actions)]
 

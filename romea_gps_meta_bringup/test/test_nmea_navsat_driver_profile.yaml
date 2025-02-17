@@ -1,0 +1,16 @@
+name: "gps"
+driver:
+  profile: nmea_navsat_driver_profile.yaml
+  configuration:
+    nmea_driver:
+      parameters:
+        port: /dev/ttyACM0
+        baud: 115200
+    ntrip:
+      parameters:
+        mountpoint: MTLDR
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true

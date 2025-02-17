@@ -1,5 +1,4 @@
 name: "gps"
-namespace: "ns"
 driver:
   profile: romea_gps_serial_driver_profile.yaml
   configuration:
@@ -15,10 +14,3 @@ configuration:
   model: asterx
   rate: 10
   dual_antenna: true
-geometry:
-  parent_link: "base_link"
-  xyz: [1.0, 2.0, 3.0]
-records:
-  nmea_sentence: true
-  gps_fix: false
-  vel: false

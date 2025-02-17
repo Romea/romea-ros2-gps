@@ -21,7 +21,8 @@ from romea_gps_meta_bringup import (
     GPSMetaDescription,
     get_receiver_specifications,
     get_antenna_geometry,
-    get_complete_receiver_configuration
+    get_complete_receiver_configuration,
+    get_driver_launch_file_configuration
 )
 
 
@@ -43,39 +44,13 @@ def test_has_driver_configuration(meta_description):
     assert meta_description.has_driver_configuration() is True
 
 
-def test_get_driver_package(meta_description):
-    assert meta_description.get_driver_package() == "romea_gps_driver"
+def test_get_driver_profile(meta_description):
+    assert meta_description.get_driver_profile() == "romea_gps_serial_driver_profile.yaml"
 
 
-def test_get_driver_executable(meta_description):
-    assert meta_description.get_driver_executable() == "serial_node"
-
-
-def test_get_driver_parameters(meta_description):
-    parameters = meta_description.get_driver_parameters()
-    assert parameters["device"] == "/dev/ttyACM0"
-    assert parameters["baudrate"] == 115200
-
-
-def test_has_ntrip_configuration(meta_description):
-    assert meta_description.has_ntrip_configuration() is True
-
-
-def test_get_ntrip_package(meta_description):
-    assert meta_description.get_ntrip_package() == "ntrip_client"
-
-
-def test_get_ntrip_executable(meta_description):
-    assert meta_description.get_ntrip_executable() == "ntrip_ros.py"
-
-
-def test_get_ntrip_parameter(meta_description):
-    parameters = meta_description.get_ntrip_parameters()
-    assert parameters["host"] == "caster.centipede.fr"
-    assert parameters["port"] == 2101
-    assert parameters["username"] == "centipede"
-    assert parameters["password"] == "centipede"
-    assert parameters["mountpoint"] == "MAGC"
+def test_get_driver_configuration(meta_description):
+    assert "driver" in meta_description.get_driver_configuration()
+    assert "ntrip" in meta_description.get_driver_configuration()
 
 
 def test_get_manufacturer(meta_description):
@@ -122,3 +97,10 @@ def test_get_antenna_geometry(meta_description):
 def test_get_complete_receiver_configuration(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
     assert gps_configuration['antenna_model'] == "septentrio_polant"
+
+
+def test_get_driver_launch_file_configuration(meta_description):
+    driver_configuration = get_driver_launch_file_configuration(
+        meta_description, "robot"
+    )
+    assert driver_configuration['driver']["parameters"]["device"] == "/dev/ttyACM0"

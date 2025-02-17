@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY launch
+  DIRECTORY launch config launch
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -27,10 +27,10 @@ if(BUILD_TESTING)
 
   find_package(ament_cmake_pytest REQUIRED)
   configure_file(test/test_gps_meta_bringup.yaml test_gps_meta_bringup.yaml)
-  configure_file(test/test_gps_serial_node_parameters.yaml test_gps_serial_node_parameters.yaml)
-  configure_file(test/test_gps_tcp_client_node_parameters.yaml test_gps_tcp_client_node_parameters.yaml)
-  configure_file(test/test_gps_nmea_navsat_driver_parameters.yaml test_gps_nmea_navsat_driver_parameters.yaml)
-  ament_add_pytest_test(test_gps_driver_parameters test/test_gps_driver_parameters.py)
+  configure_file(test/test_romea_gps_serial_driver_profile.yaml test_romea_gps_serial_driver_profile.yaml)
+  configure_file(test/test_romea_gps_tcp_driver_profile.yaml test_romea_gps_tcp_driver_profile.yaml)
+  configure_file(test/test_nmea_navsat_driver_profile.yaml test_nmea_navsat_driver_profile.yaml)
+  ament_add_pytest_test(test_gps_driver_configuration test/test_gps_driver_configuration.py)
   ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
   ament_add_pytest_test(test_urdf_description test/test_urdf_description.py)
 endif()

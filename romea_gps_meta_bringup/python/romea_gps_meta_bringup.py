@@ -12,8 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ament_index_python import get_package_share_directory
+
+from os.path import join
+
 from romea_common_meta_bringup import (
     MetaDescription,
+    DriverLaunchFileConfiguration,
     robot_urdf_prefix,
     device_namespace,
     device_link_name
@@ -33,44 +38,20 @@ class GPSMetaDescription:
     def get_namespace(self):
         return self.meta_description.get_or("namespace", None)
 
+    def get_driver(self):
+        return self.meta_description.get("driver")
+
     def has_driver_configuration(self):
         return self.meta_description.exists("driver")
 
-    def get_driver_package(self):
-        return self.meta_description.get("package", "driver")
+    def get_driver_profile(self):
+        return self.meta_description.get("profile", "driver")
 
-    def get_driver_executable(self):
-        return self.meta_description.get("executable", "driver")
+    def get_driver_configuration(self):
+        return self.meta_description.get("configuration", "driver")
 
-    def get_driver_parameters(self):
-        return self.meta_description.get("parameters", "driver")
-
-    def has_ntrip_configuration(self):
-        return self.meta_description.exists("ntrip")
-
-    def get_ntrip_package(self):
-        return self.meta_description.get("package", "ntrip")
-
-    def get_ntrip_executable(self):
-        return self.meta_description.get("executable", "ntrip")
-
-    def get_ntrip_parameters(self):
-        return self.meta_description.get("parameters", "ntrip")
-
-    def get_ntrip_host(self):
-        return self.meta_description.get("host", "ntrip")
-
-    def get_ntrip_port(self):
-        return self.meta_description.get("port", "ntrip")
-
-    def get_ntrip_mountpoint(self):
-        return self.meta_description.get("mountpoint", "ntrip")
-
-    def get_ntrip_username(self):
-        return self.meta_description.get("username", "ntrip")
-
-    def get_ntrip_password(self):
-        return self.meta_description.get("password", "ntrip")
+    def get_driver_component_container(self):
+        return self.meta_description.get_or("component_container", "driver", None)
 
     def get_configuration(self):
         return self.meta_description.get("configuration")
@@ -127,16 +108,32 @@ def get_complete_receiver_configuration(meta_description):
     )
 
 
-def get_complete_driver_parameters(meta_description, robot_namespace):
-    gps_configuration = get_complete_receiver_configuration(meta_description)
-    frame_id = device_link_name(robot_namespace, meta_description.get_name())
+def get_driver_launch_file_configuration(meta_description, robot_namespace):
+    pkg_path = get_package_share_directory("romea_gps_meta_bringup")
+    driver_profile_filename = join(pkg_path, "config", meta_description.get_driver_profile())
 
-    executable = meta_description.get_driver_executable()
-    parameters = meta_description.get_driver_parameters()
-    parameters["frame_id"] = frame_id
-    if executable == "serial_node" or executable == "tcp_client_node":
-        parameters["rate"] = gps_configuration["rate"]
-    return parameters
+    frame_id = device_link_name(robot_namespace, meta_description.get_name())
+    gps_configuration = get_complete_receiver_configuration(meta_description)
+    gps_configuration["frame_id"] = frame_id
+
+    configuration = {
+        "gps_configuration": gps_configuration,
+        "driver_configuration": meta_description.get_driver_configuration()
+    }
+
+    return DriverLaunchFileConfiguration(driver_profile_filename, configuration).evaluate()
+
+
+# def get_complete_driver_parameters(meta_description, robot_namespace):
+#     gps_configuration = get_complete_receiver_configuration(meta_description)
+#     frame_id = device_link_name(robot_namespace, meta_description.get_name())
+
+#     executable = meta_description.get_driver_executable()
+#     parameters = meta_description.get_driver_parameters()
+#     parameters["frame_id"] = frame_id
+#     if executable == "serial_node" or executable == "tcp_client_node":
+#         parameters["rate"] = gps_configuration["rate"]
+#     return parameters
 
 
 def urdf_description(robot_namespace, mode, meta_description_file_path):
