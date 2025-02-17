@@ -1,5 +1,0 @@
-frame_id: gps_link
-ip: 192.168.0.50
-nmea_port: 1001
-rtcm_port: 1002
-rate: 10

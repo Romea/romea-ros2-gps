@@ -1,5 +1,0 @@
-host: caster.centipede.fr
-port: 2101
-username: centipede # optional
-password: centipede # optional
-mountpoint: MAGC

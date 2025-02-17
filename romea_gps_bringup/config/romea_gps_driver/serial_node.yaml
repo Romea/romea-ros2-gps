@@ -1,4 +1,0 @@
-frame_id: gps_link
-device: "/dev/ttyACM0"
-baudrate: 115200
-rate: 10
