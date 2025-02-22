@@ -1,7 +1,8 @@
 driver:
   package: romea_gps_driver
   executable: serial_node
-  plugin: romea::ros2::GpsSerialDriver
+  # plugin: romea::ros2::GpsSerialDriver
+  # component_container: perception_container
   parameters:
     frame_id: gps_link
     device: "/dev/ttyACM0"
@@ -10,7 +11,6 @@ driver:
 ntrip:
   package: ntrip_client
   executable: ntrip_ros.py
-  plugin: none
   parameters:
     host: caster.centipede.fr
     port: 2101

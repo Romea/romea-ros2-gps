@@ -23,9 +23,10 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("driver_namespace", default_value=""),
+            DeclareLaunchArgument("mode", default_value="live"),
+            DeclareLaunchArgument("robot_namespace", default_value=""),
+            DeclareLaunchArgument("driver_namespace", default_value="gps"),
             DeclareLaunchArgument("driver_configuration_file_path"),
-            DeclareLaunchArgument("component_container", default_value=""),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     [
@@ -39,7 +40,8 @@ def generate_launch_description():
                     ]
                 ),
                 launch_arguments={
-                    "component_container": LaunchConfiguration("component_container"),
+                    "mode": LaunchConfiguration("mode"),
+                    "robot_namespace": LaunchConfiguration("robot_namespace"),
                     "driver_namespace": LaunchConfiguration("driver_namespace"),
                     "driver_configuration_file_path": LaunchConfiguration(
                         "driver_configuration_file_path"

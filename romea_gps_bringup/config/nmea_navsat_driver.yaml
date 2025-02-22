@@ -1,7 +1,6 @@
 nmea_driver:
   package: nmea_navsat_driver
   executable: nmea_topic_serial_reader
-  plugin: none
   parameters:
     frame_id: gps_link
     port: /dev/ttyACM0
@@ -11,13 +10,11 @@ nmea_driver:
 topic_driver:
   package: nmea_navsat_driver
   executable: nmea_topic_driver
-  plugin: none
   remappings:
     nmea_sentence: nmea
 ntrip:
   package: ntrip_client
   executable: ntrip_ros.py
-  plugin: none
   parameters:
     host: caster.centipede.fr
     port: 2101
