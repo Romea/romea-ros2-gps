@@ -29,6 +29,7 @@ if(${ROS_DISTRO} STRLESS_EQUAL "iron")
     find_package(sensor_msgs REQUIRED)
     find_package(geometry_msgs REQUIRED)
     find_package(nmea_msgs REQUIRED)
+    find_package(sdformat9 REQUIRED)
 
     link_directories(${gazebo_dev_LIBRARY_DIRS})
 
@@ -46,6 +47,7 @@ if(${ROS_DISTRO} STRLESS_EQUAL "iron")
       "gazebo_dev"
       "romea_core_common"
       "romea_core_gps"
+      "sdformat9"
     )
     ament_export_libraries(${PLUGIN_LIB_NAME})
 
@@ -59,6 +61,7 @@ if(${ROS_DISTRO} STRLESS_EQUAL "iron")
     ament_export_dependencies(sensor_msgs)
     ament_export_dependencies(geometry_msgs)
     ament_export_dependencies(nmea_msgs)
+    ament_export_dependencies(sdformat9)
 
     if(BUILD_TESTING)
       find_package(ament_lint_auto REQUIRED)
