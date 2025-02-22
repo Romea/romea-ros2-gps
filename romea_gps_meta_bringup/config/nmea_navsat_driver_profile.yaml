@@ -4,7 +4,7 @@ nmea_driver:
   parameters:
     frame_id:
       from: gps_configuration
-      remap: frame_id
+      name: frame_id
     port:
       from: gps_driver_configuration
     baud:

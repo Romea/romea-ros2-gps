@@ -8,10 +8,10 @@ driver:
   parameters:
     frame_id:
       from: gps_configuration
-      remap: frame_id
+      name: frame_id
     rate:
       from: gps_configuration
-      remap: rate
+      name: rate
     device:
       from: gps_driver_configuration
     baudrate:
