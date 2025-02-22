@@ -1,20 +1,13 @@
 name: "gps"
-driver:
-  profile: romea_gps_tcp_driver_profile.yaml
-  configuration:
-    driver:
-      parameters:
-        ip: 192.168.0.50
-        nmea_port: 1001
-        rtcm_port: 1002
-    ntrip:
-      parameters:
-        host: caster.centipede.fr
-        port: 2101
-        username: centipede
-        password: centipede
-        mountpoint: MTLDR
-        authenticate: true
+launch_file:
+  gps_driver:
+    profile: romea_gps_tcp_driver_profile.yaml
+    configuration:
+      driver:
+        parameters:
+          ip: 192.168.0.50
+          nmea_port: 1001
+          rtcm_port: 1002
 configuration:
   manufacturer: septentrio
   model: asterx

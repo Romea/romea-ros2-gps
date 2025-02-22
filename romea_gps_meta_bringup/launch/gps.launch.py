@@ -20,27 +20,19 @@ from launch.actions import (
     IncludeLaunchDescription,
     DeclareLaunchArgument,
     OpaqueFunction,
-    GroupAction,
 )
 
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 
-from romea_common_meta_bringup import device_namespace
+from romea_common_meta_bringup import generate_device_temporary_configuration_file
 from romea_gps_meta_bringup import GPSMetaDescription, get_driver_launch_file_configuration
-
-import tempfile
-import yaml
-import os
 
 
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
-    if mode == "simulation":
-        return "simulation_gazebo_classic"
-    else:
-        return mode
+    return "simulation_gazebo_classic" if mode == "simulation" else mode
 
 
 def get_robot_namespace(context):
@@ -49,77 +41,44 @@ def get_robot_namespace(context):
 
 def get_meta_description(context):
     meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
-    return GPSMetaDescription(meta_description_file_path)
-
-
-def generate_yaml_temp_file(prefix: str, data: dict):
-    fd, filepath = tempfile.mkstemp(prefix=prefix + "_", suffix=".yaml")
-    with os.fdopen(fd, "w") as file:
-        file.write(yaml.safe_dump(data))
-
-    return filepath
+    return GPSMetaDescription(meta_description_file_path, get_robot_namespace(context))
 
 
 def launch_setup(context, *args, **kwargs):
-
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
     meta_description = get_meta_description(context)
+    driver_configuration = get_driver_launch_file_configuration(meta_description, mode)
 
-    gps_name = meta_description.get_name()
-    gps_namespace = meta_description.get_namespace()
-    gps_full_namespace = device_namespace(robot_namespace, gps_namespace, gps_name)
+    print("driver_configuration", driver_configuration)
 
-    actions = []
-    if mode == "live" and meta_description.has_driver_configuration():
+    driver_configuration_file = generate_device_temporary_configuration_file(
+        meta_description, driver_configuration, "driver_configuration.yaml"
+    )
 
-        component_container = str(meta_description.get_driver_component_container() or "")
+    print("temporary file ", driver_configuration_file)
 
-        driver_configuration = get_driver_launch_file_configuration(
-            meta_description, robot_namespace
+    return [
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("romea_gps_bringup"),
+                            "launch",
+                            "driver.launch.py",
+                        ]
+                    )
+                ]
+            ),
+            launch_arguments={
+                "mode": mode,
+                "robot_namespace": robot_namespace,
+                "driver_namespace": meta_description.get_name(),
+                "driver_configuration_file_path": driver_configuration_file,
+            }.items(),
         )
-
-        driver_configuration_file_path = generate_yaml_temp_file(
-            "gps_driver", driver_configuration
-        )
-
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("romea_gps_bringup"),
-                                "launch",
-                                "driver.launch.py",
-                            ]
-                        )
-                    ]
-                ),
-                launch_arguments={
-                    "driver_namespace": gps_full_namespace,
-                    "driver_configuration_file_path": driver_configuration_file_path,
-                    "component_container": component_container,
-                }.items(),
-            )
-        )
-
-    # if mode == "simulation_gazebo":
-    #     actions.append(
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource([
-    #                 PathJoinSubstitution([
-    #                     FindPackageShare("romea_gps_bringup"),
-    #                     "launch",
-    #                     "drivers/gazebo_bridge.launch.py",
-    #                 ])
-    #             ]),
-    #         )
-    #     )
-
-    # # add launch viewer
-
-    return [GroupAction(actions)]
+    ]
 
 
 def generate_launch_description():

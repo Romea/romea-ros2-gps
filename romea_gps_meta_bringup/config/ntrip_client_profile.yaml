@@ -1,0 +1,22 @@
+ntrip:
+  package: ntrip_client
+  executable: ntrip_ros.py
+  parameters:
+    host:
+      from: ntrip_driver_configuration
+      default: caster.centipede.fr
+    port: 2101
+    username:
+      from: ntrip_driver_configuration
+      default: centipede
+    password:
+      from: ntrip_driver_configuration
+      default: centipede
+    mountpoint:
+      from: ntrip_driver_configuration
+    authenticate:
+      from: ntrip_driver_configuration
+      default: true
+  remappings:
+    nmea: ntrip/nmea
+    rtcm: ntrip/rtcm

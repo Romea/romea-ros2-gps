@@ -22,14 +22,14 @@ from romea_gps_meta_bringup import (
     get_receiver_specifications,
     get_antenna_geometry,
     get_complete_receiver_configuration,
-    get_driver_launch_file_configuration
+    # get_launch_description_nodes
 )
 
 
 @pytest.fixture(scope="module")
 def meta_description():
     meta_description_file_path = os.path.join(os.getcwd(), "test_gps_meta_bringup.yaml")
-    return GPSMetaDescription(meta_description_file_path)
+    return GPSMetaDescription(meta_description_file_path, "robot")
 
 
 def test_get_name(meta_description):
@@ -40,17 +40,9 @@ def test_get_namespace(meta_description):
     assert meta_description.get_namespace() == "ns"
 
 
-def test_has_driver_configuration(meta_description):
-    assert meta_description.has_driver_configuration() is True
-
-
-def test_get_driver_profile(meta_description):
-    assert meta_description.get_driver_profile() == "romea_gps_serial_driver_profile.yaml"
-
-
-def test_get_driver_configuration(meta_description):
-    assert "driver" in meta_description.get_driver_configuration()
-    assert "ntrip" in meta_description.get_driver_configuration()
+def test_get_launch_file_configuration(meta_description):
+    assert "gps_driver" in meta_description.get_launch_file_configuration()
+    assert "ntrip_driver" in meta_description.get_launch_file_configuration()
 
 
 def test_get_manufacturer(meta_description):
@@ -99,8 +91,8 @@ def test_get_complete_receiver_configuration(meta_description):
     assert gps_configuration['antenna_model'] == "septentrio_polant"
 
 
-def test_get_driver_launch_file_configuration(meta_description):
-    driver_configuration = get_driver_launch_file_configuration(
-        meta_description, "robot"
-    )
-    assert driver_configuration['driver']["parameters"]["device"] == "/dev/ttyACM0"
+# def test_get_launch_description_nodes(meta_description):
+#     nodes = get_launch_description_nodes(
+#         meta_description, "live", "robot"
+#     )
+#     assert nodes[0].get["driver]

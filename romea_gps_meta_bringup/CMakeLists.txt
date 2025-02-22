@@ -30,6 +30,8 @@ if(BUILD_TESTING)
   configure_file(test/test_romea_gps_serial_driver_profile.yaml test_romea_gps_serial_driver_profile.yaml)
   configure_file(test/test_romea_gps_tcp_driver_profile.yaml test_romea_gps_tcp_driver_profile.yaml)
   configure_file(test/test_nmea_navsat_driver_profile.yaml test_nmea_navsat_driver_profile.yaml)
+  configure_file(test/test_ntrip_client_profile.yaml test_ntrip_client_profile.yaml)
+
   ament_add_pytest_test(test_gps_driver_configuration test/test_gps_driver_configuration.py)
   ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
   ament_add_pytest_test(test_urdf_description test/test_urdf_description.py)

@@ -1,14 +1,13 @@
 name: "gps"
-driver:
-  profile: romea_gps_serial_driver_profile.yaml
-  configuration:
-    driver:
-      parameters:
-        device: /dev/ttyACM0
-        baudrate: 115200
-    ntrip:
-      parameters:
-        mountpoint: MTLDR
+launch_file:
+  gps_driver:
+    profile: romea_gps_serial_driver_profile.yaml
+    configuration:
+      driver:
+        component_container: gps_container
+        parameters:
+          device: /dev/ttyACM0
+          baudrate: 115200
 configuration:
   manufacturer: septentrio
   model: asterx

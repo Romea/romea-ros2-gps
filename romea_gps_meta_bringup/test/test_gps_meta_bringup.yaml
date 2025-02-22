@@ -1,21 +1,25 @@
 name: "gps"
 namespace: "ns"
-driver:
-  profile: romea_gps_serial_driver_profile.yaml
-  configuration:
-    driver:
-      parameters:
-        device: /dev/ttyACM0
-        baudrate: 115200
-    ntrip:
-      parameters:
-        mountpoint: MTLDR
+launch_file:
+  gps_driver:
+    profile: romea_gps_serial_driver_profile.yaml
+    configuration:
+      driver:
+        parameters:
+          device: /dev/ttyACM0
+          baudrate: 115200
+  ntrip_driver:
+    profile: ntrip_client_profile.yaml
+    configuration:
+      ntrip:
+        parameters:
+          mountpoint: MTLDR
 configuration:
   manufacturer: septentrio
   model: asterx
   rate: 10
   dual_antenna: true
-geometry:
+location:
   parent_link: "base_link"
   xyz: [1.0, 2.0, 3.0]
 records:

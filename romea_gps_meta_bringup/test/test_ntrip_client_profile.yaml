@@ -1,12 +1,11 @@
 name: "gps"
 launch_file:
-  gps_driver:
-    profile: nmea_navsat_driver_profile.yaml
+  ntrip_driver:
+    profile: ntrip_client_profile.yaml
     configuration:
-      nmea_driver:
+      ntrip:
         parameters:
-          port: /dev/ttyACM0
-          baud: 115200
+          mountpoint: MTLDR
 configuration:
   manufacturer: septentrio
   model: asterx
