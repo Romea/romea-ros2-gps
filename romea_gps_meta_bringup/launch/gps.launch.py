@@ -26,7 +26,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 
-from romea_common_meta_bringup import generate_device_temporary_configuration_file
+from romea_common_meta_bringup import save_temporary_file
 from romea_gps_meta_bringup import GPSMetaDescription, get_driver_launch_file_configuration
 
 
@@ -48,15 +48,10 @@ def launch_setup(context, *args, **kwargs):
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
     meta_description = get_meta_description(context)
-    driver_configuration = get_driver_launch_file_configuration(meta_description, mode)
-
-    print("driver_configuration", driver_configuration)
-
-    driver_configuration_file = generate_device_temporary_configuration_file(
-        meta_description, driver_configuration, "driver_configuration.yaml"
+    driver_configuration_file_path = save_temporary_file(
+        get_driver_launch_file_configuration(meta_description, mode),
+        meta_description.get_filename_prefix()+"driver_configuration.yaml"
     )
-
-    print("temporary file ", driver_configuration_file)
 
     return [
         IncludeLaunchDescription(
@@ -75,7 +70,7 @@ def launch_setup(context, *args, **kwargs):
                 "mode": mode,
                 "robot_namespace": robot_namespace,
                 "driver_namespace": meta_description.get_name(),
-                "driver_configuration_file_path": driver_configuration_file,
+                "driver_configuration_file_path": driver_configuration_file_path,
             }.items(),
         )
     ]
