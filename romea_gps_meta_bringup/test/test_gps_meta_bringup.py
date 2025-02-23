@@ -89,10 +89,3 @@ def test_get_antenna_geometry(meta_description):
 def test_get_complete_receiver_configuration(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
     assert gps_configuration['antenna_model'] == "septentrio_polant"
-
-
-# def test_get_launch_description_nodes(meta_description):
-#     nodes = get_launch_description_nodes(
-#         meta_description, "live", "robot"
-#     )
-#     assert nodes[0].get["driver]
