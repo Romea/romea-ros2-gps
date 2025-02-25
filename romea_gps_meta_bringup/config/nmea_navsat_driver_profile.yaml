@@ -3,12 +3,17 @@ nmea_driver:
   executable: nmea_topic_serial_reader
   parameters:
     frame_id:
-      from: gps_configuration
-      name: frame_id
+      source:
+        from: gps_configuration
+        parameter: frame_id
     port:
-      from: gps_driver_configuration
+      source:
+        from: gps_driver_configuration
+        parameter: nmea_driver.parameters.port
     baud:
-      from: gps_driver_configuration
+      source:
+        from: gps_driver_configuration
+        parameter: nmea_driver.parameters.baud
   remappings:
     nmea_sentence: nmea
 topic_driver:

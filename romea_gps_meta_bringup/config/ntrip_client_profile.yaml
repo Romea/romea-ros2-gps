@@ -3,19 +3,29 @@ ntrip:
   executable: ntrip_ros.py
   parameters:
     host:
-      from: ntrip_driver_configuration
+      source:
+        from: ntrip_driver_configuration
+        parameter: ntrip.parameters.host
       default: caster.centipede.fr
     port: 2101
     username:
-      from: ntrip_driver_configuration
+      source:
+        from: ntrip_driver_configuration
+        parameter: ntrip.parameters.username
       default: centipede
     password:
-      from: ntrip_driver_configuration
+      source:
+        from: ntrip_driver_configuration
+        parameter: ntrip.parameters.password
       default: centipede
     mountpoint:
-      from: ntrip_driver_configuration
+      source:
+        from: ntrip_driver_configuration
+        parameter: ntrip.parameters.mountpoint
     authenticate:
-      from: ntrip_driver_configuration
+      source:
+        from: ntrip_driver_configuration
+        parameter: ntrip.parameters.authenticate
       default: true
   remappings:
     nmea: ntrip/nmea
