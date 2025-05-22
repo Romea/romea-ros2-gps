@@ -1,0 +1,17 @@
+name: gps
+launch:
+  - load_composable_node:
+      target: sensor_container
+      composable_node:
+        - pkg: romea_gps_meta_bringup
+          profile: config/romea_gps_serial_driver.profile.yaml
+          param:
+            - name: device
+              value: /dev/ttyACM0
+            - name: baudrate
+              value: 115200
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true

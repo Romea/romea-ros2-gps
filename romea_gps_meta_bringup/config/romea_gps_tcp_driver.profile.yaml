@@ -1,0 +1,30 @@
+pkg: romea_gps_driver
+exec: tcp_client_node
+plugin: romea::ros2::GpsTcpDriver
+name: driver
+param:
+  - name: frame_id
+    value:
+      source:
+        from: gps_configuration
+        param: frame_id
+  - name: rate
+    value:
+      source:
+        from: gps_configuration
+        param: rate
+  - name: ip
+    value:
+      source:
+        from: node_configuration
+        param: ip
+  - name: nmea_port
+    value:
+      source:
+        from: node_configuration
+        param: nmea_port
+  - name: rtcm_port
+    value:
+      source:
+        from: node_configuration
+        param: rtcm_port

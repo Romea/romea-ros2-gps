@@ -28,7 +28,7 @@ def urdf():
 
     exe = (
         get_package_prefix("romea_gps_meta_bringup")
-        + "/lib/romea_gps_meta_bringup/urdf_description.py"
+        + "/lib/romea_gps_meta_bringup/generate_urdf_description.py"
     )
 
     meta_description_file_path = os.path.join(os.getcwd(), "test_gps_meta_bringup.yaml")

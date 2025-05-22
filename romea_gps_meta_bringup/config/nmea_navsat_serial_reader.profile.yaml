@@ -1,0 +1,22 @@
+pkg: nmea_navsat_driver
+exec: nmea_topic_serial_reader
+name: nmea_reader
+param:
+  - name: frame_id
+    value:
+      source:
+        from: gps_configuration
+        param: frame_id
+  - name: port
+    value:
+      source:
+        from: node_configuration
+        param: port
+  - name: baud
+    value:
+      source:
+        from: node_configuration
+        param: baud
+remap:
+  - from: nmea_sentence
+    to: nmea

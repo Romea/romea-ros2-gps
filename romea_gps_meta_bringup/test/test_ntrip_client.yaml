@@ -1,0 +1,13 @@
+name: "gps"
+launch:
+  - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/ntrip_client.profile.yaml
+      param:
+        - name: mountpoint
+          value: MTLDR
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true

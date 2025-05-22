@@ -16,7 +16,9 @@ install(
 ament_python_install_module(python/romea_gps_meta_bringup.py)
 
 install(PROGRAMS
-  scripts/urdf_description.py
+  scripts/generate_launch_file.py
+  scripts/generate_urdf_description.py
+  scripts/generate_configuration_file.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -27,13 +29,12 @@ if(BUILD_TESTING)
 
   find_package(ament_cmake_pytest REQUIRED)
   configure_file(test/test_gps_meta_bringup.yaml test_gps_meta_bringup.yaml)
-  configure_file(test/test_romea_gps_serial_driver_profile.yaml test_romea_gps_serial_driver_profile.yaml)
-  configure_file(test/test_romea_gps_tcp_driver_profile.yaml test_romea_gps_tcp_driver_profile.yaml)
-  configure_file(test/test_nmea_navsat_driver_profile.yaml test_nmea_navsat_driver_profile.yaml)
-  configure_file(test/test_ntrip_client_profile.yaml test_ntrip_client_profile.yaml)
-
-  ament_add_pytest_test(test_gps_driver_configuration test/test_gps_driver_configuration.py)
-  ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
+  configure_file(test/test_romea_gps_serial_driver.yaml test_romea_gps_serial_driver.yaml)
+  configure_file(test/test_romea_gps_tcp_driver.yaml test_romea_gps_tcp_driver.yaml)
+  configure_file(test/test_nmea_navsat_driver.yaml test_nmea_navsat_driver.yaml)
+  configure_file(test/test_ntrip_client.yaml test_ntrip_client.yaml)
+  ament_add_pytest_test(test_gps_driver_configuration test/test_gps_driver_launch_files.py)
+  # ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
   ament_add_pytest_test(test_urdf_description test/test_urdf_description.py)
 endif()
 

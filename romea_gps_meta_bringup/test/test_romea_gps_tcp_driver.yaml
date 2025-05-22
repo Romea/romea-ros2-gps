@@ -1,0 +1,17 @@
+name: "gps"
+launch:
+  - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/romea_gps_tcp_driver.profile.yaml
+      param:
+        - name: ip
+          value: 192.168.0.50
+        - name: nmea_port
+          value: 1001
+        - name: rtcm_port
+          value: 1002
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true

@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import yaml
 import romea_gps_description
-from romea_common_meta_bringup import SensorMetaDescription, DriverLaunchFileConfiguration
+from romea_common_meta_bringup import SensorMetaDescription, LaunchFileGenerator
 
 
 class GPSMetaDescription(SensorMetaDescription):
@@ -51,18 +52,28 @@ def get_complete_receiver_configuration(meta_description):
     )
 
 
-def get_driver_launch_file_configuration(meta_description, mode):
-    launch_file_configuration = meta_description.get_launch_file_configuration()
+def generate_configuration_file(meta_description_file_path):
+    meta_description = GPSMetaDescription(meta_description_file_path)
+    return yaml.dump(get_complete_receiver_configuration(meta_description))
+
+
+def generate_launch_file(robot_namespace, mode, meta_description_file_path):
+
+    meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
     gps_configuration = get_complete_receiver_configuration(meta_description)
     gps_configuration["frame_id"] = meta_description.get_link()
-    gps_full_namespace = meta_description.get_full_namespace()
 
-    return DriverLaunchFileConfiguration("gps").evaluate(
-        mode, launch_file_configuration, gps_configuration, gps_full_namespace
+    # gps_full_namespace = meta_description.get_full_namespace()
+    return LaunchFileGenerator("gps").generate(
+        mode,
+        meta_description.get_launch_file(),
+        gps_configuration,
+        robot_namespace,
+        meta_description.get_name(),
     )
 
 
-def urdf_description(robot_namespace, mode, meta_description_file_path):
+def generate_urdf_description(robot_namespace, mode, meta_description_file_path):
 
     meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
 
