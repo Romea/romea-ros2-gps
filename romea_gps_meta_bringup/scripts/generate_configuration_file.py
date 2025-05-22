@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-from romea_gps_meta_bringup import generate_configuration_file
+from romea_gps_meta_bringup import GPSMetaDescription, generate_configuration_file
 import sys
 
 if __name__ == "__main__":
@@ -28,4 +28,5 @@ if __name__ == "__main__":
         parameters[name] = value
 
     meta_description_file_path = parameters["meta_description_file_path"]
-    print(generate_configuration_file(meta_description_file_path))
+    meta_description = GPSMetaDescription(meta_description_file_path)
+    print(generate_configuration_file(meta_description))

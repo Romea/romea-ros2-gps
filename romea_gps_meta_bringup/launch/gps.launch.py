@@ -22,12 +22,11 @@ from launch.actions import (
     OpaqueFunction,
 )
 
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
-from launch_ros.substitutions import FindPackageShare
+from launch.launch_description_sources import AnyLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
-from romea_common_meta_bringup import save_temporary_file
-from romea_gps_meta_bringup import GPSMetaDescription, get_driver_launch_file_configuration
+# from romea_common_meta_bringup import save_temporary_file
+from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
 
 
 def get_mode(context):
@@ -46,31 +45,16 @@ def get_meta_description(context):
 
 def launch_setup(context, *args, **kwargs):
     mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
     meta_description = get_meta_description(context)
-    driver_configuration_file_path = save_temporary_file(
-        get_driver_launch_file_configuration(meta_description, mode),
-        meta_description.get_filename_prefix()+"driver_configuration.yaml"
-    )
+    launch_filename = f"/tmp/{meta_description.get_filename_prefix()}driver.launch.yaml"
+    with open(launch_filename, "w") as f:
+        f.write(generate_launch_file(mode, meta_description))
 
     return [
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [
-                    PathJoinSubstitution(
-                        [
-                            FindPackageShare("romea_gps_bringup"),
-                            "launch",
-                            "driver.launch.py",
-                        ]
-                    )
-                ]
-            ),
+            AnyLaunchDescriptionSource(launch_filename),
             launch_arguments={
                 "mode": mode,
-                "robot_namespace": robot_namespace,
-                "driver_namespace": meta_description.get_name(),
-                "driver_configuration_file_path": driver_configuration_file_path,
             }.items(),
         )
     ]

@@ -16,7 +16,7 @@
 
 # flake8: noqa Q000
 
-from romea_gps_meta_bringup import generate_launch_file
+from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
 import sys
 
 if __name__ == "__main__":
@@ -31,4 +31,5 @@ if __name__ == "__main__":
     mode = parameters["mode"]
     robot_namespace = parameters["robot_namespace"]
     meta_description_file_path = parameters["meta_description_file_path"]
-    print(generate_launch_file(robot_namespace, mode, meta_description_file_path))
+    meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
+    print(generate_launch_file(mode, meta_description))

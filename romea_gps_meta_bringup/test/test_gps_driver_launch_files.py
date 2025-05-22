@@ -25,8 +25,8 @@ def get_meta_description(profile_filename):
 
 
 def get_nodes_configuration(profile_filename, mode="live"):
-    meta_description_file_path = os.path.join(os.getcwd(), profile_filename)
-    launch_file = generate_launch_file("robot", mode, meta_description_file_path)
+    meta_description = get_meta_description(profile_filename)
+    launch_file = generate_launch_file(mode, meta_description)
     return yaml.safe_load(launch_file)["launch"][-1]["group"][2:]
 
 

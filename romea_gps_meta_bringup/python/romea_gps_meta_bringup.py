@@ -52,14 +52,12 @@ def get_complete_receiver_configuration(meta_description):
     )
 
 
-def generate_configuration_file(meta_description_file_path):
-    meta_description = GPSMetaDescription(meta_description_file_path)
+def generate_configuration_file(meta_description):
     return yaml.dump(get_complete_receiver_configuration(meta_description))
 
 
-def generate_launch_file(robot_namespace, mode, meta_description_file_path):
+def generate_launch_file(mode, meta_description):
 
-    meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
     gps_configuration = get_complete_receiver_configuration(meta_description)
     gps_configuration["frame_id"] = meta_description.get_link()
 
@@ -68,14 +66,12 @@ def generate_launch_file(robot_namespace, mode, meta_description_file_path):
         mode,
         meta_description.get_launch_file(),
         gps_configuration,
-        robot_namespace,
+        meta_description.get_robot_name(),
         meta_description.get_name(),
     )
 
 
-def generate_urdf_description(robot_namespace, mode, meta_description_file_path):
-
-    meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
+def generate_urdf_description(mode, meta_description):
 
     return romea_gps_description.urdf(
         meta_description.get_urdf_prefix(),
