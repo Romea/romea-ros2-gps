@@ -14,9 +14,23 @@
 
 import os
 import yaml
-
-# from romea_common_meta_bringup import DriverLaunchFileConfiguration
 from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
+
+
+def check_param(node, name, value):
+    param = [d["value"] for d in node["param"] if d["name"] == name]
+    assert param, f"param {name} is note defined in node configuration"
+    assert (
+        param[0] == value
+    ), f"value of param {name} should be equal to {value} instead of {param[0]}"
+
+
+def check_remap(node, from_, to_):
+    remap = [d["to"] for d in node["remap"] if d["from"] == from_]
+    assert remap, f"remap for {from_} is note defined in node configuration"
+    assert (
+        remap[0] == to_
+    ), f"remap for {from_} should be equal to {to_} instead of {remap[0]}"
 
 
 def get_meta_description(profile_filename):
@@ -39,22 +53,17 @@ def test_create_nmea_navsat_driver_launch_file():
     assert first_node["exec"] == "nmea_topic_serial_reader"
     assert first_node.get("namespace") is None
     assert "plugin" not in first_node
-    assert first_node["param"][0]["name"] == "frame_id"
-    assert first_node["param"][0]["value"] == "robot_gps_link"
-    assert first_node["param"][1]["name"] == "port"
-    assert first_node["param"][1]["value"] == "/dev/ttyACM0"
-    assert first_node["param"][2]["name"] == "baud"
-    assert first_node["param"][2]["value"] == 115200
-    assert first_node["remap"][0]["from"] == "nmea_sentence"
-    assert first_node["remap"][0]["to"] == "nmea"
+    check_param(first_node, "frame_id", "robot_gps_link")
+    check_param(first_node, "port", "/dev/ttyACM0")
+    check_param(first_node, "baud", 115200)
+    check_remap(first_node, "nmea_sentence", "nmea")
 
     second_node = nodes[1]["node"]
     assert second_node["pkg"] == "nmea_navsat_driver"
     assert second_node["exec"] == "nmea_topic_driver"
     assert second_node.get("namespace") is None
     assert "plugin" not in second_node
-    assert second_node["remap"][0]["from"] == "nmea_sentence"
-    assert second_node["remap"][0]["to"] == "nmea"
+    check_remap(second_node, "nmea_sentence", "nmea")
 
 
 def test_create_romea_gps_serial_driver_launch_file():
@@ -69,14 +78,10 @@ def test_create_romea_gps_serial_driver_launch_file():
     assert "exec" not in plugin
     assert plugin["plugin"] == "romea::ros2::GpsSerialDriver"
     assert plugin.get("namespace") is None
-    assert plugin["param"][0]["name"] == "frame_id"
-    assert plugin["param"][0]["value"] == "robot_gps_link"
-    assert plugin["param"][1]["name"] == "rate"
-    assert plugin["param"][1]["value"] == 10
-    assert plugin["param"][2]["name"] == "device"
-    assert plugin["param"][2]["value"] == "/dev/ttyACM0"
-    assert plugin["param"][3]["name"] == "baudrate"
-    assert plugin["param"][3]["value"] == 115200
+    check_param(plugin, "frame_id", "robot_gps_link")
+    check_param(plugin, "rate", 10)
+    check_param(plugin, "device", "/dev/ttyACM0")
+    check_param(plugin, "baudrate", 115200)
 
 
 def test_create_romea_gps_tcp_driver_launch_file():
@@ -87,16 +92,11 @@ def test_create_romea_gps_tcp_driver_launch_file():
     assert node["exec"] == "tcp_client_node"
     assert "plugin" not in node
     assert node.get("namespace") is None
-    assert node["param"][0]["name"] == "frame_id"
-    assert node["param"][0]["value"] == "robot_gps_link"
-    assert node["param"][1]["name"] == "rate"
-    assert node["param"][1]["value"] == 10
-    assert node["param"][2]["name"] == "ip"
-    assert node["param"][2]["value"] == "192.168.0.50"
-    assert node["param"][3]["name"] == "nmea_port"
-    assert node["param"][3]["value"] == 1001
-    assert node["param"][4]["name"] == "rtcm_port"
-    assert node["param"][4]["value"] == 1002
+    check_param(node, "frame_id", "robot_gps_link")
+    check_param(node, "rate", 10)
+    check_param(node, "ip", "192.168.0.50")
+    check_param(node, "nmea_port", 1001)
+    check_param(node, "rtcm_port", 1002)
 
 
 def test_create_ntrip_client_profile():
@@ -107,19 +107,11 @@ def test_create_ntrip_client_profile():
     assert node["exec"] == "ntrip_ros.py"
     assert "plugin" not in node
     assert node.get("namespace") is None
-    assert node["param"][0]["name"] == "host"
-    assert node["param"][0]["value"] == "caster.centipede.fr"
-    assert node["param"][1]["name"] == "port"
-    assert node["param"][1]["value"] == 2101
-    assert node["param"][2]["name"] == "username"
-    assert node["param"][2]["value"] == "centipede"
-    assert node["param"][3]["name"] == "password"
-    assert node["param"][3]["value"] == "centipede"
-    assert node["param"][4]["name"] == "mountpoint"
-    assert node["param"][4]["value"] == "MTLDR"
-    assert node["param"][5]["name"] == "authenticate"
-    assert node["param"][5]["value"] is True
-    assert node["remap"][0]["from"] == "nmea"
-    assert node["remap"][0]["to"] == "ntrip/nmea"
-    assert node["remap"][1]["from"] == "rtcm"
-    assert node["remap"][1]["to"] == "ntrip/rtcm"
+    check_param(node, "host", "caster.centipede.fr")
+    check_param(node, "port", 2101)
+    check_param(node, "username", "centipede")
+    check_param(node, "password", "centipede")
+    check_param(node, "mountpoint", "MTLDR")
+    check_param(node, "authenticate", True)
+    check_remap(node, "nmea", "ntrip/nmea")
+    check_remap(node, "rtcm", "ntrip/rtcm")

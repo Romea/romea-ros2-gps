@@ -34,7 +34,7 @@ if(BUILD_TESTING)
   configure_file(test/test_nmea_navsat_driver.yaml test_nmea_navsat_driver.yaml)
   configure_file(test/test_ntrip_client.yaml test_ntrip_client.yaml)
   ament_add_pytest_test(test_gps_driver_configuration test/test_gps_driver_launch_files.py)
-  # ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
+  ament_add_pytest_test(test_gps_meta_bringup test/test_gps_meta_bringup.py)
   ament_add_pytest_test(test_urdf_description test/test_urdf_description.py)
 endif()
 

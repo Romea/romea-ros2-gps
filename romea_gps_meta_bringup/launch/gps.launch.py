@@ -25,7 +25,6 @@ from launch.actions import (
 from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
-# from romea_common_meta_bringup import save_temporary_file
 from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
 
 
