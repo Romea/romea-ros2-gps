@@ -17,6 +17,7 @@
 import xacro
 import yaml
 
+from romea_common_description import generate_configuration_file
 from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
@@ -74,12 +75,12 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
 def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
 
+    units = get_gps_receiver_specification_units()
     configuration = get_gps_complete_receiver_configuration(gps_name, gps_description)
-
     configuration_yaml_file = f'/tmp/{prefix}{gps_name}_urdf_configuration.yaml'
 
     with open(configuration_yaml_file, 'w') as f:
-        yaml.dump({**configuration, **gps_location}, f)
+        f.write(generate_configuration_file({**configuration, **gps_location}, units, False))
 
     antenna_configuration = configuration["antenna_model"].split('_', 1)
     geometry_yaml_file = get_gps_antenna_geometry_file_path(
