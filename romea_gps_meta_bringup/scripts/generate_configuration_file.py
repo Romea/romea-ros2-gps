@@ -27,6 +27,7 @@ if __name__ == "__main__":
         name, value = argument.split(":")
         parameters[name] = value
 
+    extended = parameters.get("extended", "false") == "true"
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = GPSMetaDescription(meta_description_file_path)
-    print(generate_configuration_file(meta_description))
+    print(generate_configuration_file(meta_description, extended))
