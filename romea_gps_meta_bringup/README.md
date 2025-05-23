@@ -1,13 +1,13 @@
-# romea_gps_bringup #
+# romea_meta_gps_bringup #
 
 # 1) Overview #
 
 The romea_gps_bringup package provides  : 
 
- - **Launch files** for launching ROS 2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
+- **A launch file** for launching ROS2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
 
    - [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)
-   - [romea_ublox_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_ublox)
+   - romea_gps_driver given in this package
 
    It is possible to launch a driver via command line : 
 
@@ -17,70 +17,84 @@ The romea_gps_bringup package provides  :
 
    where :
 
-   - *robot_namespace* is the name of the robot 
-   - *meta_description_file_path* is the absolute path of meta-description file    
-
- - A **Python Module** able to load and parse GPS meta-description file as well as to create URDF description of the GPS Receiver according a given meta-description.
-
- - A **ROS2 python executable** able to create GPS URDF description via command line:
-
-  ```console
-  ros2 run romea_gps_bringup urdf_description.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
-  ```
-
-   where :
+   - *mode* is the demonstration mode (live or simulation)	
 
    - *robot_namespace* is the name of the robot 
    - *meta_description_file_path* is the absolute path of meta-description file    
 
-   This URDF can be combined with other URDFs (e.g., for the mobile base and other sensors) to create a complete robot description.  
+- A **Python module** that can load and parse GPS  meta-description files and provides functions to create URDF  descriptions, configuration files, and launch files based on a given  meta-description.
 
-   
+- A **ROS2 python executables** able to create :
 
+  - URDF description :
 
+    ```shell
+    ros2 run romea_gps_bringup generate_urdf_description.py mode:live robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
+    ```
+
+  - Yaml launch file
+
+    ```shell
+    ros2 run romea_gps_bringup generate_launch_file.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.launch.yaml`
+    ```
+
+  - Configuration file
+
+    ```shell
+    ros2 run romea_gps_bringup generate_configuration_file.py extended:true  meta_description_file_path:/path_to_file/meta_description_file.yaml > gps_config.yaml
+    ```
+
+  where :
+
+     - *mode* is the demonstration mode (live or simulation)
+     - *robot_namespace* is the name of the robot 
+     - *meta_description_file_path* is the absolute path of meta-description file    
+
+    
 
 # 2) GPS meta-description #
 
-The GPS meta-description file is a YAML file with six main items:
+The GPS meta-description file is a YAML file with five main items:
 - **name**: A user-defined name for the GPS receiver.
-- **driver**: Specifies ROS 2 driver driver and its paramters (see Section 5).
-- **ntrip**: Specifies ROS 2 NTRIP driver and it's parameters, if needed, to broadcast differential corrections (see Section 4).
+- **launch**: A minimal yaml launch used to launch GPS driver (see Section 5).
 - **configuration**: Basic specifications of the GPS receiver.
-- **geometry**: Describes the location of the GPS receiver antenna on the robot for URDF generation.
-- **records**: Topics to be recorded during experiments or simulation. Remappings ensure the GPS topics have consistent names across drivers and simulation.
+- **location**: Describes the location of the GPS receiver antenna on the robot for URDF generation.
+- **records**: Topics to be recorded during experiments or simulation
 
 Example :
 ```yaml
   name: gps  # name of the gps given by user
-  driver: # gps driver configuration
-    package: romea_gps_driver  # ros2 driver package choiced by user and its parameters 
-    executable: serial_node
-    parameters:
-      device:  /dev/ttyACM0
-      baudrate: 115200
-  ntrip:  # ntrip driver configuration (optional)
-    package: "ntrip_client"  # ros2 driver package choiced by user and its parameters
-    executable: ntrip_ros.py
-    parameters: 
-      host: caster.centipede.fr
-      port: 2101
-      username: centipede # optional
-      password: centipede # optional
-      mountpoint: MAGC
- configuration: # GPS basic specifications
+  launch: # driver launch file
+   - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/romea_gps_serial_driver.profile.yaml
+      param:
+        - name: device
+          value: /dev/ttyACM0
+        - name: baudrate
+          value: 115200
+   - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/ntrip_client.profile.yaml
+      param:
+        - name: mountpoint
+          value: MTLDR
+configuration: # GPS basic specifications
     type: drotek  #  type of GPS receiver
     model: f9p  # model of GPS receiver
     rate: 10 # frame rate in hz
-geometry: # geometry configuration 
+location: # geometry configuration 
   parent_link: "base_link"  # name of parent link where is located the GPS antenna
-  xyz: [0.0, 0.0, 1.5]  #and it position in meters
+  xyz: [0.0, 0.0, 1.5]  # position of ths GPS antenna according parent_link in meters
 records: # topic to be recorded
   nmea: true # nmea sentences will be recorded into bag
   gps_fix: false # gps_fix topic will not be recorded into bag
   vel: false # vel topic will not be recorded into bag
 ```
 
-# 4) Supported GPS receiver models
+For more information on how to write a meta-description, please refer to the [*romea_common_bringup*](https://github.com/Romea/romea-ros2-common.git) documentation.
+
+# 3) Supported GPS receiver models
 
 The following GPS receivers are supported:
 
@@ -89,63 +103,68 @@ The following GPS receivers are supported:
 | drotek |    f9p     |
 | astech | proflex800 |
 | ublox  |   evk_m8   |
-| septentrio  |   AsteriX   |
+| septentrio  |   AsterX   |
 
-You can find specifications of each receiver in config directory of romea_gps_description package.
+The specifications for each receiver can be found in the config directory of the *romea_gps_description* package. If you would like to use a new receiver, you will need to add a corresponding file for that sensor in the config directory of the *romea_gps_description* package.
 
-# 5) Supported GPS receiver ROS2 drivers
+# 4) Supported GPS receiver ROS2 driver
 
-Supported drivers are [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver) and  [romea_gps_driver](https://gitlab.irstea.fr/romea_ros2/interfaces/sensors/romea_gps). In order to used one of them, you can specify driver item in GPS meta-description file like this:
+Supported drivers include [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)  and  romea_gps_driver given in this package. To use one of these drivers, you can add the snippet as shown below into the launch item of the GPS meta-description file:
 
 - **Nmea Navsat driver**:
 
-```yaml
-  package: nmea_navsat_driver  # ROS2 package name
-  executable:  nmea_topic_driver
-  parameters: # node parameters
-    device:  /dev/ttyUSB0  # serial device
-    baudrate: 115200 # serial baudrate
-```
+  ```yaml
+  - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/nmea_navsat_serial_reader.profile.yaml # profile for nmea_topic_serial_reader node
+      param:
+        - name: port #serial device
+          value: /dev/ttyACM0
+        - name: baud #serial baudrate
+          value: 115200  
+  - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/nmea_navsat_topic_driver.profile.yaml # profile for nmea_topic_driver node
+  ```
 
-- **Romea gps driver using serial connection**:
+- **Romea gps driver using serial connection **:
 
-```yaml
-  package: "romea_gps_driver"  # ROS2  package name
-  executable: serial_node
-  parameters: # node parameters
-    device:  "/dev/ttyACM0"  # serial device
-    baudrate: 115200 # serial baudrate
-```
+  ```yaml
+  - node:
+       pkg: romea_gps_meta_bringup
+       profile: config/romea_gps_serial_driver.profile.yaml
+       param:
+         - name: device #serial device
+           value: /dev/ttyACM0
+         - name: baudrate #serial baudrate
+           value: 115200
+  ```
 
 - **Romea gps driver using tcp connection**:
 
-```yaml
-  package: romea_gps_driver  # ROS2  package name
-  executable: tcp_client_node
-  parameters: # node parameters
-    ip: 192.168.0.50
-    nmea_port: 1001
-    rtcm_port: 1002
-```
+  ```yaml
+  - node:
+      pkg: romea_gps_meta_bringup
+      profile: config/romea_gps_tcp_driver.profile.yaml
+      param:
+        - name: ip
+          value: 192.168.0.50
+        - name: nmea_port
+          value: 1001
+        - name: rtcm_port
+          value: 1002
+  ```
 
-
-For each driver, a Python launch file with the name of the ROS2 package is provided in launch directory. When the meta-description is read by gps_driver.launch.py, the correct driver node is launched with the parameters set by the user. Thanks to remapping defined inside each driver launch files, the data provided by drivers are always published in the same topics called:
-
-- nmea(nmea_msgs/sentence)
-- gps_fix(sensor_msgs/NavSatFix)
-- vel(geometry_msgd/Twist)  
-
-# 4) Supported NTRIP client ROS2 drivers
-
-Currently, the only supported NTRIP client is [ntrip_client](https://github.com/LORD-MicroStrain/ntrip_client). To configure it, specify the NTRIP section as follows::  
+You can also launch the NTRIP driver if you require differential correction, as shown below:
 
 ```yaml
-  package: "ntrip_client"  # ros2 driver package choiced by user and its parameters
-  executable: ntrip_ros.py
-  parameters: 
-    host: caster.centipede.fr : 
-    port: 2101
-    username: centipede # optional
-    password: centipede # optional
-    mountpoint: MAGC : 
+- node:
+      pkg: romea_gps_meta_bringup
+      profile: config/ntrip_client.profile.yaml
+      param:
+        - name: mountpoint
+          value: MTLDR
 ```
+
+Each driver node has an associated profile located in the config directory of this package. If you wish to use a different driver, you  will need to create a new profile specifically for that driver. For guidance on how to create this profile, please refer to the  documentation for *romea_common_meta_bringup*.
+
