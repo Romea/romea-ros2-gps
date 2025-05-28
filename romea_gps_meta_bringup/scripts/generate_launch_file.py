@@ -28,8 +28,7 @@ if __name__ == "__main__":
         name, value = argument.split(":")
         parameters[name] = value
 
-    mode = parameters["mode"]
     robot_namespace = parameters["robot_namespace"]
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
-    print(generate_launch_file(mode, meta_description))
+    print(generate_launch_file(meta_description))

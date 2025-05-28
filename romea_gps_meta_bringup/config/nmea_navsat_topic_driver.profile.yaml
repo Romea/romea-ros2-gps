@@ -1,6 +1,0 @@
-pkg: nmea_navsat_driver
-exec: nmea_topic_driver
-name: topic_driver
-remap:
-  - from: nmea_sentence
-    to: nmea

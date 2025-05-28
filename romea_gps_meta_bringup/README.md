@@ -65,18 +65,16 @@ Example :
 ```yaml
   name: gps  # name of the gps given by user
   launch: # driver launch file
-   - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/romea_gps_serial_driver.profile.yaml
-      param:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
+      arg:
         - name: device
-          value: /dev/ttyACM0
+          value: /dev/ttyUSB0
         - name: baudrate
-          value: 115200
-   - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/ntrip_client.profile.yaml
-      param:
+          value: "115200"
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
+      arg:
         - name: mountpoint
           value: MTLDR
 configuration: # GPS basic specifications
@@ -114,57 +112,60 @@ Supported drivers include [nmea_navsat_driver](https://github.com/ros-drivers/nm
 - **Nmea Navsat driver**:
 
   ```yaml
-  - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/nmea_navsat_serial_reader.profile.yaml # profile for nmea_topic_serial_reader node
-      param:
-        - name: port #serial device
-          value: /dev/ttyACM0
-        - name: baud #serial baudrate
-          value: 115200  
-  - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/nmea_navsat_topic_driver.profile.yaml # profile for nmea_topic_driver node
+    - include:
+        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
+        arg:
+          - name: "device"
+            value: "/dev/ttyUSB0"
+          - name: "baudrate"
+            value: "115200"
   ```
-
+  
 - **Romea gps driver using serial connection **:
 
   ```yaml
-  - node:
-       pkg: romea_gps_meta_bringup
-       profile: config/romea_gps_serial_driver.profile.yaml
-       param:
-         - name: device #serial device
-           value: /dev/ttyACM0
-         - name: baudrate #serial baudrate
-           value: 115200
+    - include:
+        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_tcp_driver.launch.py"
+        arg:
+          - name: "device"
+            value: "/dev/ttyUSB0"
+          - name: "baudrate"
+            value: "115200"
+          - name: "container"
+            value: "/foo" # default "", if not empty tcp driver plugin is launch in /foo container 
   ```
 
 - **Romea gps driver using tcp connection**:
 
   ```yaml
-  - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/romea_gps_tcp_driver.profile.yaml
-      param:
+    - include:
+        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_tcp_driver.launch.py"
+        arg:
         - name: ip
           value: 192.168.0.50
         - name: nmea_port
           value: 1001
         - name: rtcm_port
           value: 1002
+        - name: container
+            value: /foo #  default "", if not empty tcp driver plugin is launch in /foo container 
   ```
 
 You can also launch the NTRIP driver if you require differential correction, as shown below:
 
 ```yaml
-- node:
-      pkg: romea_gps_meta_bringup
-      profile: config/ntrip_client.profile.yaml
-      param:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
+      arg:
         - name: mountpoint
           value: MTLDR
 ```
 
-Each driver node has an associated profile located in the config directory of this package. If you wish to use a different driver, you  will need to create a new profile specifically for that driver. For guidance on how to create this profile, please refer to the  documentation for *romea_common_meta_bringup*.
+Each driver node has an associated launch file located in the profile directory of this package. If you wish to use a different driver, you  will need to create a new launch file dedicated for that driver.  It is possible to generate the full launch file in
+
+```shell
+ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:'robot' meta_description_file_path:/home/jeanlaneurit/dev/romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
+```
+
+ros2 run romea_gps_meta_bringup generate_launch_file.py mode:live robot_namespace:'robot' meta_description_file_path:/home/jeanlaneurit/dev/romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
 

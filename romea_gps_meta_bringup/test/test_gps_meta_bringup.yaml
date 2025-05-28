@@ -1,18 +1,16 @@
 name: gps
 namespace: ns
 launch:
-  - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/romea_gps_serial_driver.profile.yaml
-      param:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
+      arg:
         - name: device
-          value: /dev/ttyACM0
+          value: /dev/ttyUSB0
         - name: baudrate
-          value: 115200
-  - node:
-      pkg: romea_gps_meta_bringup
-      profile: config/ntrip_client.profile.yaml
-      param:
+          value: "115200"
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
+      arg:
         - name: mountpoint
           value: MTLDR
 configuration:

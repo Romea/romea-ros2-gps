@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import yaml
 import romea_gps_description
+import romea_common_description
 from romea_common_meta_bringup import SensorMetaDescription, LaunchFileGenerator
 
 
@@ -52,18 +52,19 @@ def get_complete_receiver_configuration(meta_description):
     )
 
 
-def generate_configuration_file(meta_description):
-    return yaml.dump(get_complete_receiver_configuration(meta_description))
+def generate_configuration_file(meta_description, extended):
+    configuration = get_complete_receiver_configuration(meta_description)
+    units = romea_gps_description.get_gps_receiver_specification_units()
+    return romea_common_description.generate_configuration_file(configuration, units, extended)
 
 
-def generate_launch_file(mode, meta_description):
+def generate_launch_file(meta_description):
 
     gps_configuration = get_complete_receiver_configuration(meta_description)
     gps_configuration["frame_id"] = meta_description.get_link()
 
     # gps_full_namespace = meta_description.get_full_namespace()
     return LaunchFileGenerator("gps").generate(
-        mode,
         meta_description.get_launch_file(),
         gps_configuration,
         meta_description.get_robot_name(),
