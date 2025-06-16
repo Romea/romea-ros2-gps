@@ -61,12 +61,11 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("meta_description_file_path"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace", default_value=""))
-
-    declared_arguments.append(DeclareLaunchArgument("mode", default_value="live"))
-
-    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("meta_description_file_path"),
+            DeclareLaunchArgument("robot_namespace", default_value=""),
+            DeclareLaunchArgument("mode", default_value="live"),
+            OpaqueFunction(function=launch_setup)
+        ]
+    )

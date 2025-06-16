@@ -28,8 +28,9 @@ def urdf_xml():
     description = {
         "manufacturer": "septentrio",
         "model": "asterx",
+        "version": "",
         "dual_antenna": False,
-        "antenna_model": "septentrio_polant",
+        "antenna_model": "septentrio_polant_",
         "rate": 10,
     }
 

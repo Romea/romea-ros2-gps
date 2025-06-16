@@ -67,13 +67,12 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = [
-        DeclareLaunchArgument("ip"),
-        DeclareLaunchArgument("nmea_port"),
-        DeclareLaunchArgument("rtcm_port"),
-        DeclareLaunchArgument("container", default_value="")
-    ]
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("ip"),
+            DeclareLaunchArgument("nmea_port"),
+            DeclareLaunchArgument("rtcm_port"),
+            DeclareLaunchArgument("container", default_value=""),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

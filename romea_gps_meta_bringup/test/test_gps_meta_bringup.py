@@ -52,6 +52,10 @@ def test_get_model(meta_description):
     assert meta_description.get_model() == "asterx"
 
 
+def test_get_version(meta_description):
+    assert meta_description.get_version() == ""
+
+
 def test_get_rate(meta_description):
     assert meta_description.get_rate() == 10
 
@@ -77,7 +81,7 @@ def test_get_records(meta_description):
 
 def test_get_receiver_specifications(meta_description):
     gps_specifactions = get_receiver_specifications(meta_description)
-    assert gps_specifactions['antenna_model'] == "septentrio_polant"
+    assert gps_specifactions['antenna_model'] == "septentrio_polant_"
 
 
 def test_get_antenna_geometry(meta_description):
@@ -87,4 +91,4 @@ def test_get_antenna_geometry(meta_description):
 
 def test_get_complete_receiver_configuration(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
-    assert gps_configuration['antenna_model'] == "septentrio_polant"
+    assert gps_configuration['antenna_model'] == "septentrio_polant_"

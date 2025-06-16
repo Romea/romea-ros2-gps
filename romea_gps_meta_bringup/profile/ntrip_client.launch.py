@@ -26,42 +26,45 @@ def launch_setup(context, *args, **kwargs):
     username = LaunchConfiguration("username").perform(context)
     password = LaunchConfiguration("password").perform(context)
     mountpoint = LaunchConfiguration("mountpoint").perform(context)
+    mode = LaunchConfiguration("mode").perform(context)
 
     launch = LaunchDescription()
 
-    launch.add_action(
-        Node(
-            package="ntrip_client",
-            executable="ntrip_ros.py",
-            output="screen",
-            name="ntrip_client",
-            exec_name="ntrip_client",
-            parameters=[
-                {
-                    "host": host,
-                    "port": int(port),
-                    "username": username,
-                    "password": password,
-                    "mountpoint": mountpoint,
-                    "authenticate": username != "" and password != ""
-                }
-            ],
-            remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
+    if mode == "live":
+
+        launch.add_action(
+            Node(
+                package="ntrip_client",
+                executable="ntrip_ros.py",
+                output="screen",
+                name="ntrip_client",
+                exec_name="ntrip_client",
+                parameters=[
+                    {
+                        "host": host,
+                        "port": int(port),
+                        "username": username,
+                        "password": password,
+                        "mountpoint": mountpoint,
+                        "authenticate": username != "" and password != ""
+                    }
+                ],
+                remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
+            )
         )
-    )
 
     return [launch]
 
 
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("host", default_value="caster.centipede.fr"))
-    declared_arguments.append(DeclareLaunchArgument("port", default_value="2101"))
-    declared_arguments.append(DeclareLaunchArgument("username", default_value="centipede"))
-    declared_arguments.append(DeclareLaunchArgument("password", default_value="centipede"))
-    declared_arguments.append(DeclareLaunchArgument("mountpoint"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("host", default_value="caster.centipede.fr"),
+            DeclareLaunchArgument("port", default_value="2101"),
+            DeclareLaunchArgument("username", default_value="centipede"),
+            DeclareLaunchArgument("password", default_value="centipede"),
+            DeclareLaunchArgument("mountpoint"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

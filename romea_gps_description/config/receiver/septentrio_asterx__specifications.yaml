@@ -3,7 +3,7 @@ dgps_fix_uere: 0.5
 float_rtk_fix_uere: 0.1
 rtk_fix_uere: 0.02
 simulation_fix_uere: 0.02
-antenna_model: septentrio_polant
+antenna_model: septentrio_polant_
 dual_antenna:
   default: false
   list: [true, false]

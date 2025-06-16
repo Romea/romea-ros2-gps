@@ -28,21 +28,23 @@ class GPSMetaDescription(SensorMetaDescription):
         return self._get_or("dual_antenna", "configuration", False)
 
 
-def load_meta_description(meta_description_file_path):
-    return GPSMetaDescription(meta_description_file_path)
+def load_meta_description(meta_description_file_path, robot_name=None):
+    return GPSMetaDescription(meta_description_file_path, robot_name)
 
 
 def get_receiver_specifications(meta_description):
     return romea_gps_description.get_gps_receiver_specifications(
-        meta_description.get_manufacturer(), meta_description.get_model()
+        meta_description.get_manufacturer(),
+        meta_description.get_model(),
+        meta_description.get_version()
     )
 
 
 def get_antenna_geometry(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
-    antenna_configuration = gps_configuration["antenna_model"].split("_", 1)
+    antenna_configuration = gps_configuration["antenna_model"].split("_", 2)
     return romea_gps_description.get_gps_antenna_geometry(
-        antenna_configuration[0], antenna_configuration[1]
+        antenna_configuration[0], antenna_configuration[1], antenna_configuration[2]
     )
 
 
@@ -60,15 +62,16 @@ def generate_configuration_file(meta_description, extended):
 
 def generate_launch_file(meta_description):
 
-    gps_configuration = get_complete_receiver_configuration(meta_description)
-    gps_configuration["frame_id"] = meta_description.get_link()
+    launch_arguments = [{"name": "mode", "default": "live"}]
+    namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
+    configuration = get_complete_receiver_configuration(meta_description)
+    configuration["manufacturer"] = meta_description.get_manufacturer()
+    configuration["model"] = meta_description.get_model()
+    configuration["tf_prefix"] = meta_description.get_urdf_prefix()
+    configuration["frame_id"] = meta_description.get_link()
 
-    # gps_full_namespace = meta_description.get_full_namespace()
     return LaunchFileGenerator("gps").generate(
-        meta_description.get_launch_file(),
-        gps_configuration,
-        meta_description.get_robot_name(),
-        meta_description.get_name(),
+        meta_description.get_launch_file(), launch_arguments, namespaces, configuration
     )
 
 

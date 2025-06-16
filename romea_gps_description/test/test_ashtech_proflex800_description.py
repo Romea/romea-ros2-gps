@@ -25,35 +25,36 @@ from romea_gps_description import (
 
 def test_get_gps_specifications_file_path_ok():
     assert (
-        get_gps_receiver_specifications_file_path("ashtech", "proflex800")
+        get_gps_receiver_specifications_file_path("ashtech", "proflex", "800")
         == get_package_share_directory("romea_gps_description")
-        + "/config/receiver/ashtech_proflex800_specifications.yaml"
+        + "/config/receiver/ashtech_proflex_800_specifications.yaml"
     )
 
 
 def test_get_gps_receiver_specifications_ok():
     assert (
-        get_gps_receiver_specifications("ashtech", "proflex800")['antenna_model']
+        get_gps_receiver_specifications("ashtech", "proflex", "800")['antenna_model']
         == "ashtech_ash_661"
     )
 
 
 def test_get_gps_antenna_geometry_file_path_ok():
     assert (
-        get_gps_antenna_geometry_file_path("ashtech", "ash_661")
+        get_gps_antenna_geometry_file_path("ashtech", "ash", "661")
         == get_package_share_directory("romea_gps_description")
         + "/config/antenna/ashtech_ash_661_geometry.yaml"
     )
 
 
 def test_get_gps_antenna_geometry_ok():
-    assert get_gps_antenna_geometry("ashtech", "ash_661")['mass'] == 0.450
+    assert get_gps_antenna_geometry("ashtech", "ash", "661")['mass'] == 0.450
 
 
 def test_get_gps_receiver_complete_configuration_ok():
     user_description = {
        "manufacturer": "ashtech",
-       "model": "proflex800",
+       "model": "proflex",
+       "version": 800,
        "dual_antenna": False,
        "rate": 2
     }

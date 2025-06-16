@@ -25,32 +25,33 @@ from romea_gps_description import (
 
 def test_get_gps_specifications_file_path_ok():
     assert (
-        get_gps_receiver_specifications_file_path("drotek", "f9p")
+        get_gps_receiver_specifications_file_path("drotek", "f9p", "")
         == get_package_share_directory("romea_gps_description")
-        + "/config/receiver/drotek_f9p_specifications.yaml"
+        + "/config/receiver/drotek_f9p__specifications.yaml"
     )
 
 
 def test_get_gps_receiver_specifications_ok():
-    assert get_gps_receiver_specifications("drotek", "f9p")['antenna_model'] == "ublox_ann_mb1"
+    assert get_gps_receiver_specifications("drotek", "f9p", "")['antenna_model'] == "ublox_ann_mb1"
 
 
 def test_get_gps_antenna_geometry_file_path_ok():
     assert (
-        get_gps_antenna_geometry_file_path("ublox", "ann_mb1")
+        get_gps_antenna_geometry_file_path("ublox", "ann","mb1")
         == get_package_share_directory("romea_gps_description")
         + "/config/antenna/ublox_ann_mb1_geometry.yaml"
     )
 
 
 def test_get_gps_antenna_geometry_ok():
-    assert get_gps_antenna_geometry("ublox", "ann_mb1")['mass'] == 0.173
+    assert get_gps_antenna_geometry("ublox", "ann", "mb1")['mass'] == 0.173
 
 
 def test_get_gps_receiver_complete_configuration_ok():
     user_description = {
        "manufacturer": "drotek",
        "model": "f9p",
+       "version": "",
        "rate": 10
     }
 

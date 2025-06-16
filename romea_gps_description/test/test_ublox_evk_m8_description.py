@@ -25,32 +25,33 @@ from romea_gps_description import (
 
 def test_get_gps_specifications_file_path_ok():
     assert (
-        get_gps_receiver_specifications_file_path("ublox", "evk_m8")
+        get_gps_receiver_specifications_file_path("ublox", "evk", "m8")
         == get_package_share_directory("romea_gps_description")
         + "/config/receiver/ublox_evk_m8_specifications.yaml"
     )
 
 
 def test_get_gps_receiver_specifications_ok():
-    assert get_gps_receiver_specifications("ublox", "evk_m8")['antenna_model'] == "ublox_ann_mb5"
+    assert get_gps_receiver_specifications("ublox", "evk", "m8")['antenna_model'] == "ublox_ann_mb5"
 
 
 def test_get_gps_antenna_geometry_file_path_ok():
     assert (
-        get_gps_antenna_geometry_file_path("ublox", "ann_mb5")
+        get_gps_antenna_geometry_file_path("ublox", "ann", "mb5")
         == get_package_share_directory("romea_gps_description")
         + "/config/antenna/ublox_ann_mb5_geometry.yaml"
     )
 
 
 def test_get_gps_antenna_geometry_ok():
-    assert get_gps_antenna_geometry("ublox", "ann_mb5")['mass'] == 0.173
+    assert get_gps_antenna_geometry("ublox", "ann", "mb5")['mass'] == 0.173
 
 
 def test_get_gps_receiver_complete_configuration_ok():
     user_description = {
        "manufacturer": "ublox",
-       "model": "evk_m8",
+       "model": "evk",
+       "version": "m8",
        "rate": 10
     }
 

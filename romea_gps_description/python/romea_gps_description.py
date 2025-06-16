@@ -17,28 +17,57 @@
 import xacro
 import yaml
 
+from romea_common_description import get_configuration_file
 from romea_common_description import generate_configuration_file
 from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
 
-def get_gps_receiver_specifications_file_path(manufacturer, model):
-    pkg_path = get_package_share_directory('romea_gps_description')
-    return f'{pkg_path}/config/receiver/{manufacturer}_{model}_specifications.yaml'
+def get_gps_receiver_configuration_file_path(manufacturer, model, version, what):
+    package = get_package_share_directory('romea_gps_description')
+    configuration_file_path = get_configuration_file(
+        f"{package}/config/receiver", f"{manufacturer}_{model}_{version}_{what}.yaml"
+    )
+
+    if not configuration_file_path:
+        raise RuntimeError(
+            f"No {manufacturer} {model} {version} GPS receiver is supported by {package} package."
+            ' Please check your configuration or contribute to support this kind of sensor.'
+        )
+
+    return configuration_file_path
 
 
-def get_gps_receiver_specifications(manufacturer, model):
-    with open(get_gps_receiver_specifications_file_path(manufacturer, model)) as f:
+def get_gps_antenna_configuration_file_path(manufacturer, model, version, what):
+    package = get_package_share_directory('romea_gps_description')
+    configuration_file_path = get_configuration_file(
+        f"{package}/config/antenna", f"{manufacturer}_{model}_{version}_{what}.yaml"
+    )
+
+    if not configuration_file_path:
+        raise RuntimeError(
+            f"No {manufacturer} {model} {version} GPS antenna is supported by {package} package."
+            ' Please check your configuration or contribute to support this kind of sensor.'
+        )
+
+    return configuration_file_path
+
+
+def get_gps_receiver_specifications_file_path(manufacturer, model, version):
+    return get_gps_receiver_configuration_file_path(manufacturer, model, version, "specifications")
+
+
+def get_gps_receiver_specifications(manufacturer, model, version):
+    with open(get_gps_receiver_specifications_file_path(manufacturer, model, version)) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_antenna_geometry_file_path(manufacturer, model):
-    pkg_path = get_package_share_directory('romea_gps_description')
-    return f'{pkg_path}/config/antenna/{manufacturer}_{model}_geometry.yaml'
+def get_gps_antenna_geometry_file_path(manufacturer, model, version):
+    return get_gps_antenna_configuration_file_path(manufacturer, model, version, "geometry")
 
 
-def get_gps_antenna_geometry(manufacturer, model):
-    with open(get_gps_antenna_geometry_file_path(manufacturer, model)) as f:
+def get_gps_antenna_geometry(manufacturer, model, version):
+    with open(get_gps_antenna_geometry_file_path(manufacturer, model, version)) as f:
         return yaml.safe_load(f)
 
 
@@ -55,9 +84,10 @@ def get_gps_receiver_specification_units():
 def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
     model = gps_description["model"]
+    version = gps_description["version"]
     manufacturer = gps_description["manufacturer"]
-    gps_name = f'{manufacturer} {model} gps called {gps_name}'
-    specifications = get_gps_receiver_specifications(manufacturer, model)
+    gps_name = f'{manufacturer} {model} {version} gps called {gps_name}'
+    specifications = get_gps_receiver_specifications(manufacturer, model, version)
     specifications_units = get_gps_receiver_specification_units()
 
     gps = Device(gps_name, specifications, gps_description, specifications_units)
@@ -82,9 +112,9 @@ def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
     with open(configuration_yaml_file, 'w') as f:
         f.write(generate_configuration_file({**configuration, **gps_location}, units, False))
 
-    antenna_configuration = configuration["antenna_model"].split('_', 1)
+    antenna_configuration = configuration["antenna_model"].split('_', 2)
     geometry_yaml_file = get_gps_antenna_geometry_file_path(
-        antenna_configuration[0], antenna_configuration[1]
+        antenna_configuration[0], antenna_configuration[1], antenna_configuration[2]
     )
 
     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"

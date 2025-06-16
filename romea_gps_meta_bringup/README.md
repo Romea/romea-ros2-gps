@@ -1,8 +1,8 @@
-# romea_meta_gps_bringup #
+# romea_meta_gps_meta_bringup #
 
 # 1) Overview #
 
-The romea_gps_bringup package provides  : 
+The romea_gps_meta_bringup package provides  : 
 
 - **A launch file** for launching ROS2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
 
@@ -12,7 +12,7 @@ The romea_gps_bringup package provides  :
    It is possible to launch a driver via command line : 
 
     ```console
-    ros2 launch romea_gps_bringup gps.launch.py mode:=live robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
+    ros2 launch romea_gps_meta_bringup gps.launch.py mode:=live robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
     ```
 
    where :
@@ -29,19 +29,19 @@ The romea_gps_bringup package provides  :
   - URDF description :
 
     ```shell
-    ros2 run romea_gps_bringup generate_urdf_description.py mode:live robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
+    ros2 run romea_gps_meta_bringup generate_urdf_description.py mode:live robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
     ```
 
   - Yaml launch file
 
     ```shell
-    ros2 run romea_gps_bringup generate_launch_file.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.launch.yaml`
+    ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.launch.yaml`
     ```
 
   - Configuration file
 
     ```shell
-    ros2 run romea_gps_bringup generate_configuration_file.py extended:true  meta_description_file_path:/path_to_file/meta_description_file.yaml > gps_config.yaml
+    ros2 run romea_gps_meta_bringup generate_configuration_file.py extended:true  meta_description_file_path:/path_to_file/meta_description_file.yaml > gps_config.yaml
     ```
 
   where :
@@ -90,7 +90,7 @@ records: # topic to be recorded
   vel: false # vel topic will not be recorded into bag
 ```
 
-For more information on how to write a meta-description, please refer to the [*romea_common_bringup*](https://github.com/Romea/romea-ros2-common.git) documentation.
+For more information on how to write a meta-description, please refer to the [*romea_common_meta_bringup*](https://github.com/Romea/romea-ros2-common.git) documentation.
 
 # 3) Supported GPS receiver models
 
