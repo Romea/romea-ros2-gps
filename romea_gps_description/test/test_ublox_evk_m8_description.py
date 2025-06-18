@@ -22,40 +22,57 @@ from romea_gps_description import (
     get_gps_receiver_specifications,
 )
 
-
-def test_get_gps_specifications_file_path_ok():
-    assert (
-        get_gps_receiver_specifications_file_path("ublox", "evk", "m8")
-        == get_package_share_directory("romea_gps_description")
-        + "/config/receiver/ublox_evk_m8_specifications.yaml"
-    )
+import pytest
 
 
-def test_get_gps_receiver_specifications_ok():
-    assert get_gps_receiver_specifications("ublox", "evk", "m8")['antenna_model'] == "ublox_ann_mb5"
+@pytest.fixture(scope="module")
+def user_receiver_description():
 
-
-def test_get_gps_antenna_geometry_file_path_ok():
-    assert (
-        get_gps_antenna_geometry_file_path("ublox", "ann", "mb5")
-        == get_package_share_directory("romea_gps_description")
-        + "/config/antenna/ublox_ann_mb5_geometry.yaml"
-    )
-
-
-def test_get_gps_antenna_geometry_ok():
-    assert get_gps_antenna_geometry("ublox", "ann", "mb5")['mass'] == 0.173
-
-
-def test_get_gps_receiver_complete_configuration_ok():
-    user_description = {
+    return {
        "manufacturer": "ublox",
        "model": "evk",
        "version": "m8",
        "rate": 10
     }
 
-    configuration = get_gps_complete_receiver_configuration("gps", user_description)
+
+@pytest.fixture(scope="module")
+def user_antenna_description():
+
+    return {
+       "manufacturer": "ublox",
+       "model": "ann",
+       "version": "mb5",
+    }
+
+
+def test_get_gps_specifications_file_path_ok(user_receiver_description):
+    assert (
+        get_gps_receiver_specifications_file_path(user_receiver_description)
+        == get_package_share_directory("romea_gps_description")
+        + "/config/receiver/ublox_evk_m8_specifications.yaml"
+    )
+
+
+def test_get_gps_receiver_specifications_ok(user_receiver_description):
+    assert get_gps_receiver_specifications(user_receiver_description)['antenna_model'] == "ublox_ann_mb5"
+
+
+def test_get_gps_antenna_geometry_file_path_ok(user_antenna_description):
+    assert (
+        get_gps_antenna_geometry_file_path(user_antenna_description)
+        == get_package_share_directory("romea_gps_description")
+        + "/config/antenna/ublox_ann_mb5_geometry.yaml"
+    )
+
+
+def test_get_gps_antenna_geometry_ok(user_antenna_description):
+    assert get_gps_antenna_geometry(user_antenna_description)['mass'] == 0.173
+
+
+def test_get_gps_receiver_complete_configuration_ok(user_receiver_description):
+
+    configuration = get_gps_complete_receiver_configuration("gps", user_receiver_description)
 
     assert configuration["rtk_fix_uere"] == 0.1
     assert configuration["dual_antenna"] is False

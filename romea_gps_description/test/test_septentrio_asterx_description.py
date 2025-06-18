@@ -22,36 +22,13 @@ from romea_gps_description import (
     get_gps_receiver_specifications,
 )
 
-
-def test_get_gps_specifications_file_path_ok():
-    assert (
-        get_gps_receiver_specifications_file_path("septentrio", "asterx", "")
-        == get_package_share_directory("romea_gps_description")
-        + "/config/receiver/septentrio_asterx__specifications.yaml"
-    )
+import pytest
 
 
-def test_get_gps_receiver_specifications_ok():
-    assert (
-        get_gps_receiver_specifications("septentrio", "asterx", "")['antenna_model']
-        == "septentrio_polant_"
-    )
+@pytest.fixture(scope="module")
+def user_receiver_description():
 
-
-def test_get_gps_antenna_geometry_file_path_ok():
-    assert (
-        get_gps_antenna_geometry_file_path("septentrio", "polant", "")
-        == get_package_share_directory("romea_gps_description")
-        + "/config/antenna/septentrio_polant__geometry.yaml"
-    )
-
-
-def test_get_gps_antenna_geometry_ok():
-    assert get_gps_antenna_geometry("septentrio", "polant", "")['mass'] == 0.447
-
-
-def test_get_gps_receiver_complete_configuration_ok():
-    user_description = {
+    return {
        "manufacturer": "septentrio",
        "model": "asterx",
        "version": "",
@@ -59,7 +36,47 @@ def test_get_gps_receiver_complete_configuration_ok():
        "rate": 10
     }
 
-    configuration = get_gps_complete_receiver_configuration("gps", user_description)
+
+@pytest.fixture(scope="module")
+def user_antenna_description():
+
+    return {
+       "manufacturer": "septentrio",
+       "model": "polant",
+       "version": "",
+    }
+
+
+def test_get_gps_specifications_file_path_ok(user_receiver_description):
+    assert (
+        get_gps_receiver_specifications_file_path(user_receiver_description)
+        == get_package_share_directory("romea_gps_description")
+        + "/config/receiver/septentrio_asterx__specifications.yaml"
+    )
+
+
+def test_get_gps_receiver_specifications_ok(user_receiver_description):
+    assert (
+        get_gps_receiver_specifications(user_receiver_description)['antenna_model']
+        == "septentrio_polant_"
+    )
+
+
+def test_get_gps_antenna_geometry_file_path_ok(user_antenna_description):
+    assert (
+        get_gps_antenna_geometry_file_path(user_antenna_description)
+        == get_package_share_directory("romea_gps_description")
+        + "/config/antenna/septentrio_polant__geometry.yaml"
+    )
+
+
+def test_get_gps_antenna_geometry_ok(user_antenna_description):
+    assert get_gps_antenna_geometry(user_antenna_description)['mass'] == 0.447
+
+
+def test_get_gps_receiver_complete_configuration_ok(user_receiver_description):
+
+    configuration = get_gps_complete_receiver_configuration("gps", user_receiver_description)
 
     assert configuration["rtk_fix_uere"] == 0.02
     assert configuration["dual_antenna"] is True

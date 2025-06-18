@@ -34,17 +34,19 @@ def load_meta_description(meta_description_file_path, robot_name=None):
 
 def get_receiver_specifications(meta_description):
     return romea_gps_description.get_gps_receiver_specifications(
-        meta_description.get_manufacturer(),
-        meta_description.get_model(),
-        meta_description.get_version()
-    )
+        meta_description.get_configuration())
 
 
 def get_antenna_geometry(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
     antenna_configuration = gps_configuration["antenna_model"].split("_", 2)
+
     return romea_gps_description.get_gps_antenna_geometry(
-        antenna_configuration[0], antenna_configuration[1], antenna_configuration[2]
+        {
+            "model": antenna_configuration[1],
+            "version": antenna_configuration[2],
+            "manufacuter": antenna_configuration[0],
+        }
     )
 
 
@@ -65,8 +67,6 @@ def generate_launch_file(meta_description):
     launch_arguments = [{"name": "mode", "default": "live"}]
     namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
     configuration = get_complete_receiver_configuration(meta_description)
-    configuration["manufacturer"] = meta_description.get_manufacturer()
-    configuration["model"] = meta_description.get_model()
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
 
