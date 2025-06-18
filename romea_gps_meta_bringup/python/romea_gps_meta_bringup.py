@@ -40,12 +40,11 @@ def get_receiver_specifications(meta_description):
 def get_antenna_geometry(meta_description):
     gps_configuration = get_complete_receiver_configuration(meta_description)
     antenna_configuration = gps_configuration["antenna_model"].split("_", 2)
-
     return romea_gps_description.get_gps_antenna_geometry(
         {
             "model": antenna_configuration[1],
             "version": antenna_configuration[2],
-            "manufacuter": antenna_configuration[0],
+            "manufacturer": antenna_configuration[0],
         }
     )
 
