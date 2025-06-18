@@ -63,14 +63,16 @@ def generate_configuration_file(meta_description, extended):
 
 def generate_launch_file(meta_description):
 
+    launch_file = meta_description.get_launch_file()
     launch_arguments = [{"name": "mode", "default": "live"}]
     namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
     configuration = get_complete_receiver_configuration(meta_description)
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
+    location = meta_description.get_location()
 
     return LaunchFileGenerator("gps").generate(
-        meta_description.get_launch_file(), launch_arguments, namespaces, configuration
+        launch_file, launch_arguments, namespaces, {**configuration, **location}
     )
 
 

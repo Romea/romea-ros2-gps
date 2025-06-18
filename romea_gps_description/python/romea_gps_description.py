@@ -76,6 +76,7 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description):
     configuration['dgps_fix_uere'] = gps.get('dgps_fix_uere')
     configuration['float_rtk_fix_uere'] = gps.get('float_rtk_fix_uere')
     configuration['rtk_fix_uere'] = gps.get('rtk_fix_uere')
+    configuration['simulation_fix_uere'] = gps.get('simulation_fix_uere')
     configuration['antenna_model'] = gps.get('antenna_model')
     configuration['dual_antenna'] = gps.get('dual_antenna')
     return configuration

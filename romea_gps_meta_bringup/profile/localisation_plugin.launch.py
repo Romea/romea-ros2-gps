@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import yaml
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch_ros.actions import Node, LoadComposableNodes
@@ -25,22 +27,20 @@ def launch_setup(context, *args, **kwargs):
     restamping = LaunchConfiguration("restamping").perform(context)
     minimal_fix_quality = LaunchConfiguration("minimal_fix_quality").perform(context)
     minimal_speed_over_ground = LaunchConfiguration("minimal_speed_over_ground").perform(context)
+    with open(LaunchConfiguration("wgs84_anchor_file_path").perform(context)) as f:
+        wgs84_anchor = yaml.safe_load(f)
 
     rate = LaunchConfiguration("rate").perform(context)
-    xyz = LaunchConfiguration("xyz").perform(context)
-    dual_antenna = LaunchConfiguration("antenna").perform(context)
+    xyz = LaunchConfiguration("xyz").perform(context)[1:-1].split(",")
+    dual_antenna = LaunchConfiguration("dual_antenna").perform(context)
     gps_fix_uere = LaunchConfiguration("gps_fix_uere").perform(context)
     dgps_fix_uere = LaunchConfiguration("dgps_fix_uere").perform(context)
     float_rtk_fix_uere = LaunchConfiguration("float_rtk_fix_uere").perform(context)
     rtk_fix_uere = LaunchConfiguration("rtk_fix_uere").perform(context)
     simulation_fix_uere = LaunchConfiguration("simulation_fix_uere").perform(context)
 
-    latitude_reference = LaunchConfiguration("wgs84_anchor.latitude").perform(context)
-    longitude_reference = LaunchConfiguration("wgs84_anchor.longitude").perform(context)
-    altitude_reference = LaunchConfiguration("wgs84_anchor.altitude").perform(context)
-
     common_arguments = {
-        "package": "romea_gps_driver",
+        "package": "romea_localisation_gps_plugin",
         "name": "localisation_plugin",
         "parameters": [
             {
@@ -56,20 +56,19 @@ def launch_setup(context, *args, **kwargs):
                       "float_rtk_fix_uere": float(float_rtk_fix_uere),
                       "rtk_fix_uere": float(rtk_fix_uere),
                       "simulation_fix_uere": float(simulation_fix_uere),
-                      "xyz": xyz,
+                      "xyz":  [float(v) for v in xyz],
                     },
-                "wgs84_anchor":
-                    {
-                        "latitude": float(latitude_reference),
-                        "longitude": float(longitude_reference),
-                        "altitude": float(altitude_reference)
-                    },
+                "wgs84_anchor": wgs84_anchor
             }
         ],
+        "remappings": [
+            ("gps/nmea_sentence", "nmea_sentence")
+        ]
     }
 
     launch = LaunchDescription()
     if container == "":
+        
         if bool(dual_antenna):
             executable = "dual_antenna_gps_localisation_plugin_node"
         else:
@@ -103,6 +102,8 @@ def generate_launch_description():
             DeclareLaunchArgument("restamping", default_value="false"),
             DeclareLaunchArgument("minimal_fix_quality", default_value="4"),
             DeclareLaunchArgument("minimal_speed_over_ground", default_value="0.5"),
+            DeclareLaunchArgument("wgs84_anchor_file_path"),
+            DeclareLaunchArgument("odom_topic"),
             OpaqueFunction(function=launch_setup)
         ]
     )
