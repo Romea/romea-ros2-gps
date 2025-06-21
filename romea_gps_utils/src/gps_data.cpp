@@ -72,7 +72,7 @@ void GpsData::init_publishers_(std::shared_ptr<rclcpp::Node> node)
   vel_publisher_ = make_stamped_data_publisher<core::RMCFrame, geometry_msgs::msg::TwistStamped>(
     node, "vel", frame_id, sensor_data_qos(), true);
   nmea_sentence_publisher_ = make_stamped_data_publisher<std::string, nmea_msgs::msg::Sentence>(
-    node, "nmea", frame_id, sensor_data_qos(), true);
+    node, "nmea", frame_id, best_effort(30), true);
 }
 
 //-----------------------------------------------------------------------------
