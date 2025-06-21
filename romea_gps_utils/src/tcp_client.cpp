@@ -12,28 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "romea_gps_utils/tcp_client.hpp"
+
 #include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <strings.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <strings.h>
 #include <unistd.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <thread>
 #include <vector>
 
-#include "romea_gps_utils/tcp_client.hpp"
-
-namespace romea
-{
-namespace ros2
+namespace romea::ros2
 {
 
 TcpClient::~TcpClient()
@@ -43,7 +39,7 @@ TcpClient::~TcpClient()
   }
 }
 
-void TcpClient::connect(std::string const & ip, int port)
+void TcpClient::connect(const std::string & ip, int port)
 {
   struct hostent * hostent;
   struct sockaddr_in addr;
@@ -52,36 +48,39 @@ void TcpClient::connect(std::string const & ip, int port)
   addr.sin_family = AF_INET;
   hostent = static_cast<struct hostent *>(gethostbyname(ip.c_str()));
 
-  if (!hostent) {throw std::runtime_error("Invalid IP address");}
+  if (!hostent) {
+    throw std::runtime_error("Invalid IP address");
+  }
 
   bcopy(
     reinterpret_cast<char *>(hostent->h_addr),
     reinterpret_cast<char *>(&addr.sin_addr),
-    hostent->h_length
-  );
+    hostent->h_length);
 
   socket_ = socket(AF_INET, SOCK_STREAM, 0);
-  if (socket_ == -1) {throw std::runtime_error("Cannot create socket");}
+  if (socket_ == -1) {
+    throw std::runtime_error("Cannot create socket");
+  }
 
-  if (::connect(
-      socket_, reinterpret_cast<struct sockaddr *>(&addr),
-      sizeof(struct sockaddr_in)) < 0)
-  {
+  if (
+    ::connect(socket_, reinterpret_cast<struct sockaddr *>(&addr), sizeof(struct sockaddr_in)) <
+    0) {
     int err = errno;
     socket_ = -1;
     throw std::runtime_error(
-            "Cannot connect to " + ip + ':' + std::to_string(port) + ": " +
-            strerror(err));
+      "Cannot connect to " + ip + ':' + std::to_string(port) + ": " + strerror(err));
   }
 }
 
 std::size_t TcpClient::send(const std::vector<std::uint8_t> & data) const
 {
   std::size_t sent;
-  std::uint8_t const * str = data.data();
-  for (sent = 0; sent < data.size(); ) {
+  const std::uint8_t * str = data.data();
+  for (sent = 0; sent < data.size();) {
     int r = ::send(socket_, str + sent, data.size() - sent, 0);
-    if (r == -1) {throw std::runtime_error("Sending data failed");}
+    if (r == -1) {
+      throw std::runtime_error("Sending data failed");
+    }
     sent += r;
   }
   return sent;
@@ -89,36 +88,56 @@ std::size_t TcpClient::send(const std::vector<std::uint8_t> & data) const
 
 std::string TcpClient::readline()
 {
-  if (!buffer_.rdbuf()->in_avail()) {
-    recvlines();
-  }
+  for (;;) {
+    if (auto line = try_extract_line()) {
+      return *line;
+    }
 
-  std::string line;
-  std::getline(buffer_, line);
-  return line;
+    recv_buf();
+  }
 }
 
-void TcpClient::recvlines()
+void TcpClient::recv_buf()
 {
-  struct timeval timeout;
+  timeval timeout{timeout_ / 1000, (timeout_ % 1000) * 1000};
   fd_set set;
-
   FD_ZERO(&set);
   FD_SET(socket_, &set);
 
-  timeout.tv_sec = timeout_ / 1000;
-  timeout.tv_usec = (timeout_ % 1000) * 1000;
-
-  if (select(socket_ + 1, &set, NULL, NULL, &timeout)) {
-    int size;
-    char rstr[BUFSIZ];
-    do {
-      size = ::recv(socket_, rstr, BUFSIZ, 0);
-      if (size > 0) {buffer_ << rstr;}
-      if (size < 0) {throw std::runtime_error(strerror(errno));}
-    } while (size > 0 && rstr[size - 1] != '\n');
+  int ret = select(socket_ + 1, &set, NULL, NULL, &timeout);
+  if (ret == 0) {
+    throw std::runtime_error{"TCP receive: timeout"};
   }
+  if (ret < 0) {
+    throw std::runtime_error{std::string{"TCP receive: select error: "} + strerror(errno)};
+  }
+
+  char rstr[BUFSIZ];
+  ssize_t size = ::recv(socket_, rstr, BUFSIZ, 0);
+  if (size < 0) {
+    throw std::runtime_error{std::string{"TCP receive: recv error: "} + strerror(errno)};
+  }
+
+  buffer_.append(rstr, size);
 }
 
-}  // namespace ros2
-}  // namespace romea
+std::optional<std::string> TcpClient::try_extract_line()
+{
+  auto pos = buffer_.find('\n', buffer_start_);
+  if (pos == std::string::npos) {
+    return {};
+  }
+
+  std::string line = buffer_.substr(buffer_start_, pos + 1 - buffer_start_);
+  buffer_start_ = pos + 1;
+
+  // clear the begining of the buffer when it reach half of its max size
+  if (buffer_start_ > BUFSIZ >> 1) {
+    buffer_.erase(0, buffer_start_);
+    buffer_start_ = 0;
+  }
+
+  return line;
+}
+
+}  // namespace romea::ros2

@@ -15,26 +15,25 @@
 
 // std
 #include <memory>
+#include <rclcpp/logger.hpp>
+#include <rclcpp/logging.hpp>
 #include <string>
 #include <cmath>
 
 // romea core
-#include "romea_core_common/time/Time.hpp"
+#include <romea_core_common/time/Time.hpp>
+#include <romea_core_common/geodesy/LambertConverter.hpp>
 
 // romea ros
-#include "romea_common_utils/params/sensor_parameters.hpp"
-#include "romea_common_utils/qos.hpp"
+#include <romea_common_utils/params/sensor_parameters.hpp>
+#include <romea_common_utils/qos.hpp>
 
 // local
 #include "romea_gps_utils/gps_data_conversions.hpp"
 #include "romea_gps_utils/gps_data_diagnostics.hpp"
 #include "romea_gps_utils/gps_data.hpp"
 
-#include "romea_core_common/geodesy/LambertConverter.hpp"
-
-namespace romea
-{
-namespace ros2
+namespace romea::ros2
 {
 
 //-----------------------------------------------------------------------------
@@ -165,5 +164,5 @@ void GpsData::timer_callback_()
   diagnostics_publisher_->publish(stamp, diagnostics_->makeReport(to_romea_duration(stamp)));
 }
 
-}  // namespace ros2
-}  // namespace romea
+} // namespace romea::ros2
+

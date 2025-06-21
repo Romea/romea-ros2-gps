@@ -15,36 +15,39 @@
 #ifndef ROMEA_GPS_UTILS__TCP_CLIENT_HPP_
 #define ROMEA_GPS_UTILS__TCP_CLIENT_HPP_
 
-#include <string>
+#include <optional>
 #include <sstream>
+#include <string>
 #include <vector>
 
-namespace romea
-{
-namespace ros2
+namespace romea::ros2
 {
 
 class TcpClient
 {
 public:
-  explicit TcpClient(long timeout_ms) // NOLINT
-  : timeout_{timeout_ms}, socket_{-1} {}
+  explicit TcpClient(long timeout_ms)  // NOLINT
+  : timeout_{timeout_ms}, socket_{-1}
+  {
+    buffer_.reserve(BUFSIZ);
+  }
   ~TcpClient();
 
-  void connect(std::string const & ip, int port);
+  void connect(const std::string & ip, int port);
   std::size_t send(const std::vector<std::uint8_t> & data) const;
   std::string readline();
 
 private:
-  void recvlines();
+  void recv_buf();
+  std::optional<std::string> try_extract_line();
 
 private:
-  long timeout_; // NOLINT
+  long timeout_;  // NOLINT
   int socket_;
-  std::stringstream buffer_;
+  std::string buffer_;
+  std::size_t buffer_start_;
 };
 
-}  // namespace ros2
-}  // namespace romea
+}  // namespace romea::ros2
 
 #endif  // ROMEA_GPS_UTILS__TCP_CLIENT_HPP_
