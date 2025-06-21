@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // std
 #include <memory>
 #include <string>
@@ -23,10 +22,7 @@
 // local
 #include "romea_gps_driver/gps_serial_driver.hpp"
 
-
-namespace romea
-{
-namespace ros2
+namespace romea::ros2
 {
 
 //-----------------------------------------------------------------------------
@@ -39,13 +35,13 @@ GpsSerialDriver::GpsSerialDriver(const rclcpp::NodeOptions & options)
 {
   auto callback = std::bind(&GpsSerialDriver::rtcm_callback_, this, std::placeholders::_1);
 
-  rtcm_sub_ = node_->create_subscription<mavros_msgs::msg::RTCM>(
-    "ntrip/rtcm", best_effort(1), callback);
+  rtcm_sub_ =
+    node_->create_subscription<mavros_msgs::msg::RTCM>("ntrip/rtcm", reliable(30), callback);
 }
 
 //-----------------------------------------------------------------------------
-rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
-GpsSerialDriver::get_node_base_interface() const
+rclcpp::node_interfaces::NodeBaseInterface::SharedPtr GpsSerialDriver::get_node_base_interface()
+  const
 {
   return node_->get_node_base_interface();
 }
@@ -68,8 +64,7 @@ void GpsSerialDriver::thread_callback()
   }
 }
 
-}  // namespace ros2
-}  // namespace romea
+}  // namespace romea::ros2
 
 #include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(romea::ros2::GpsSerialDriver)
