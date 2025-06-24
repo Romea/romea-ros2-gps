@@ -33,9 +33,10 @@ def launch_setup(context, *args, **kwargs):
     name = "gps"
 
     description = {
-        "manufacturer": LaunchConfiguration("gps_manufacturer").perform(context),
-        "model": LaunchConfiguration("gps_model").perform(context),
-        "rate": int(LaunchConfiguration("gps_rate").perform(context)),
+        "manufacturer": LaunchConfiguration("manufacturer").perform(context),
+        "model": LaunchConfiguration("model").perform(context),
+        "version": LaunchConfiguration("version").perform(context),
+        "rate": int(LaunchConfiguration("rate").perform(context)),
     }
 
     location = {
@@ -64,15 +65,15 @@ def launch_setup(context, *args, **kwargs):
 
     simulation.add_action(gazebo)
 
-    spawn_gps = Node(
+    spawn_entity = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
-        name="spawn_imu",
+        name="spawn_gps",
         output="screen",
-        arguments=["-file", "/tmp/urdf", "-entity", "imu"],
+        arguments=["-file", "/tmp/urdf", "-entity", "gps"],
     )
 
-    simulation.add_action(spawn_gps)
+    simulation.add_action(spawn_entity)
 
     return [simulation]
 
@@ -81,9 +82,10 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("simulator", default_value="gazebo_classic"),
-        DeclareLaunchArgument("gps_manufacturer", default_value=""),
-        DeclareLaunchArgument("gps_model", default_value=""),
-        DeclareLaunchArgument("gps_rate", default_value="100"),
+        DeclareLaunchArgument("manufacturer", default_value=""),
+        DeclareLaunchArgument("model", default_value=""),
+        DeclareLaunchArgument("version", default_value=""),
+        DeclareLaunchArgument("rate", default_value="100"),
     ]
 
     return LaunchDescription(

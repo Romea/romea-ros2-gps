@@ -56,7 +56,7 @@ def get_gps_receiver_specification_units():
         return yaml.safe_load(f)
 
 
-def get_gps_complete_receiver_configuration(gps_name, gps_description):
+def get_gps_complete_receiver_configuration(gps_name, gps_description, gps_location):
 
     model = gps_description["model"]
     version = gps_description["version"]
@@ -67,29 +67,37 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description):
 
     gps = Device(gps_name, specifications, gps_description, specifications_units)
 
-    configuration = {}
-    configuration["model"] = gps_description["model"]
-    configuration["version"] = gps_description["version"]
-    configuration["manufacturer"] = gps_description["manufacturer"]
-    configuration['rate'] = gps.get('rate')
-    configuration['gps_fix_uere'] = gps.get('gps_fix_uere')
-    configuration['dgps_fix_uere'] = gps.get('dgps_fix_uere')
-    configuration['float_rtk_fix_uere'] = gps.get('float_rtk_fix_uere')
-    configuration['rtk_fix_uere'] = gps.get('rtk_fix_uere')
-    configuration['simulation_fix_uere'] = gps.get('simulation_fix_uere')
-    configuration['antenna_model'] = gps.get('antenna_model')
-    configuration['dual_antenna'] = gps.get('dual_antenna')
-    return configuration
+    gps_configuration = {
+        "model": gps_description["model"],
+        "version": gps_description["version"],
+        "manufacturer": gps_description["manufacturer"],
+        "rate": gps.get('rate'),
+        "gps_fix_uere": gps.get('gps_fix_uere'),
+        "dgps_fix_uere": gps.get('dgps_fix_uere'),
+        "float_rtk_fix_uere": gps.get('float_rtk_fix_uere'),
+        "rtk_fix_uere": gps.get('rtk_fix_uere'),
+        "simulation_fix_uere": gps.get('simulation_fix_uere'),
+        "antenna_model": gps.get('antenna_model'),
+        "dual_antenna": gps.get('dual_antenna')
+    }
+    
+    return {**gps_configuration, **gps_location}
+
+
+def generate_gps_configuration_file(configuration, extended):
+    units = get_gps_receiver_specification_units()
+    return generate_configuration_file(configuration, units, extended)
 
 
 def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
 
-    units = get_gps_receiver_specification_units()
-    configuration = get_gps_complete_receiver_configuration(gps_name, gps_description)
-    configuration_yaml_file = f'/tmp/{prefix}{gps_name}_urdf_configuration.yaml'
+    configuration = get_gps_complete_receiver_configuration(
+        gps_name, gps_description, gps_location
+    )
 
+    configuration_yaml_file = f'/tmp/{prefix}{gps_name}_configuration.yaml'
     with open(configuration_yaml_file, 'w') as f:
-        f.write(generate_configuration_file({**configuration, **gps_location}, units, False))
+        f.write(generate_gps_configuration_file(configuration, False))
 
     antenna_configuration = configuration["antenna_model"].split('_', 2)
     geometry_yaml_file = get_gps_antenna_geometry_file_path(
