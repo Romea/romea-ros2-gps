@@ -80,7 +80,7 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description, gps_locat
         "antenna_model": gps.get('antenna_model'),
         "dual_antenna": gps.get('dual_antenna')
     }
-    
+
     return {**gps_configuration, **gps_location}
 
 

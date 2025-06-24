@@ -29,11 +29,11 @@ import pytest
 def user_receiver_description():
 
     return {
-       "manufacturer": "ashtech",
-       "model": "proflex",
-       "version": 800,
-       "dual_antenna": False,
-       "rate": 2
+        "manufacturer": "ashtech",
+        "model": "proflex",
+        "version": 800,
+        "dual_antenna": False,
+        "rate": 2,
     }
 
 
@@ -41,9 +41,9 @@ def user_receiver_description():
 def user_antenna_description():
 
     return {
-       "manufacturer": "ashtech",
-       "model": "ash",
-       "version": 661,
+        "manufacturer": "ashtech",
+        "model": "ash",
+        "version": 661,
     }
 
 
@@ -57,7 +57,7 @@ def test_get_gps_specifications_file_path_ok(user_receiver_description):
 
 def test_get_gps_receiver_specifications_ok(user_receiver_description):
     assert (
-        get_gps_receiver_specifications(user_receiver_description)['antenna_model']
+        get_gps_receiver_specifications(user_receiver_description)["antenna_model"]
         == "ashtech_ash_661"
     )
 
@@ -71,7 +71,7 @@ def test_get_gps_antenna_geometry_file_path_ok(user_antenna_description):
 
 
 def test_get_gps_antenna_geometry_ok(user_antenna_description):
-    assert get_gps_antenna_geometry(user_antenna_description)['mass'] == 0.450
+    assert get_gps_antenna_geometry(user_antenna_description)["mass"] == 0.450
 
 
 def test_get_gps_receiver_complete_configuration_ok(user_receiver_description):

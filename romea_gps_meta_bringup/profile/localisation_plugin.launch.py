@@ -60,7 +60,6 @@ def launch_setup(context, *args, **kwargs):
 
     launch = LaunchDescription()
     if container == "":
-        
         if bool(gps_configuration["dual_antenna"]):
             executable = "dual_antenna_gps_localisation_plugin_node"
         else:
@@ -68,7 +67,6 @@ def launch_setup(context, *args, **kwargs):
 
         launch.add_action(Node(**common_arguments, executable=executable))
     else:
-
         if bool(gps_configuration["dual_antenna"]):
             plugin = "romea::ros2::DualAntennaGPSLocalisationPlugin"
         else:

@@ -41,7 +41,7 @@ def urdf_xml():
 
     ros_namespace = "ns"
 
-    with open('/tmp/urdf', 'w') as file:
+    with open("/tmp/urdf", "w") as file:
         file.write(urdf(prefix, mode, name, description, location, ros_namespace))
 
     return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))

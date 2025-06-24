@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import romea_gps_description
-import romea_common_description
 from romea_common_meta_bringup import SensorMetaDescription, LaunchFileGenerator
 
 
