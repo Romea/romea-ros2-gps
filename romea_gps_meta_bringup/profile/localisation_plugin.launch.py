@@ -30,14 +30,16 @@ def launch_setup(context, *args, **kwargs):
     with open(LaunchConfiguration("wgs84_anchor_file_path").perform(context)) as f:
         wgs84_anchor = yaml.safe_load(f)
 
-    rate = LaunchConfiguration("rate").perform(context)
-    xyz = LaunchConfiguration("xyz").perform(context)[1:-1].split(",")
-    dual_antenna = LaunchConfiguration("dual_antenna").perform(context)
-    gps_fix_uere = LaunchConfiguration("gps_fix_uere").perform(context)
-    dgps_fix_uere = LaunchConfiguration("dgps_fix_uere").perform(context)
-    float_rtk_fix_uere = LaunchConfiguration("float_rtk_fix_uere").perform(context)
-    rtk_fix_uere = LaunchConfiguration("rtk_fix_uere").perform(context)
-    simulation_fix_uere = LaunchConfiguration("simulation_fix_uere").perform(context)
+    gps_configuration = {
+        "rate": int(LaunchConfiguration("rate").perform(context)),
+        "dual_antenna": bool(LaunchConfiguration("dual_antenna").perform(context)),
+        "gps_fix_uere": float(LaunchConfiguration("gps_fix_uere").perform(context)),
+        "dgps_fix_uere": float(LaunchConfiguration("dgps_fix_uere").perform(context)),
+        "float_rtk_fix_uere": float(LaunchConfiguration("float_rtk_fix_uere").perform(context)),
+        "rtk_fix_uere": float(LaunchConfiguration("rtk_fix_uere").perform(context)),
+        "simulation_fix_uere": float(LaunchConfiguration("simulation_fix_uere").perform(context)),
+        "xyz": [float(v) for v in LaunchConfiguration("xyz").perform(context)[1:-1].split(",")],
+    }
 
     common_arguments = {
         "package": "romea_localisation_gps_plugin",
@@ -47,18 +49,8 @@ def launch_setup(context, *args, **kwargs):
                 "restamping": bool(restamping),
                 "minimal_fix_quality": int(minimal_fix_quality),
                 "minimal_speed_over_ground": float(minimal_speed_over_ground),
-                "gps":
-                    {
-                      "rate": int(rate),
-                      "dual_antenna": bool(dual_antenna),
-                      "gps_fix_uere": float(gps_fix_uere),
-                      "dgps_fix_uere": float(dgps_fix_uere),
-                      "float_rtk_fix_uere": float(float_rtk_fix_uere),
-                      "rtk_fix_uere": float(rtk_fix_uere),
-                      "simulation_fix_uere": float(simulation_fix_uere),
-                      "xyz":  [float(v) for v in xyz],
-                    },
-                "wgs84_anchor": wgs84_anchor
+                "gps": gps_configuration,
+                "wgs84_anchor": wgs84_anchor,
             }
         ],
         "remappings": [
@@ -69,7 +61,7 @@ def launch_setup(context, *args, **kwargs):
     launch = LaunchDescription()
     if container == "":
         
-        if bool(dual_antenna):
+        if bool(gps_configuration["dual_antenna"]):
             executable = "dual_antenna_gps_localisation_plugin_node"
         else:
             executable = "single_antenna_gps_localisation_plugin_node"
@@ -77,7 +69,7 @@ def launch_setup(context, *args, **kwargs):
         launch.add_action(Node(**common_arguments, executable=executable))
     else:
 
-        if bool(dual_antenna):
+        if bool(gps_configuration["dual_antenna"]):
             plugin = "romea::ros2::DualAntennaGPSLocalisationPlugin"
         else:
             plugin = "romea::ros2::SingleAntennaGPSLocalisationPlugin"
