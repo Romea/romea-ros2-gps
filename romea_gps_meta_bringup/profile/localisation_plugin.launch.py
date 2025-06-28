@@ -23,6 +23,7 @@ from launch_ros.descriptions import ComposableNode
 
 def launch_setup(context, *args, **kwargs):
 
+    mode = LaunchConfiguration("mode").perform(context)
     container = LaunchConfiguration("container").perform(context)
     restamping = LaunchConfiguration("restamping").perform(context)
     minimal_fix_quality = LaunchConfiguration("minimal_fix_quality").perform(context)
@@ -41,6 +42,9 @@ def launch_setup(context, *args, **kwargs):
         "xyz": [float(v) for v in LaunchConfiguration("xyz").perform(context)[1:-1].split(",")],
     }
 
+    odom_topic = LaunchConfiguration("odom_topic").perform(context)
+    robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
+
     common_arguments = {
         "package": "romea_localisation_gps_plugin",
         "name": "localisation_plugin",
@@ -51,10 +55,14 @@ def launch_setup(context, *args, **kwargs):
                 "minimal_speed_over_ground": float(minimal_speed_over_ground),
                 "gps": gps_configuration,
                 "wgs84_anchor": wgs84_anchor,
+                "use_sim_time": "live" not in mode,
             }
         ],
         "remappings": [
-            ("gps/nmea_sentence", "nmea_sentence")
+            ("gps/nmea_sentence", "nmea_sentence"),
+            ("vehicle_controller/odom", odom_topic),
+            ("course", f"/{robot_namespace}/localisation/course"),
+            ("position", f"/{robot_namespace}/localisation/position"),
         ]
     }
 

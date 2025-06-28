@@ -21,8 +21,7 @@ from romea_gps_meta_bringup import (
     GPSMetaDescription,
     get_receiver_specifications,
     get_antenna_geometry,
-    get_complete_receiver_configuration,
-    # get_launch_description_nodes
+    get_complete_configuration,
 )
 
 
@@ -89,6 +88,6 @@ def test_get_antenna_geometry(meta_description):
     assert gps_geometry['mass'] == 0.447
 
 
-def test_get_complete_receiver_configuration(meta_description):
-    gps_configuration = get_complete_receiver_configuration(meta_description)
+def test_get_complete_configuration(meta_description):
+    gps_configuration = get_complete_configuration(meta_description)
     assert gps_configuration['antenna_model'] == "septentrio_polant_"

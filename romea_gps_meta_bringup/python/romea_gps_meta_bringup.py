@@ -32,14 +32,14 @@ def load_meta_description(meta_description_file_path, robot_name=None):
 
 
 def get_receiver_specifications(meta_description):
-    return romea_gps_description.get_gps_receiver_specifications(
+    return romea_gps_description.get_receiver_specifications(
         meta_description.get_configuration())
 
 
 def get_antenna_geometry(meta_description):
-    gps_configuration = get_complete_receiver_configuration(meta_description)
+    gps_configuration = get_complete_configuration(meta_description)
     antenna_configuration = gps_configuration["antenna_model"].split("_", 2)
-    return romea_gps_description.get_gps_antenna_geometry(
+    return romea_gps_description.get_antenna_geometry(
         {
             "model": antenna_configuration[1],
             "version": antenna_configuration[2],
@@ -48,8 +48,8 @@ def get_antenna_geometry(meta_description):
     )
 
 
-def get_complete_receiver_configuration(meta_description):
-    return romea_gps_description.get_gps_complete_receiver_configuration(
+def get_complete_configuration(meta_description):
+    return romea_gps_description.get_complete_configuration(
         meta_description.get_name(),
         meta_description.get_configuration(),
         meta_description.get_location()
@@ -57,7 +57,7 @@ def get_complete_receiver_configuration(meta_description):
 
 
 def generate_configuration_file(meta_description, extended):
-    configuration = get_complete_receiver_configuration(meta_description)
+    configuration = get_complete_configuration(meta_description)
     return romea_gps_description.generate_gps_configuration_file(configuration, extended)
 
 
@@ -66,7 +66,7 @@ def generate_launch_file(meta_description):
     launch_file = meta_description.get_launch_file()
     launch_arguments = [{"name": "mode", "default": "live"}]
     namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
-    configuration = get_complete_receiver_configuration(meta_description)
+    configuration = get_complete_configuration(meta_description)
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
 
@@ -77,7 +77,7 @@ def generate_launch_file(meta_description):
 
 def generate_urdf_description(mode, meta_description):
 
-    return romea_gps_description.urdf(
+    return romea_gps_description.generate_urdf_description(
         meta_description.get_urdf_prefix(),
         mode,
         meta_description.get_name(),

@@ -16,61 +16,63 @@
 
 import xacro
 import yaml
-
-from romea_common_description import get_specifications_file_path
-from romea_common_description import get_geometry_file_path
-from romea_common_description import generate_configuration_file
-from romea_common_description import DeviceConfiguration as Device
+import romea_common_description
+# from romea_common_description import get_specifications_file_path
+# from romea_common_description import get_geometry_file_path
+# from romea_common_description import generate_configuration_file
+# from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
 
-def get_gps_receiver_specifications_file_path(gps_receiver_description):
-    return get_specifications_file_path(
+def get_receiver_specifications_file_path(gps_receiver_description):
+    return romea_common_description.get_specifications_file_path(
         "romea_gps_description", gps_receiver_description, "config/receiver"
     )
 
 
-def get_gps_receiver_specifications(gps_receiver_description):
-    with open(get_gps_receiver_specifications_file_path(gps_receiver_description)) as f:
+def get_receiver_specifications(gps_receiver_description):
+    with open(get_receiver_specifications_file_path(gps_receiver_description)) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_antenna_geometry_file_path(gps_antenna_description):
-    return get_geometry_file_path(
+def get_antenna_geometry_file_path(gps_antenna_description):
+    return romea_common_description.get_geometry_file_path(
         "romea_gps_description", gps_antenna_description, "config/antenna"
     )
 
 
-def get_gps_antenna_geometry(gps_antenna_description):
-    with open(get_gps_antenna_geometry_file_path(gps_antenna_description)) as f:
+def get_antenna_geometry(gps_antenna_description):
+    with open(get_antenna_geometry_file_path(gps_antenna_description)) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_receiver_specification_units_file_path():
+def get_receiver_specification_units_file_path():
     pkg_path = get_package_share_directory('romea_gps_description')
     return f'{pkg_path}/config/receiver/specifications_units.yaml'
 
 
-def get_gps_receiver_specification_units():
-    with open(get_gps_receiver_specification_units_file_path()) as f:
+def get_receiver_specification_units():
+    with open(get_receiver_specification_units_file_path()) as f:
         return yaml.safe_load(f)
 
 
-def get_gps_complete_receiver_configuration(gps_name, gps_description, gps_location):
+def get_complete_configuration(gps_name, gps_reveiver_description, gps_antennation_location):
 
-    model = gps_description["model"]
-    version = gps_description["version"]
-    manufacturer = gps_description["manufacturer"]
+    model = gps_reveiver_description["model"]
+    version = gps_reveiver_description["version"]
+    manufacturer = gps_reveiver_description["manufacturer"]
     gps_name = f'{manufacturer} {model} {version} gps called {gps_name}'
-    specifications = get_gps_receiver_specifications(gps_description)
-    specifications_units = get_gps_receiver_specification_units()
+    specifications = get_receiver_specifications(gps_reveiver_description)
+    specifications_units = get_receiver_specification_units()
 
-    gps = Device(gps_name, specifications, gps_description, specifications_units)
+    gps = romea_common_description.DeviceConfiguration(
+        gps_name, specifications, gps_reveiver_description, specifications_units
+    )
 
     gps_configuration = {
-        "model": gps_description["model"],
-        "version": gps_description["version"],
-        "manufacturer": gps_description["manufacturer"],
+        "model": gps_reveiver_description["model"],
+        "version": gps_reveiver_description["version"],
+        "manufacturer": gps_reveiver_description["manufacturer"],
         "rate": gps.get('rate'),
         "gps_fix_uere": gps.get('gps_fix_uere'),
         "dgps_fix_uere": gps.get('dgps_fix_uere'),
@@ -81,26 +83,28 @@ def get_gps_complete_receiver_configuration(gps_name, gps_description, gps_locat
         "dual_antenna": gps.get('dual_antenna')
     }
 
-    return {**gps_configuration, **gps_location}
+    return {**gps_configuration, **gps_antennation_location}
 
 
-def generate_gps_configuration_file(configuration, extended):
-    units = get_gps_receiver_specification_units()
-    return generate_configuration_file(configuration, units, extended)
+def generate_configuration_file(configuration, extended):
+    units = get_receiver_specification_units()
+    return romea_common_description.generate_configuration_file(configuration, units, extended)
 
 
-def urdf(prefix, mode, gps_name, gps_description, gps_location, ros_namespace):
+def generate_urdf_description(
+    prefix, mode, gps_name, gps_reveiver_description, gps_antenna_location, ros_namespace
+):
 
-    configuration = get_gps_complete_receiver_configuration(
-        gps_name, gps_description, gps_location
+    configuration = get_complete_configuration(
+        gps_name, gps_reveiver_description, gps_antenna_location
     )
 
     configuration_yaml_file = f'/tmp/{prefix}{gps_name}_configuration.yaml'
     with open(configuration_yaml_file, 'w') as f:
-        f.write(generate_gps_configuration_file(configuration, False))
+        f.write(generate_configuration_file(configuration, False))
 
     antenna_configuration = configuration["antenna_model"].split('_', 2)
-    geometry_yaml_file = get_gps_antenna_geometry_file_path(
+    geometry_yaml_file = get_antenna_geometry_file_path(
         {
             "manufacturer": antenna_configuration[0],
             "model": antenna_configuration[1],

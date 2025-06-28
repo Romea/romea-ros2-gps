@@ -16,7 +16,7 @@
 
 import pytest
 import xml.etree.ElementTree as ET
-from romea_gps_description import urdf
+from romea_gps_description import generate_urdf_description as urdf
 
 
 @pytest.fixture(scope="module")

@@ -15,11 +15,11 @@
 from ament_index_python.packages import get_package_share_directory
 
 from romea_gps_description import (
-    get_gps_complete_receiver_configuration,
-    get_gps_antenna_geometry_file_path,
-    get_gps_antenna_geometry,
-    get_gps_receiver_specifications_file_path,
-    get_gps_receiver_specifications,
+    get_complete_configuration,
+    get_antenna_geometry_file_path,
+    get_antenna_geometry,
+    get_receiver_specifications_file_path,
+    get_receiver_specifications,
 )
 
 import pytest
@@ -41,36 +41,36 @@ def user_antenna_description():
     }
 
 
-def test_get_gps_specifications_file_path_ok(user_receiver_description):
+def test_get_receiver_specifications_file_path_ok(user_receiver_description):
     assert (
-        get_gps_receiver_specifications_file_path(user_receiver_description)
+        get_receiver_specifications_file_path(user_receiver_description)
         == get_package_share_directory("romea_gps_description")
         + "/config/receiver/drotek_f9p__specifications.yaml"
     )
 
 
-def test_get_gps_receiver_specifications_ok(user_receiver_description):
+def test_get_receiver_specifications_ok(user_receiver_description):
     assert (
-        get_gps_receiver_specifications(user_receiver_description)["antenna_model"]
+        get_receiver_specifications(user_receiver_description)["antenna_model"]
         == "ublox_ann_mb1"
     )
 
 
-def test_get_gps_antenna_geometry_file_path_ok(user_antenna_description):
+def test_get_antenna_geometry_file_path_ok(user_antenna_description):
     assert (
-        get_gps_antenna_geometry_file_path(user_antenna_description)
+        get_antenna_geometry_file_path(user_antenna_description)
         == get_package_share_directory("romea_gps_description")
         + "/config/antenna/ublox_ann_mb1_geometry.yaml"
     )
 
 
-def test_get_gps_antenna_geometry_ok(user_antenna_description):
-    assert get_gps_antenna_geometry(user_antenna_description)["mass"] == 0.173
+def test_get_antenna_geometry_ok(user_antenna_description):
+    assert get_antenna_geometry(user_antenna_description)["mass"] == 0.173
 
 
-def test_get_gps_receiver_complete_configuration_ok(user_receiver_description):
+def test_get_complete_configuration_ok(user_receiver_description):
 
-    configuration = get_gps_complete_receiver_configuration("gps", user_receiver_description)
+    configuration = get_complete_configuration("gps", user_receiver_description, {})
 
     assert configuration["rtk_fix_uere"] == 0.1
     assert configuration["dual_antenna"] is False
