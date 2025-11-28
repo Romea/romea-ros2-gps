@@ -14,10 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# flake8: noqa Q000
-
-from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
 import sys
+
+from romea_gps_meta_bringup.meta_description import (
+    generate_launch_file,
+    GPSMetaDescription,
+)
 
 if __name__ == "__main__":
 

@@ -15,17 +15,14 @@
 # flake8: noqa Q000
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-)
-
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
 from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
-from romea_gps_meta_bringup import GPSMetaDescription, generate_launch_file
+from romea_gps_meta_bringup.meta_description import (
+    generate_launch_file,
+    GPSMetaDescription,
+)
 
 
 def get_mode(context):

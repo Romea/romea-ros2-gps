@@ -14,9 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from romea_gps_meta_bringup import GPSMetaDescription, generate_configuration_file
 import sys
+
+from romea_gps_meta_bringup.meta_description import (
+    generate_configuration_file,
+    GPSMetaDescription
+)
 
 if __name__ == "__main__":
 

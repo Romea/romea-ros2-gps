@@ -17,11 +17,11 @@
 import os
 import pytest
 
-from romea_gps_meta_bringup import (
-    GPSMetaDescription,
+from romea_gps_meta_bringup.meta_description import (
     get_receiver_specifications,
     get_antenna_geometry,
     get_complete_configuration,
+    GPSMetaDescription,
 )
 
 

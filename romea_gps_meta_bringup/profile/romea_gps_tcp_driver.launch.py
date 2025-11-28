@@ -15,7 +15,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch_ros.actions import Node, LoadComposableNodes
+from launch_ros.actions import LoadComposableNodes, Node
 from launch.substitutions import LaunchConfiguration
 from launch_ros.descriptions import ComposableNode
 

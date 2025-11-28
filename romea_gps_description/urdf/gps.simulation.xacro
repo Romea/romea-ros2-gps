@@ -1,5 +1,45 @@
 <?xml version="1.0"?>
+<!-- <sensor name="custom_odometer" type="custom" gz:type="odometer"> -->
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="common_sensing">
+    <position_sensing>
+      <horizontal>
+        <noise type="gaussian">
+          <mean>0.1</mean>
+          <stddev>0.0</stddev>
+          <bias_mean>0.0</bias_mean>
+          <bias_stddev>0.0</bias_stddev>
+        </noise>
+      </horizontal>
+      <vertical>
+        <noise type="gaussian">
+          <mean>0.1</mean>
+          <stddev>0.0</stddev>
+          <bias_mean>0.0</bias_mean>
+          <bias_stddev>0.0</bias_stddev>
+        </noise>
+      </vertical>
+    </position_sensing>
+    <velocity_sensing>
+      <horizontal>
+        <noise type="gaussian">
+          <mean>0.1</mean>
+          <stddev>0.0</stddev>
+          <bias_mean>0.0</bias_mean>
+          <bias_stddev>0.0</bias_stddev>
+        </noise>
+      </horizontal>
+      <vertical>
+        <noise type="gaussian">
+          <mean>0.1</mean>
+          <stddev>0.0</stddev>
+          <bias_mean>0.0</bias_mean>
+          <bias_stddev>0.0</bias_stddev>
+        </noise>
+      </vertical>
+    </velocity_sensing>
+  </xacro:macro>
 
   <xacro:macro
     name="gps_sensor_simulation"
@@ -10,59 +50,34 @@
     <xacro:property name="dual_antenna"
       value="${configuration['dual_antenna']}" />
 
+    <!-- <xacro:if value="${'classic' in mode}">
+      <xacro:property name="sensor_type" value="gps" />
+    </xacro:if>
+
+    <xacro:if
+      value="${'classic' not in mode}">
+      <xacro:property name="sensor_type" value="custom" />
+    </xacro:if> -->
+
+
     <xacro:if value="${'gazebo' in  mode}">
+
       <gazebo reference="${link_name}">
         <material>Gazebo/Green</material>
 
-        <sensor type="gps" name="gps_sensor">
+
+        <sensor type="custom" name="gps_sensor" gz:type="gps"
+          xmlns:gz="http://gazebosim.org/schema/gz">
           <pose>0 0 0 0 0 0</pose>
           <always_on>1</always_on>
           <update_rate>${rate}</update_rate>
 
-          <topic>${ros_namespace}/navsat</topic>
-          <gz_frame_id>${link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
-          <ignition_frame_id>${link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
 
-          <gps>
-            <position_sensing>
-              <horizontal>
-                <noise type="gaussian">
-                  <mean>0.0</mean>
-                  <stddev>0.0</stddev>
-                  <bias_mean>0.0</bias_mean>
-                  <bias_stddev>0.0</bias_stddev>
-                </noise>
-              </horizontal>
-              <vertical>
-                <noise type="gaussian">
-                  <mean>0.0</mean>
-                  <stddev>0.0</stddev>
-                  <bias_mean>0.0</bias_mean>
-                  <bias_stddev>0.0</bias_stddev>
-                </noise>
-              </vertical>
-            </position_sensing>
-            <velocity_sensing>
-              <horizontal>
-                <noise type="gaussian">
-                  <mean>0.0</mean>
-                  <stddev>0.0</stddev>
-                  <bias_mean>0.0</bias_mean>
-                  <bias_stddev>0.0</bias_stddev>
-                </noise>
-              </horizontal>
-              <vertical>
-                <noise type="gaussian">
-                  <mean>0.0</mean>
-                  <stddev>0.0</stddev>
-                  <bias_mean>0.0</bias_mean>
-                  <bias_stddev>0.0</bias_stddev>
-                </noise>
-              </vertical>
-            </velocity_sensing>
-          </gps>
+          <!-- <xacro:if value="${'classic' in mode}">
+            <gps>
+              <xacro:common_sensing />
+            </gps>
 
-          <xacro:if value="${'classic' in mode}">
             <plugin name="driver" filename="libromea_gazebo_ros_gps_sensor.so">
               <ros>
                 <namespace>${ros_namespace}</namespace>
@@ -70,12 +85,24 @@
               <frame_name>${link_name}</frame_name>
               <dual_antenna>${dual_antenna}</dual_antenna>
             </plugin>
-          </xacro:if>
 
+          </xacro:if> -->
+
+          <!-- <xacro:if value="${'classic' not in mode}"> -->
+          <topic>${ros_namespace}/nmea</topic>
+          <gz_frame_id>${link_name}</gz_frame_id>
+          <ignition_frame_id>${link_name}</ignition_frame_id>
+
+          <gz:gps>
+            <xacro:common_sensing />
+          </gz:gps>
+
+          <plugin filename="romea_gps_gazebo" name="romea::gz::NmeaGps" />
+
+          <!-- </xacro:if> -->
         </sensor>
       </gazebo>
     </xacro:if>
-
   </xacro:macro>
 
 </robot>
