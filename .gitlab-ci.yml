@@ -3,4 +3,4 @@ include:
     file: ".gitlab-ci.yml"
 
 variables:
-  PKGS_TO_BUILD_TEST: "romea_gps_bringup romea_gps_description romea_gps_utils romea_gps_driver romea_gps_gazebo_classic"
+  PKGS_TO_BUILD_TEST: "romea_gps_meta_bringup romea_gps_description romea_gps_utils romea_gps_driver romea_gps_gazebo_classic"
