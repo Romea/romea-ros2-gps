@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# flake8: noqa Q000
 
 from romea_gps_bringup import urdf_description
 import sys

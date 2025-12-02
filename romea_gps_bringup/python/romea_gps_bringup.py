@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# flake8: noqa Q000
 
 from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
 import romea_gps_description

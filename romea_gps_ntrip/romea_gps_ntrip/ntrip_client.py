@@ -1,3 +1,6 @@
+
+# flake8: noqa Q000
+
 import socket
 from base64 import b64encode
 import time

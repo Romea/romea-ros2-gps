@@ -40,8 +40,8 @@ GpsSerialDriver::GpsSerialDriver(const rclcpp::NodeOptions & options)
 }
 
 //-----------------------------------------------------------------------------
-rclcpp::node_interfaces::NodeBaseInterface::SharedPtr GpsSerialDriver::get_node_base_interface()
-  const
+rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
+GpsSerialDriver::get_node_base_interface() const
 {
   return node_->get_node_base_interface();
 }

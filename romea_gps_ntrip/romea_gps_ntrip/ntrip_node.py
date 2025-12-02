@@ -1,3 +1,5 @@
+# flake8: noqa Q000
+
 import rclpy
 from rclpy.node import Node
 from nmea_msgs.msg import Sentence

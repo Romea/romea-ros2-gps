@@ -188,6 +188,8 @@ public:
 
     int sleep = 0;
     int max_sleep{500};
+    double zb = 1000.0;
+
     do {
       world->Step(10);
       listener.spin_some();
@@ -200,8 +202,8 @@ public:
       std::cout << link->WorldLinearVel().X() << " ";
       std::cout << link->WorldLinearVel().Y() << " ";
       std::cout << link->WorldLinearVel().Z() << std::endl;
-    }  while (sleep < max_sleep &&
-      !(listener.ok() && std::abs(box->WorldPose().Pos().Z() - z) < 1));
+      zb = box->WorldPose().Pos().Z();
+    }  while (sleep < max_sleep && !(listener.ok() && std::abs(zb - z) < 1));
 
     ASSERT_LT(sleep, max_sleep);
   }

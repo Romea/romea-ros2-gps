@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+# flake8: noqa Q000
 
 @dataclass
 class NtripSTR:
