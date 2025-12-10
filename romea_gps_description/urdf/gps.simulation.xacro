@@ -50,30 +50,17 @@
     <xacro:property name="dual_antenna"
       value="${configuration['dual_antenna']}" />
 
-    <!-- <xacro:if value="${'classic' in mode}">
-      <xacro:property name="sensor_type" value="gps" />
-    </xacro:if>
-
-    <xacro:if
-      value="${'classic' not in mode}">
-      <xacro:property name="sensor_type" value="custom" />
-    </xacro:if> -->
-
-
     <xacro:if value="${'gazebo' in  mode}">
 
       <gazebo reference="${link_name}">
         <material>Gazebo/Green</material>
 
+        <xacro:if value="${'classic' in mode}">
+          <sensor type="gps" name="gps_sensor">
+            <pose>0 0 0 0 0 0</pose>
+            <always_on>1</always_on>
+            <update_rate>${rate}</update_rate>
 
-        <sensor type="custom" name="gps_sensor" gz:type="gps"
-          xmlns:gz="http://gazebosim.org/schema/gz">
-          <pose>0 0 0 0 0 0</pose>
-          <always_on>1</always_on>
-          <update_rate>${rate}</update_rate>
-
-
-          <!-- <xacro:if value="${'classic' in mode}">
             <gps>
               <xacro:common_sensing />
             </gps>
@@ -86,21 +73,32 @@
               <dual_antenna>${dual_antenna}</dual_antenna>
             </plugin>
 
-          </xacro:if> -->
+          </sensor>
+        </xacro:if>
 
-          <!-- <xacro:if value="${'classic' not in mode}"> -->
-          <topic>${ros_namespace}/nmea</topic>
-          <gz_frame_id>${link_name}</gz_frame_id>
-          <ignition_frame_id>${link_name}</ignition_frame_id>
+        <xacro:if value="${'classic' not in mode}">
 
-          <gz:gps>
-            <xacro:common_sensing />
-          </gz:gps>
+          <sensor type="custom" name="gps_sensor" gz:type="gps"
+            xmlns:gz="http://gazebosim.org/schema/gz">
+            <pose>0 0 0 0 0 0</pose>
+            <always_on>1</always_on>
+            <update_rate>${rate}</update_rate>
 
-          <plugin filename="romea_gps_gazebo" name="romea::gz::NmeaGps" />
 
-          <!-- </xacro:if> -->
-        </sensor>
+            <topic>${ros_namespace}/nmea</topic>
+            <gz_frame_id>${link_name}</gz_frame_id>
+            <ignition_frame_id>${link_name}</ignition_frame_id>
+            <dual_antenna>${dual_antenna}</dual_antenna>
+
+            <gz:gps>
+              <xacro:common_sensing />
+            </gz:gps>
+
+            <plugin filename="romea_gps_gazebo" name="romea::gz::NmeaGps" />
+
+          </sensor>
+        </xacro:if>
+
       </gazebo>
     </xacro:if>
   </xacro:macro>

@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import romea_gps_description
 from romea_common_meta_bringup.meta_description import SensorMetaDescription
 from romea_common_meta_bringup.ros_launch import LaunchFileGenerator
+
+import romea_gps_description
 
 
 class GPSMetaDescription(SensorMetaDescription):
@@ -59,7 +60,7 @@ def get_complete_configuration(meta_description):
 
 def generate_configuration_file(meta_description, extended):
     configuration = get_complete_configuration(meta_description)
-    return romea_gps_description.generate_gps_configuration_file(configuration, extended)
+    return romea_gps_description.generate_configuration_file(configuration, extended)
 
 
 def generate_launch_file(meta_description):

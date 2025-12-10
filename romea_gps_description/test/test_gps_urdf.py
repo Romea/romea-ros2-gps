@@ -19,10 +19,8 @@ import xml.etree.ElementTree as ET
 from romea_gps_description import generate_urdf_description as urdf
 
 
-@pytest.fixture(scope="module")
-def urdf_xml():
+def urdf_xml(mode):
     prefix = "robot_"
-    mode = "simulation"
     name = "gps"
 
     description = {
@@ -41,31 +39,37 @@ def urdf_xml():
 
     ros_namespace = "ns"
 
-    with open("/tmp/urdf", "w") as file:
-        file.write(urdf(prefix, mode, name, description, location, ros_namespace))
 
-    return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
+    urdf_txt = urdf(prefix, mode, name, description, location, ros_namespace)
 
+    with open("/tmp/test_gps_urdf_" + mode, "w") as file:
+        file.write(urdf_txt)
 
-def test_gps_name(urdf_xml):
-    assert urdf_xml.find("link").get("name") == "robot_gps_link"
-
-
-def test_gps_position(urdf_xml):
-    assert urdf_xml.find("joint/origin").get("xyz") == "1.0 2.0 3.0"
+    return ET.fromstring(urdf_txt)
 
 
-def test_gps_parent_link(urdf_xml):
-    assert urdf_xml.find("joint/parent").get("link") == "robot_base_link"
+def test_gps_name():
+    assert urdf_xml("simulation").find("link").get("name") == "robot_gps_link"
 
 
-def test_gps_rate(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/update_rate").text == "10"
+def test_gps_position():
+    assert urdf_xml("simulation").find("joint/origin").get("xyz") == "1.0 2.0 3.0"
 
 
-def test_has_dual_antenna(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/plugin/dual_antenna").text == "False"
+def test_gps_parent_link():
+    assert urdf_xml("simulation").find("joint/parent").get("link") == "robot_base_link"
 
 
-def test_plugin_namespace(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"
+def test_gps_rate():
+    assert urdf_xml("simulation_gazebo").find("gazebo/sensor/update_rate").text == "10"
+
+def test_has_dual_antenna_gazebo():
+    assert urdf_xml("simulation").find("gazebo/sensor/dual_antenna").text == "False"
+
+
+def test_has_dual_antenna_gazebo_classic():
+    assert urdf_xml("simulation_gazebo_classic").find("gazebo/sensor/plugin/dual_antenna").text == "False"
+
+
+def test_plugin_namespace_gazebo_classic():
+    assert urdf_xml("simulation_gazebo_classic").find("gazebo/sensor/plugin/ros/namespace").text == "ns"

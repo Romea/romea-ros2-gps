@@ -14,15 +14,15 @@
 
 from ament_index_python.packages import get_package_share_directory
 
-from romea_gps_description import (
-    get_complete_configuration,
-    get_antenna_geometry_file_path,
-    get_antenna_geometry,
-    get_receiver_specifications_file_path,
-    get_receiver_specifications,
-)
-
 import pytest
+
+from romea_gps_description import (
+    get_antenna_geometry,
+    get_antenna_geometry_file_path,
+    get_complete_configuration,
+    get_receiver_specifications,
+    get_receiver_specifications_file_path,
+)
 
 
 @pytest.fixture(scope="module")

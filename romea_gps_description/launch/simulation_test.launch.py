@@ -42,6 +42,7 @@ def launch_setup(context, *args, **kwargs):
         "model": LaunchConfiguration("model").perform(context),
         "version": LaunchConfiguration("version").perform(context),
         "rate": int(LaunchConfiguration("rate").perform(context)),
+        "dual_antenna": True,
     }
 
     location = {
@@ -105,7 +106,7 @@ def launch_setup(context, *args, **kwargs):
                 + "/launch/gz_server.launch.py"
             ),
             launch_arguments={
-                'world_sdf_file': '/home/jeanlaneurit/dev/tirrex_workspace_jazzy/src/tools/romea_simulation/romea_simulation_gazebo_worlds/worlds/gz_wgs84_empty.sdf',
+                'world_sdf_file': '/home/jean.laneurit/dev/romea_ros2_jazzy/src/tools/romea_simulation/romea_simulation_gazebo_worlds/worlds/gz_wgs84_empty.sdf',
                 'world_sdf_string': 'world',
             }.items()
         )
