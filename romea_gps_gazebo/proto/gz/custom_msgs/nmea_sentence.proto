@@ -1,0 +1,12 @@
+syntax = "proto3";
+package gz.custom_msgs;
+
+import "gz/msgs/header.proto";
+
+
+message NmeaSentence
+{
+  gz.msgs.Header header = 1;
+  string sentence = 2;
+  string frame_id = 3;
+}
