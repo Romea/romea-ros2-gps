@@ -29,6 +29,8 @@ def launch_setup(context, *args, **kwargs):
     restamping = LaunchConfiguration("restamping").perform(context)
     minimal_fix_quality = LaunchConfiguration("minimal_fix_quality").perform(context)
     minimal_speed_over_ground = LaunchConfiguration("minimal_speed_over_ground").perform(context)
+    print(context.launch_configurations)
+
     with open(LaunchConfiguration("wgs84_anchor_file_path").perform(context)) as f:
         wgs84_anchor = yaml.safe_load(f)
 

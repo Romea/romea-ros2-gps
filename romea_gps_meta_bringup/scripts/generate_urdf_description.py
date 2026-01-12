@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     mode = parameters["mode"]
     robot_namespace = parameters["robot_namespace"]
+    standalone = parameters.get("standalone", "false") == "true"
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
-    print(generate_urdf_description(mode, meta_description))
+    print(generate_urdf_description(mode, meta_description, standalone))
