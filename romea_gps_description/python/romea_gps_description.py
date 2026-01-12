@@ -42,8 +42,8 @@ def get_antenna_geometry(gps_antenna_description):
 
 
 def get_receiver_specification_units_file_path():
-    pkg_path = get_package_share_directory('romea_gps_description')
-    return f'{pkg_path}/config/receiver/specifications_units.yaml'
+    pkg_path = get_package_share_directory("romea_gps_description")
+    return f"{pkg_path}/config/receiver/specifications_units.yaml"
 
 
 def get_receiver_specification_units():
@@ -56,7 +56,7 @@ def get_complete_configuration(gps_name, gps_reveiver_description, gps_antennati
     model = gps_reveiver_description["model"]
     version = gps_reveiver_description["version"]
     manufacturer = gps_reveiver_description["manufacturer"]
-    gps_name = f'{manufacturer} {model} {version} gps called {gps_name}'
+    gps_name = f"{manufacturer} {model} {version} gps called {gps_name}"
     specifications = get_receiver_specifications(gps_reveiver_description)
     specifications_units = get_receiver_specification_units()
 
@@ -68,14 +68,14 @@ def get_complete_configuration(gps_name, gps_reveiver_description, gps_antennati
         "model": gps_reveiver_description["model"],
         "version": gps_reveiver_description["version"],
         "manufacturer": gps_reveiver_description["manufacturer"],
-        "rate": gps.get('rate'),
-        "gps_fix_uere": gps.get('gps_fix_uere'),
-        "dgps_fix_uere": gps.get('dgps_fix_uere'),
-        "float_rtk_fix_uere": gps.get('float_rtk_fix_uere'),
-        "rtk_fix_uere": gps.get('rtk_fix_uere'),
-        "simulation_fix_uere": gps.get('simulation_fix_uere'),
-        "antenna_model": gps.get('antenna_model'),
-        "dual_antenna": gps.get('dual_antenna')
+        "rate": gps.get("rate"),
+        "gps_fix_uere": gps.get("gps_fix_uere"),
+        "dgps_fix_uere": gps.get("dgps_fix_uere"),
+        "float_rtk_fix_uere": gps.get("float_rtk_fix_uere"),
+        "rtk_fix_uere": gps.get("rtk_fix_uere"),
+        "simulation_fix_uere": gps.get("simulation_fix_uere"),
+        "antenna_model": gps.get("antenna_model"),
+        "dual_antenna": gps.get("dual_antenna"),
     }
 
     return {**gps_configuration, **gps_antennation_location}
@@ -87,18 +87,24 @@ def generate_configuration_file(configuration, extended):
 
 
 def generate_urdf_description(
-    prefix, mode, gps_name, gps_reveiver_description, gps_antenna_location, ros_namespace
+    prefix,
+    mode,
+    gps_name,
+    gps_reveiver_description,
+    gps_antenna_location,
+    ros_namespace,
+    standalone=False,
 ):
 
     configuration = get_complete_configuration(
         gps_name, gps_reveiver_description, gps_antenna_location
     )
 
-    configuration_yaml_file = f'/tmp/{prefix}{gps_name}_configuration.yaml'
-    with open(configuration_yaml_file, 'w') as f:
+    configuration_yaml_file = f"/tmp/{prefix}{gps_name}_configuration.yaml"
+    with open(configuration_yaml_file, "w") as f:
         f.write(generate_configuration_file(configuration, False))
 
-    antenna_configuration = configuration["antenna_model"].split('_', 2)
+    antenna_configuration = configuration["antenna_model"].split("_", 2)
     geometry_yaml_file = get_antenna_geometry_file_path(
         {
             "manufacturer": antenna_configuration[0],
@@ -109,19 +115,20 @@ def generate_urdf_description(
 
     xacro_file = get_package_share_directory("romea_gps_description") + "/urdf/gps.xacro.urdf"
 
-    if mode == 'simulation':
-        mode += '_gazebo'
+    if mode == "simulation":
+        mode += "_gazebo"
 
     urdf_xml = xacro.process_file(
         xacro_file,
         mappings={
-            'prefix': prefix,
-            'mode': mode,
-            'name': gps_name,
-            'sensor_config_yaml_file': configuration_yaml_file,
-            'geometry_config_yaml_file': geometry_yaml_file,
-            'mesh_visual': str(True),
-            'ros_namespace': ros_namespace,
+            "prefix": prefix,
+            "mode": mode,
+            "name": gps_name,
+            "sensor_config_yaml_file": configuration_yaml_file,
+            "geometry_config_yaml_file": geometry_yaml_file,
+            "mesh_visual": str(True),
+            "ros_namespace": ros_namespace,
+            "standalone": str(standalone),
         },
     )
 

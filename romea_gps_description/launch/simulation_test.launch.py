@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import xml.etree.ElementTree as ET
-
 from ament_index_python.packages import get_package_share_directory, get_packages_with_prefixes
 
 from launch import LaunchDescription
@@ -52,15 +50,14 @@ def launch_setup(context, *args, **kwargs):
     }
 
     ros_namespace = "robot/gps"
+    standalone = True
 
-    urdf_xml = ET.fromstring(
-        generate_urdf_description(prefix, mode, name, description, location, ros_namespace)
-    )
-    child = ET.SubElement(urdf_xml, "link")
-    child.set("name", "robot_base_link")
-
-    with open('/tmp/urdf', 'w') as file:
-        file.write(ET.tostring(urdf_xml, encoding='unicode'))
+    with open("/tmp/urdf", "w") as file:
+        file.write(
+            generate_urdf_description(
+                prefix, mode, name, description, location, ros_namespace, standalone
+            )
+        )
 
     simulation = LaunchDescription()
 
@@ -100,20 +97,25 @@ def launch_setup(context, *args, **kwargs):
 
         simulation.add_action(gazebo_gui)
 
+        world_sdf_file = (
+            get_package_share_directory("romea_simulation_gazebo_worlds")
+            + "worlds/gz_gs84_empty.sdf"
+        )
+
         gazebo_server = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 get_package_share_directory("ros_gz_sim")
                 + "/launch/gz_server.launch.py"
             ),
             launch_arguments={
-                'world_sdf_file': '/home/jean.laneurit/dev/romea_ros2_jazzy/src/tools/romea_simulation/romea_simulation_gazebo_worlds/worlds/gz_wgs84_empty.sdf',
+                'world_sdf_file': world_sdf_file,
                 'world_sdf_string': 'world',
             }.items()
         )
 
         simulation.add_action(gazebo_server)
 
-        spawn_imu = IncludeLaunchDescription(
+        spawn_gps = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 get_package_share_directory('ros_gz_sim')
                 + "/launch/gz_spawn_model.launch.py"
@@ -124,16 +126,24 @@ def launch_setup(context, *args, **kwargs):
             ],
         )
 
-        simulation.add_action(spawn_imu)
+        simulation.add_action(spawn_gps)
 
         ros_bridge = Node(
-            package="ros_gz_bridge",
-            executable="parameter_bridge",
+            # package="ros_gz_bridge",
+            # executable="parameter_bridge",
+            package="romea_gps_gazebo",
+            executable="nmea_gps_gz_bridge",
             name="gps_bridge",
-            arguments=["/robot/gps/nmea@gps_msgs/msg/GPSFix@gz.msgs.NavSat"],
+            parameters=[
+                {
+                    "ros_topic_name": "/robot/gps/nmea",
+                    "gz_topic_name": "/robot/gps/nmea",
+                }
+            ]
+            # arguments=["/robot/gps/nmea@std_msgs/msg/String@gz.msgs.StringMsg"],
         )
 
-        # simulation.add_action(ros_bridge)
+        simulation.add_action(ros_bridge)
 
     return [simulation]
 

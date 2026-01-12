@@ -94,7 +94,7 @@
               <xacro:common_sensing />
             </gz:gps>
 
-            <plugin filename="romea_gps_gazebo" name="romea::gz::NmeaGps" />
+            <plugin filename="romea_gps_gazebo_plugin" name="romea::gz::NmeaGps" />
 
           </sensor>
         </xacro:if>

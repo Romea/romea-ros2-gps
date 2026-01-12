@@ -2,7 +2,7 @@
 <robot name="gps" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="gps_sensor"
-    params="prefix mode name configuration geometry mesh_visual ros_namespace">
+    params="prefix mode name configuration geometry mesh_visual ros_namespace standalone">
 
     <xacro:property name="link_name"
       value="${prefix}${name}_link" />
@@ -89,12 +89,14 @@
     </link>
 
 
-    <joint
-      name="${joint_name}" type="fixed">
-      <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}" rpy="0 0 0" />
-      <parent link="${parent_link_name}" />
-      <child link="${link_name}" />
-    </joint>
+    <xacro:if value="${standalone == False}">
+      <joint
+        name="${joint_name}" type="fixed">
+        <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}" rpy="0 0 0" />
+        <parent link="${parent_link_name}" />
+        <child link="${link_name}" />
+      </joint>
+    </xacro:if>
 
     <xacro:if value="${'simulation' in  mode}">
       <xacro:include filename="$(find romea_gps_description)/urdf/gps.simulation.xacro" />
