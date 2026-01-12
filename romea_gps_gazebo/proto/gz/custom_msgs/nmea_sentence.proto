@@ -8,5 +8,4 @@ message NmeaSentence
 {
   gz.msgs.Header header = 1;
   string sentence = 2;
-  string frame_id = 3;
 }

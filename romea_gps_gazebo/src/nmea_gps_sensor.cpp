@@ -23,6 +23,7 @@
 #include "gz/math/Angle.hh"
 #include "gz/math/Vector3.hh"
 #include "gz/msgs/Utility.hh"
+#include "gz/msgs/stringmsg.pb.h"
 #include "gz/msgs/stringmsg_v.pb.h"
 #include "gz/msgs/navsat.pb.h"
 #include "gz/sensors/Noise.hh"
@@ -91,7 +92,7 @@ bool NmeaGpsSensor::Load(const sdf::Sensor &_sdf)
   if (!::gz::sensors::Sensor::Load(_sdf))
     return false;
 
-  if (!_sdf.Element()->HasElement("ns0:gps"))
+  if (!_sdf.Element()->HasElement("ns0:gps") && !_sdf.Element()->HasElement("gz:gps"))
   {
     gzerr2 << "No custom configuration for [" << this->Topic() << "]"
            << std::endl;
@@ -125,8 +126,12 @@ bool NmeaGpsSensor::Load(const sdf::Sensor &_sdf)
   if (this->Topic().empty())
     this->SetTopic("/nmea");
 
+  // this->dataPtr->pub =
+  //   this->dataPtr->node.Advertise<::gz::custom_msgs::NmeaSentence>(this->Topic());
+
   this->dataPtr->pub =
-    this->dataPtr->node.Advertise<::gz::custom_msgs::NmeaSentence>(this->Topic());
+    this->dataPtr->node.Advertise<::gz::msgs::StringMsg>(this->Topic());
+
 
   if (!this->dataPtr->pub)
   {
@@ -349,13 +354,16 @@ void NmeaGpsSensor::publishNmeaSentence(
   const std::chrono::steady_clock::duration & stamp,
   const std::string nmea_sentence)
 {
-  ::gz::custom_msgs::NmeaSentence msg;
+  ::gz::msgs::StringMsg msg;
   *msg.mutable_header()->mutable_stamp() = ::gz::msgs::Convert(stamp);
-  msg.set_frame_id(this->FrameId());
-  msg.set_sentence(nmea_sentence);
+  msg.set_data(nmea_sentence);
+
+  auto frame_id_data = msg.mutable_header()->add_data();
+  frame_id_data->set_key("frame_id");
+  frame_id_data->add_value(this->FrameId());
 
   this->AddSequence(msg.mutable_header());
-  std::cout << msg.sentence() << std::endl;
+  // std::cout << msg.data() << std::endl;
   this->dataPtr->pub.Publish(msg);
 }
 
