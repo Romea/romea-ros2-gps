@@ -85,7 +85,7 @@
             <update_rate>${rate}</update_rate>
 
 
-            <topic>${ros_namespace}/nmea</topic>
+            <topic>${ros_namespace}/nmea_sentence</topic>
             <gz_frame_id>${link_name}</gz_frame_id>
             <ignition_frame_id>${link_name}</ignition_frame_id>
             <dual_antenna>${dual_antenna}</dual_antenna>
