@@ -15,7 +15,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, TextSubstitution
 from launch_ros.actions import LoadComposableNodes, Node
 from launch_ros.descriptions import ComposableNode
 
@@ -29,7 +29,7 @@ def launch_setup(context, *args, **kwargs):
     restamping = LaunchConfiguration("restamping").perform(context)
     minimal_fix_quality = LaunchConfiguration("minimal_fix_quality").perform(context)
     minimal_speed_over_ground = LaunchConfiguration("minimal_speed_over_ground").perform(context)
-    print(context.launch_configurations)
+    # print(context.launch_configurations)
 
     with open(LaunchConfiguration("wgs84_anchor_file_path").perform(context)) as f:
         wgs84_anchor = yaml.safe_load(f)
@@ -47,7 +47,7 @@ def launch_setup(context, *args, **kwargs):
 
     odom_topic = LaunchConfiguration("odom_topic").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-
+ 
     common_arguments = {
         "package": "romea_localisation_gps_plugin",
         "name": "localisation_plugin",
@@ -97,14 +97,20 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
+    default_odom_topic = [
+        TextSubstitution(text='/'),
+        LaunchConfiguration("robot_namespace"),
+        TextSubstitution(text='/base/controller/odom')
+    ]
+
     return LaunchDescription(
         [
             DeclareLaunchArgument("container", default_value=""),
             DeclareLaunchArgument("restamping", default_value="false"),
             DeclareLaunchArgument("minimal_fix_quality", default_value="4"),
             DeclareLaunchArgument("minimal_speed_over_ground", default_value="0.5"),
+            DeclareLaunchArgument("odom_topic", default_value=default_odom_topic),
             DeclareLaunchArgument("wgs84_anchor_file_path"),
-            DeclareLaunchArgument("odom_topic"),
             OpaqueFunction(function=launch_setup)
         ]
     )

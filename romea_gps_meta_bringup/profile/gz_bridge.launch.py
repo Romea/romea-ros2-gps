@@ -42,8 +42,8 @@ def launch_setup(context, *args, **kwargs):
         "package": "romea_gps_gazebo",
         "name": "gz_bridge",
         "parameters": [
-            {"ros_topic_name": f"{ros_namespace}/nmea"},
-            {"gz_topic_name": f"{ros_namespace}/nmea"},
+            {"ros_topic_name": f"{ros_namespace}/nmea_sentence"},
+            {"gz_topic_name": f"{ros_namespace}/nmea_sentence"},
         ],
         # "parameters": [
         #     {"bridge_names": ["imu_bridge"]},
