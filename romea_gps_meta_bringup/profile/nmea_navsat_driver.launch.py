@@ -41,7 +41,6 @@ def launch_setup(context, *args, **kwargs):
                         "frame_id": frame_id
                     }
                 ],
-                remappings=[("nmea_sentence", "nmea")],
             )
         )
 
@@ -51,7 +50,6 @@ def launch_setup(context, *args, **kwargs):
                 executable="nmea_topic_driver",
                 name="topic_driver",
                 output="screen",
-                remappings=[("nmea_sentence", "nmea")],
             )
         )
 

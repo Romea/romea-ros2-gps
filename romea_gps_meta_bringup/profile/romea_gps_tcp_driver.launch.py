@@ -21,7 +21,6 @@ from launch_ros.descriptions import ComposableNode
 
 
 def launch_setup(context, *args, **kwargs):
-
     container = LaunchConfiguration("container").perform(context)
     nmea_port = LaunchConfiguration("nmea_port").perform(context)
     rtcm_port = LaunchConfiguration("rtcm_port").perform(context)
@@ -31,7 +30,7 @@ def launch_setup(context, *args, **kwargs):
     rate = LaunchConfiguration("rate").perform(context)
     mode = LaunchConfiguration("mode").perform(context)
 
-    executable = "serial_node"
+    executable = "tcp_client_node"
     plugin = "romea::ros2::GpsTcpDriver"
 
     common_arguments = {
@@ -43,9 +42,10 @@ def launch_setup(context, *args, **kwargs):
                 "rate": int(rate),
                 "ip": ip,
                 "nmea_port": int(nmea_port),
-                "rtcm_port": int(rtcm_port)
+                "rtcm_port": int(rtcm_port),
             }
         ],
+        "remappings": [("nmea", "nmea_sentence")],
     }
 
     launch = LaunchDescription()
@@ -66,13 +66,12 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
     return LaunchDescription(
         [
             DeclareLaunchArgument("ip"),
             DeclareLaunchArgument("nmea_port"),
             DeclareLaunchArgument("rtcm_port"),
             DeclareLaunchArgument("container", default_value=""),
-            OpaqueFunction(function=launch_setup)
+            OpaqueFunction(function=launch_setup),
         ]
     )

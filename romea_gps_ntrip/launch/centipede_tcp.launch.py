@@ -42,9 +42,9 @@ def launch_setup(context):
                 'mountpoint': LaunchConfiguration('mountpoint'),
                 'frame_id': LaunchConfiguration('frame_id'),
             }],
-            remappings=[
-                ('nmea_sentence', 'gps/nmea_sentence'),
-            ],
+            # remappings=[
+            #     ('nmea_sentence', 'gps/nmea_sentence'),
+            # ],
         ),
     ]
 

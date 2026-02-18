@@ -49,7 +49,7 @@ def launch_setup(context, *args, **kwargs):
                         "authenticate": username != "" and password != ""
                     }
                 ],
-                remappings=[("nmea", "ntrip/nmea"), ("rtcm", "ntrip/rtcm")],
+                remappings=[("nmea", "nmea_sentence"), ("rtcm", "ntrip/rtcm")],
             )
         )
 

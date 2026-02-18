@@ -44,6 +44,7 @@ def launch_setup(context, *args, **kwargs):
                 "baudrate": int(baudrate)
             }
         ],
+        "remappings": [("nmea", "nmea_sentence")],
     }
 
     launch = LaunchDescription()
