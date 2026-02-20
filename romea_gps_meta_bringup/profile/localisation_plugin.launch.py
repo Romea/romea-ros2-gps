@@ -47,13 +47,13 @@ def launch_setup(context, *args, **kwargs):
 
     odom_topic = LaunchConfiguration("odom_topic").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
- 
+
     common_arguments = {
         "package": "romea_localisation_gps_plugin",
         "name": "localisation_plugin",
         "parameters": [
             {
-                "restamping": bool(restamping),
+                "restamping": restamping == "true",
                 "minimal_fix_quality": int(minimal_fix_quality),
                 "minimal_speed_over_ground": float(minimal_speed_over_ground),
                 "gps": gps_configuration,

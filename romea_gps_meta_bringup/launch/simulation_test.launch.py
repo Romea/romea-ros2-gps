@@ -16,30 +16,37 @@
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
+from launch.actions import IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+
+import romea_common_meta_bringup.ros_launch as common
+import romea_gps_meta_bringup.ros_launch as gps
+import romea_simulation_meta_bringup.ros_launch as simulation
 
 
 def launch_setup(context, *args, **kwargs):
 
-    simulator_type = LaunchConfiguration("simulator").perform(context)
-    robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
+    simulator_type = simulation.get_simulator_type(context)
+    robot_namespace = common.get_robot_namespace(context)
+    meta_description_file_path = common.get_meta_description_file_path(context)
+    wgs84_anchor_file_path = gps.get_wgs84_anchor_file_path(context)
 
-    simulation = LaunchDescription()
+    launch = LaunchDescription()
 
     simulator = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             get_package_share_directory("romea_simulation_meta_bringup")
             + "/launch/simulator.launch.py"
         ),
-        launch_arguments={'simulator_type': simulator_type}.items(),
+        launch_arguments={
+            'simulator_type': simulator_type,
+            'wgs84_anchor_file_path': wgs84_anchor_file_path,
+        }.items(),
     )
 
-    simulation.add_action(simulator)
+    launch.add_action(simulator)
 
-    gps = IncludeLaunchDescription(
+    entity = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             get_package_share_directory("romea_simulation_meta_bringup")
             + "/launch/entity.launch.py"
@@ -52,7 +59,7 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    simulation.add_action(gps)
+    launch.add_action(entity)
 
     nodes = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -66,17 +73,23 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    simulation.add_action(nodes)
+    launch.add_action(nodes)
 
-    return [simulation]
+    return [launch]
 
 
 def generate_launch_description():
 
+    default_wgs84_anchor_file_path = (
+        get_package_share_directory("romea_gps_meta_bringup")
+        + "/config/wgs84_anchors/inrae_aubiere.yaml"
+    )
+
     declared_arguments = [
-        DeclareLaunchArgument("simulator", default_value="gazebo"),
-        DeclareLaunchArgument("robot_namespace", default_value="robot"),
-        DeclareLaunchArgument("meta_description_file_path"),
+        common.declare_robot_namespace("robot"),
+        common.declare_meta_description_file_path("gps"),
+        simulation.declare_simulator_type("gazebo"),
+        gps.declare_wgs84_anchor_file_path(default_wgs84_anchor_file_path)
     ]
 
     return LaunchDescription(

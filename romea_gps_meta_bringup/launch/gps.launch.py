@@ -14,36 +14,20 @@
 
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
+from launch.actions import IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import AnyLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
 
-from romea_gps_meta_bringup.meta_description import (
-    generate_launch_file,
-    GPSMetaDescription,
-)
-
-
-def get_mode(context):
-    mode = LaunchConfiguration("mode").perform(context)
-    return "simulation_gazebo_classic" if mode == "simulation" else mode
-
-
-def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
-
-
-def get_meta_description(context):
-    meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
-    return GPSMetaDescription(meta_description_file_path, get_robot_namespace(context))
+import romea_common_meta_bringup.ros_launch as common
+from romea_gps_meta_bringup.meta_description import generate_yaml_launch_file_str
+import romea_gps_meta_bringup.ros_launch as gps
 
 
 def launch_setup(context, *args, **kwargs):
-    mode = get_mode(context)
-    meta_description = get_meta_description(context)
+    mode = common.get_mode(context)
+    meta_description = gps.get_meta_description(context)
     launch_filename = f"/tmp/{meta_description.get_filename_prefix()}driver.launch.yaml"
     with open(launch_filename, "w") as f:
-        f.write(generate_launch_file(meta_description))
+        f.write(generate_yaml_launch_file_str(meta_description))
 
     return [
         IncludeLaunchDescription(
@@ -59,9 +43,9 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("meta_description_file_path"),
-            DeclareLaunchArgument("robot_namespace", default_value=""),
-            DeclareLaunchArgument("mode", default_value="live"),
+            common.declare_mode("live"),
+            common.declare_robot_namespace(""),
+            common.declare_meta_description_file_path("gps"),
             OpaqueFunction(function=launch_setup)
         ]
     )

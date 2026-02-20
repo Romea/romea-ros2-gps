@@ -58,12 +58,12 @@ def get_complete_configuration(meta_description):
     )
 
 
-def generate_configuration_file(meta_description, extended):
+def generate_yaml_configuration_str(meta_description, extended):
     configuration = get_complete_configuration(meta_description)
     return romea_gps_description.generate_configuration_file(configuration, extended)
 
 
-def generate_launch_file(meta_description):
+def generate_yaml_launch_file_str(meta_description):
 
     launch_file = meta_description.get_launch_file()
     launch_arguments = [{"name": "mode", "default": "live"}]
@@ -81,7 +81,7 @@ def generate_launch_file(meta_description):
     )
 
 
-def generate_urdf_description(mode, meta_description, standalone=False):
+def generate_xml_urdf_description_str(mode, meta_description, standalone=False):
 
     return romea_gps_description.generate_urdf_description(
         meta_description.get_urdf_prefix(),

@@ -17,7 +17,7 @@
 import sys
 
 from romea_gps_meta_bringup.meta_description import (
-    generate_urdf_description,
+    generate_xml_urdf_description_str,
     GPSMetaDescription,
 )
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     standalone = parameters.get("standalone", "false") == "true"
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = GPSMetaDescription(meta_description_file_path, robot_namespace)
-    print(generate_urdf_description(mode, meta_description, standalone))
+    print(generate_xml_urdf_description_str(mode, meta_description, standalone))
