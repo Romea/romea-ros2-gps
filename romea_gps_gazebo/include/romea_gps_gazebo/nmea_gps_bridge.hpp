@@ -17,30 +17,37 @@
 
 // std
 #include <memory>
+#include <string>
+
+// gz
+#include "gz/transport/Node.hh"
+#include "gz/msgs/stringmsg.pb.h"
 
 // ros
-#include "gazebo/common/Plugin.hh"
-#include "gazebo/sensors/GpsSensor.hh"
-#include "gazebo/common/Events.hh"
+#include "rclcpp/rclcpp.hpp"
+#include "nmea_msgs/msg/sentence.hpp"
+
 
 namespace romea
 {
 namespace ros2
 {
 
-class GazeboRosGpsSensorPrivate;
-
-class GazeboRosGpsSensor : public gazebo::SensorPlugin
+class NmeaGpsGzBridge : public rclcpp::Node
 {
 public:
-  GazeboRosGpsSensor();
-
-  virtual ~GazeboRosGpsSensor();
-
-  void Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPtr _sdf) override;
+  explicit NmeaGpsGzBridge(const rclcpp::NodeOptions & options);
 
 private:
-  std::unique_ptr<GazeboRosGpsSensorPrivate> impl_;
+  void gz_callback_(const gz::msgs::StringMsg & msg);
+
+private:
+  std::string ros_topic_name_;
+  rclcpp::Publisher<nmea_msgs::msg::Sentence>::SharedPtr pub_;
+
+  std::string gz_topic_name_;
+  gz::transport::Node gz_node_;
+  bool gz_subscribed_{false};
 };
 
 }  // namespace ros2

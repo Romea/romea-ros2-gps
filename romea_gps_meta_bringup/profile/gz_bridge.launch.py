@@ -64,8 +64,8 @@ def launch_setup(context, *args, **kwargs):
             executable = "nmea_gps_gz_bridge"
             launch.add_action(Node(**common_arguments, executable=executable))
         else:
-            plugin = "ros_gz_bridge::RosGzBridge"
-            extra_arguments = ([{"use_intra_process_comms": True}],)
+            plugin = "romea::ros2::NmeaGpsGzBridge"
+            extra_arguments = [{"use_intra_process_comms": True}]
             launch.add_action(
                 LoadComposableNodes(
                     target_container=container,

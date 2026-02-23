@@ -73,16 +73,21 @@ if(${ROS_DISTRO} STRGREATER "iron")
     )
 
 
-    add_executable(nmea_gps_gz_bridge src/nmea_gps_bridge.cpp )
-  
-    target_include_directories(nmea_gps_gz_bridge PUBLIC
+    add_library(${PROJECT_NAME}_gz_bridge SHARED src/nmea_gps_bridge.cpp)
+
+    target_include_directories(${PROJECT_NAME}_gz_bridge  PUBLIC
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     )
 
-    ament_target_dependencies(nmea_gps_gz_bridge
+    ament_target_dependencies(${PROJECT_NAME}_gz_bridge
       rclcpp
       nmea_msgs
       ros_gz_bridge
+    )
+
+    rclcpp_components_register_node(${PROJECT_NAME}_gz_bridge
+      PLUGIN "romea::ros2::NmeaGpsGzBridge"
+      EXECUTABLE nmea_gps_gz_bridge
     )
 
     install(DIRECTORY include/
@@ -96,8 +101,15 @@ if(${ROS_DISTRO} STRGREATER "iron")
       )
 
     install(TARGETS
+      ${PROJECT_NAME}_gz_bridge
+      ARCHIVE DESTINATION lib
+      LIBRARY DESTINATION lib
+      RUNTIME DESTINATION bin
+      )
+
+    install(TARGETS
       nmea_gps_gz_bridge
-       RUNTIME DESTINATION lib/${PROJECT_NAME})
+      RUNTIME DESTINATION lib/${PROJECT_NAME})
 
     ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/${PROJECT_NAME}.dsv.in")
     ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/${PROJECT_NAME}.sh.in")
