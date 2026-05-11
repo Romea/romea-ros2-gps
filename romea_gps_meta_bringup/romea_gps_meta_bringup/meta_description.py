@@ -58,7 +58,7 @@ def get_complete_configuration(meta_description):
     )
 
 
-def generate_yaml_configuration_str(meta_description, extended):
+def generate_yaml_configuration_file_str(meta_description, extended):
     configuration = get_complete_configuration(meta_description)
     return romea_gps_description.generate_configuration_file(configuration, extended)
 
