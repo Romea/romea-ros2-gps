@@ -2,14 +2,14 @@
 
 # 1) Overview #
 
-The romea_gps_meta_bringup package provides  : 
+The romea_gps_meta_bringup package provides  :
 
 - **A launch file** for launching ROS2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
 
-   - [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)
-   - romea_gps_driver given in this package
+  - [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)
+  - romea_gps_driver given in this package
 
-   It is possible to launch a driver via command line : 
+   It is possible to launch a driver via command line :
 
     ```console
     ros2 launch romea_gps_meta_bringup gps.launch.py mode:=live robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
@@ -17,10 +17,10 @@ The romea_gps_meta_bringup package provides  :
 
    where :
 
-   - *mode* is the demonstration mode (live or simulation)	
+  - *mode* is the demonstration mode (live or simulation) 
 
-   - *robot_namespace* is the name of the robot 
-   - *meta_description_file_path* is the absolute path of meta-description file    
+  - *robot_namespace* is the name of the robot
+  - *meta_description_file_path* is the absolute path of meta-description file
 
 - A **Python module** that can load and parse GPS  meta-description files and provides functions to create URDF  descriptions, configuration files, and launch files based on a given  meta-description.
 
@@ -46,15 +46,14 @@ The romea_gps_meta_bringup package provides  :
 
   where :
 
-     - *mode* is the demonstration mode (live or simulation)
-     - *robot_namespace* is the name of the robot 
-     - *meta_description_file_path* is the absolute path of meta-description file    
-
-    
+  - *mode* is the demonstration mode (live or simulation)
+  - *robot_namespace* is the name of the robot
+  - *meta_description_file_path* is the absolute path of meta-description file
 
 # 2) GPS meta-description #
 
 The GPS meta-description file is a YAML file with five main items:
+
 - **name**: A user-defined name for the GPS receiver.
 - **launch**: A minimal yaml launch used to launch GPS driver (see Section 5).
 - **configuration**: Basic specifications of the GPS receiver.
@@ -62,6 +61,7 @@ The GPS meta-description file is a YAML file with five main items:
 - **records**: Topics to be recorded during experiments or simulation
 
 Example :
+
 ```yaml
   name: gps  # name of the gps given by user
   launch: # driver launch file
@@ -121,7 +121,7 @@ Supported drivers include [nmea_navsat_driver](https://github.com/ros-drivers/nm
             value: "115200"
   ```
   
-- **Romea gps driver using serial connection **:
+- **Romea gps driver using serial connection**:
 
   ```yaml
     - include:
@@ -164,8 +164,7 @@ You can also launch the NTRIP driver if you require differential correction, as 
 Each driver node has an associated launch file located in the profile directory of this package. If you wish to use a different driver, you  will need to create a new launch file dedicated for that driver.  It is possible to generate the full launch file in
 
 ```shell
-ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:'robot' meta_description_file_path:/home/jeanlaneurit/dev/romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
+ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:'robot' meta_description_file_path:romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
 ```
 
-ros2 run romea_gps_meta_bringup generate_launch_file.py mode:live robot_namespace:'robot' meta_description_file_path:/home/jeanlaneurit/dev/romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
-
+ros2 run romea_gps_meta_bringup generate_launch_file.py mode:live robot_namespace:'robot' meta_description_file_path:romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
