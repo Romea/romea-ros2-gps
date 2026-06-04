@@ -12,26 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // std
+#include <cmath>
 #include <memory>
 #include <string>
-#include <cmath>
 
 // ros
 #include "rclcpp/logger.hpp"
 #include "rclcpp/logging.hpp"
 
 // romea
-#include "romea_core_common/time/Time.hpp"
-#include "romea_core_common/geodesy/LambertConverter.hpp"
 #include "romea_common_utils/params/sensor_parameters.hpp"
 #include "romea_common_utils/qos.hpp"
+#include "romea_core_common/geodesy/LambertConverter.hpp"
+#include "romea_core_common/time/Time.hpp"
 
 // local
+#include "romea_gps_utils/gps_data.hpp"
 #include "romea_gps_utils/gps_data_conversions.hpp"
 #include "romea_gps_utils/gps_data_diagnostics.hpp"
-#include "romea_gps_utils/gps_data.hpp"
 
 namespace romea::ros2
 {
@@ -58,8 +57,8 @@ void GpsData::init_diagnostics_(std::shared_ptr<rclcpp::Node> node)
 {
   diagnostics_ = std::make_unique<GpsDataDiagnostics>(get_rate(node));
 
-  diagnostics_publisher_ = make_diagnostic_publisher<core::DiagnosticReport>(
-    node, "gps", 1., "", "/diagnostics", true);
+  diagnostics_publisher_ =
+    make_diagnostic_publisher<core::DiagnosticReport>(node, "gps", 1., "", "/diagnostics", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,25 +84,18 @@ void GpsData::init_timer_(std::shared_ptr<rclcpp::Node> node)
 //-----------------------------------------------------------------------------
 bool GpsData::can_be_converted_to_fix_msg_(const core::GGAFrame & gga_frame)
 {
-  return gga_frame.latitude &&
-         gga_frame.longitude &&
-         gga_frame.altitudeAboveGeoid &&
-         gga_frame.geoidHeight &&
-         gga_frame.horizontalDilutionOfPrecision &&
-         gga_frame.fixQuality;
+  return gga_frame.latitude && gga_frame.longitude && gga_frame.altitudeAboveGeoid &&
+         gga_frame.geoidHeight && gga_frame.horizontalDilutionOfPrecision && gga_frame.fixQuality;
 }
 
 //-----------------------------------------------------------------------------
 bool GpsData::can_be_converted_to_vel_msg_(const core::RMCFrame & rmc_frame)
 {
-  return rmc_frame.speedOverGroundInMeterPerSecond &&
-         rmc_frame.trackAngleTrue;
+  return rmc_frame.speedOverGroundInMeterPerSecond && rmc_frame.trackAngleTrue;
 }
 
 //-----------------------------------------------------------------------------
-void GpsData::process_gga_frame_(
-  const rclcpp::Time & stamp,
-  const std::string & nmea_sentence)
+void GpsData::process_gga_frame_(const rclcpp::Time & stamp, const std::string & nmea_sentence)
 {
   core::GGAFrame gga_frame(nmea_sentence);
   diagnostics_->updateGGARate(to_romea_duration(stamp));
@@ -114,9 +106,7 @@ void GpsData::process_gga_frame_(
 }
 
 //-----------------------------------------------------------------------------
-void GpsData::process_rmc_frame_(
-  const rclcpp::Time & stamp,
-  const std::string & nmea_sentence)
+void GpsData::process_rmc_frame_(const rclcpp::Time & stamp, const std::string & nmea_sentence)
 {
   core::RMCFrame rmc_frame(nmea_sentence);
   diagnostics_->updateRMCRate(to_romea_duration(stamp));
@@ -126,9 +116,7 @@ void GpsData::process_rmc_frame_(
 }
 
 //-----------------------------------------------------------------------------
-void GpsData::process_gsv_frame_(
-  const rclcpp::Time & stamp,
-  const std::string & nmea_sentence)
+void GpsData::process_gsv_frame_(const rclcpp::Time & stamp, const std::string & nmea_sentence)
 {
   core::GSVFrame gsv_frame(nmea_sentence);
   if (gsv_frame.sentenceNumber == gsv_frame.numberOfSentences) {

@@ -15,11 +15,11 @@
 #ifndef ROMEA_GPS_UTILS__TCP_CLIENT_HPP_
 #define ROMEA_GPS_UTILS__TCP_CLIENT_HPP_
 
+#include <cstdint>
 #include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 namespace romea::ros2
 {

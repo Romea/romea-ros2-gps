@@ -55,7 +55,6 @@ void to_ros_msg(
   msg.position_covariance[4] = std * std;
   msg.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_APPROXIMATED;
 
-
   core::FixQuality fix_quality = gga_frame.fixQuality.value();
   if (fix_quality == core::FixQuality::INVALID_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
@@ -63,9 +62,9 @@ void to_ros_msg(
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
   } else if (fix_quality == core::FixQuality::DGPS_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_SBAS_FIX;
-  } else if (fix_quality == core::FixQuality::FLOAT_RTK_FIX || // NOLINT
-    fix_quality == core::FixQuality::RTK_FIX)
-  {
+  } else if (
+    fix_quality == core::FixQuality::FLOAT_RTK_FIX ||  // NOLINT
+    fix_quality == core::FixQuality::RTK_FIX) {
     msg.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
   }
 
@@ -92,10 +91,10 @@ void to_ros_msg(
   msg.header.stamp = stamp;
   msg.header.frame_id = frame_id;
 
-  msg.twist.linear.x = rmc_frame.speedOverGroundInMeterPerSecond.value() *
-    std::sin(rmc_frame.trackAngleTrue.value());
-  msg.twist.linear.y = rmc_frame.speedOverGroundInMeterPerSecond.value() *
-    std::cos(rmc_frame.trackAngleTrue.value());
+  msg.twist.linear.x =
+    rmc_frame.speedOverGroundInMeterPerSecond.value() * std::sin(rmc_frame.trackAngleTrue.value());
+  msg.twist.linear.y =
+    rmc_frame.speedOverGroundInMeterPerSecond.value() * std::cos(rmc_frame.trackAngleTrue.value());
 }
 
 }  // namespace ros2

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef ROMEA_GPS_UTILS__GPS_DATA_CONVERSIONS_HPP_
 #define ROMEA_GPS_UTILS__GPS_DATA_CONVERSIONS_HPP_
 
@@ -20,18 +19,17 @@
 #include <string>
 
 // ros
-#include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include "nmea_msgs/msg/sentence.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
 
 // romea core
 #include "romea_core_gps/GPSReceiverEUREs.hpp"
-#include "romea_core_gps/nmea/NMEAParsing.hpp"
 #include "romea_core_gps/nmea/GGAFrame.hpp"
-#include "romea_core_gps/nmea/RMCFrame.hpp"
 #include "romea_core_gps/nmea/GSVFrame.hpp"
-
+#include "romea_core_gps/nmea/NMEAParsing.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
 
 namespace romea
 {
@@ -55,7 +53,6 @@ void to_ros_msg(
   const std::string & frame_id,
   const core::RMCFrame & rmc_frame,
   geometry_msgs::msg::TwistStamped & msg);
-
 
 }  // namespace ros2
 }  // namespace romea

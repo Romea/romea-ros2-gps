@@ -13,31 +13,29 @@
 // limitations under the License.
 
 // std
-#include <unordered_map>
 #include <memory>
-
+#include <unordered_map>
 
 // gz
-#include "gz/common/Profiler.hh"
 #include "gz/common/Console.hh"
+#include "gz/common/Profiler.hh"
 #include "gz/math/Angle.hh"
 #include "gz/math/Vector3.hh"
 #include "gz/msgs/Utility.hh"
+#include "gz/msgs/navsat.pb.h"
 #include "gz/msgs/stringmsg.pb.h"
 #include "gz/msgs/stringmsg_v.pb.h"
-#include "gz/msgs/navsat.pb.h"
 #include "gz/sensors/Noise.hh"
 #include "gz/sensors/SensorFactory.hh"
 #include "gz/sensors/SensorTypes.hh"
 #include "gz/transport/Node.hh"
 
 // romea
-#include "romea_core_gps/nmea/GGAFrame.hpp"
-#include "romea_core_gps/nmea/RMCFrame.hpp"
-#include "romea_core_gps/nmea/HDTFrame.hpp"
 #include "romea_core_common/math/EulerAngles.hpp"
+#include "romea_core_gps/nmea/GGAFrame.hpp"
+#include "romea_core_gps/nmea/HDTFrame.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
 #include "romea_gps_gazebo/nmea_gps_sensor.hpp"
-
 
 #define gzerr2 (::gz::common::Console::err(__FILE__, __LINE__))
 #define gzwarn2 (::gz::common::Console::warn(__FILE__, __LINE__))
@@ -52,28 +50,28 @@ std::chrono::milliseconds RMC_STAMP_OFFSET(0);
 std::chrono::milliseconds HDT_STAMP_OFFSET(0);
 }  // namespace
 
-
-namespace romea{
-namespace gz{
+namespace romea
+{
+namespace gz
+{
 
 class NmeaGpsSensorPrivate
 {
-  public:
-    ::gz::transport::Node node;
-    ::gz::transport::Node::Publisher pub;
-    bool loaded = false;
-    ::gz::math::Angle latitude;
-    ::gz::math::Angle longitude;
-    double altitude = 0.0;
-    ::gz::math::Angle yaw;
-    ::gz::math::Vector3d velocity;
-    bool dual_antenna = false;
-    std::unordered_map<::gz::sensors::SensorNoiseType, ::gz::sensors::NoisePtr> noises;
+public:
+  ::gz::transport::Node node;
+  ::gz::transport::Node::Publisher pub;
+  bool loaded = false;
+  ::gz::math::Angle latitude;
+  ::gz::math::Angle longitude;
+  double altitude = 0.0;
+  ::gz::math::Angle yaw;
+  ::gz::math::Vector3d velocity;
+  bool dual_antenna = false;
+  std::unordered_map<::gz::sensors::SensorNoiseType, ::gz::sensors::NoisePtr> noises;
 };
 
 //////////////////////////////////////////////////
-NmeaGpsSensor::NmeaGpsSensor()
-  : dataPtr(std::make_unique<NmeaGpsSensorPrivate>())
+NmeaGpsSensor::NmeaGpsSensor() : dataPtr(std::make_unique<NmeaGpsSensorPrivate>())
 {
 }
 
@@ -87,21 +85,16 @@ bool NmeaGpsSensor::Init()
 }
 
 //////////////////////////////////////////////////
-bool NmeaGpsSensor::Load(const sdf::Sensor &_sdf)
+bool NmeaGpsSensor::Load(const sdf::Sensor & _sdf)
 {
-  if (!::gz::sensors::Sensor::Load(_sdf))
-    return false;
+  if (!::gz::sensors::Sensor::Load(_sdf)) return false;
 
-  if (!_sdf.Element()->HasElement("ns0:gps") && !_sdf.Element()->HasElement("gz:gps"))
-  {
-    gzerr2 << "No custom configuration for [" << this->Topic() << "]"
-           << std::endl;
+  if (!_sdf.Element()->HasElement("ns0:gps") && !_sdf.Element()->HasElement("gz:gps")) {
+    gzerr2 << "No custom configuration for [" << this->Topic() << "]" << std::endl;
     return false;
   }
 
-
-  if(_sdf.Element()->HasElement("dual_antenna"))
-  {
+  if (_sdf.Element()->HasElement("dual_antenna")) {
     this->dataPtr->dual_antenna = _sdf.Element()->Get<bool>("dual_antenna");
   }
 
@@ -115,7 +108,6 @@ bool NmeaGpsSensor::Load(const sdf::Sensor &_sdf)
   //   return false;
   // }
 
-
   // if (_sdf.NmeaGpsSensor() == nullptr)
   // {
   //   gzerr << "Attempting to a load an [nmea_gps] sensor, but received "
@@ -123,20 +115,15 @@ bool NmeaGpsSensor::Load(const sdf::Sensor &_sdf)
   //   return false;
   // }
 
-  if (this->Topic().empty())
-    this->SetTopic("/nmea");
+  if (this->Topic().empty()) this->SetTopic("/nmea");
 
   // this->dataPtr->pub =
   //   this->dataPtr->node.Advertise<::gz::custom_msgs::NmeaSentence>(this->Topic());
 
-  this->dataPtr->pub =
-    this->dataPtr->node.Advertise<::gz::msgs::StringMsg>(this->Topic());
+  this->dataPtr->pub = this->dataPtr->node.Advertise<::gz::msgs::StringMsg>(this->Topic());
 
-
-  if (!this->dataPtr->pub)
-  {
-    gzerr2 << "Unable to create publisher on topic [" << this->Topic()
-           << "]." << std::endl;
+  if (!this->dataPtr->pub) {
+    gzerr2 << "Unable to create publisher on topic [" << this->Topic() << "]." << std::endl;
     return false;
   }
 
@@ -183,11 +170,10 @@ bool NmeaGpsSensor::Load(sdf::ElementPtr _sdf)
 }
 
 //////////////////////////////////////////////////
-bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration &_now)
+bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration & _now)
 {
   GZ_PROFILE("NmeaGpsSensor::Update");
-  if (!this->dataPtr->loaded)
-  {
+  if (!this->dataPtr->loaded) {
     gzerr2 << "Not loaded, update ignored.\n";
     return false;
   }
@@ -232,8 +218,8 @@ bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration &_now)
   auto gga_stamp = _now + GGA_STAMP_OFFSET;
 
   romea::core::GGAFrame gga_frame;
-  gga_frame.fixTime = romea::core::FixTime(
-    gga_stamp.count()/1000000000, gga_stamp.count()%1000000000);
+  gga_frame.fixTime =
+    romea::core::FixTime(gga_stamp.count() / 1000000000, gga_stamp.count() % 1000000000);
   gga_frame.talkerId = romea::core::TalkerId::GP;
   gga_frame.latitude = romea::core::Latitude(latitude);
   gga_frame.longitude = romea::core::Longitude(longitude);
@@ -247,8 +233,7 @@ bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration &_now)
   auto rmc_stamp = _now + RMC_STAMP_OFFSET;
 
   romea::core::RMCFrame rmc_frame;
-  rmc_frame.fixTime = core::FixTime(
-    rmc_stamp.count()/1000000000, rmc_stamp.count()%1000000000);
+  rmc_frame.fixTime = core::FixTime(rmc_stamp.count() / 1000000000, rmc_stamp.count() % 1000000000);
   rmc_frame.status = core::RMCFrame::Status::Void;
   rmc_frame.talkerId = core::TalkerId::GP;
   rmc_frame.latitude = romea::core::Latitude(latitude);
@@ -258,8 +243,7 @@ bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration &_now)
   rmc_frame.fixQuality = core::FixQuality::SIMULATION_FIX;
   publishNmeaSentence(rmc_stamp, rmc_frame.toNMEA());
 
-  if(this->dataPtr->dual_antenna)
-  {
+  if (this->dataPtr->dual_antenna) {
     auto hdt_stamp = _now + HDT_STAMP_OFFSET;
 
     romea::core::HDTFrame hdt_frame;
@@ -273,13 +257,13 @@ bool NmeaGpsSensor::Update(const std::chrono::steady_clock::duration &_now)
 }
 
 //////////////////////////////////////////////////
-void NmeaGpsSensor::SetLatitude(const ::gz::math::Angle &_latitude)
+void NmeaGpsSensor::SetLatitude(const ::gz::math::Angle & _latitude)
 {
   this->dataPtr->latitude = _latitude;
 }
 
 //////////////////////////////////////////////////
-const ::gz::math::Angle &NmeaGpsSensor::Latitude() const
+const ::gz::math::Angle & NmeaGpsSensor::Latitude() const
 {
   return this->dataPtr->latitude;
 }
@@ -297,13 +281,13 @@ double NmeaGpsSensor::Altitude() const
 }
 
 //////////////////////////////////////////////////
-void NmeaGpsSensor::SetLongitude(const ::gz::math::Angle &_longitude)
+void NmeaGpsSensor::SetLongitude(const ::gz::math::Angle & _longitude)
 {
   this->dataPtr->longitude = _longitude;
 }
 
 //////////////////////////////////////////////////
-const ::gz::math::Angle &NmeaGpsSensor::Longitude() const
+const ::gz::math::Angle & NmeaGpsSensor::Longitude() const
 {
   return this->dataPtr->longitude;
 }
@@ -315,28 +299,26 @@ void NmeaGpsSensor::SetYaw(const ::gz::math::Angle & _yaw)
 }
 
 //////////////////////////////////////////////////
-const ::gz::math::Angle &NmeaGpsSensor::Yaw() const
+const ::gz::math::Angle & NmeaGpsSensor::Yaw() const
 {
   return this->dataPtr->yaw;
 }
 
 //////////////////////////////////////////////////
-void NmeaGpsSensor::SetVelocity(const ::gz::math::Vector3d &_vel)
+void NmeaGpsSensor::SetVelocity(const ::gz::math::Vector3d & _vel)
 {
   this->dataPtr->velocity = _vel;
 }
 
 //////////////////////////////////////////////////
-const ::gz::math::Vector3d &NmeaGpsSensor::Velocity() const
+const ::gz::math::Vector3d & NmeaGpsSensor::Velocity() const
 {
   return this->dataPtr->velocity;
 }
 
 //////////////////////////////////////////////////
 void NmeaGpsSensor::SetPosition(
-  const ::gz::math::Angle &_latitude,
-  const ::gz::math::Angle &_longitude,
-  double _altitude)
+  const ::gz::math::Angle & _latitude, const ::gz::math::Angle & _longitude, double _altitude)
 {
   this->SetLatitude(_latitude);
   this->SetLongitude(_longitude);
@@ -351,8 +333,7 @@ bool NmeaGpsSensor::HasConnections() const
 
 //////////////////////////////////////////////////
 void NmeaGpsSensor::publishNmeaSentence(
-  const std::chrono::steady_clock::duration & stamp,
-  const std::string nmea_sentence)
+  const std::chrono::steady_clock::duration & stamp, const std::string nmea_sentence)
 {
   ::gz::msgs::StringMsg msg;
   *msg.mutable_header()->mutable_stamp() = ::gz::msgs::Convert(stamp);
@@ -367,8 +348,5 @@ void NmeaGpsSensor::publishNmeaSentence(
   this->dataPtr->pub.Publish(msg);
 }
 
-
 }  // namespace gz
 }  // namespace romea
-
-

@@ -21,7 +21,6 @@
 // ros
 #include "rclcpp/node.hpp"
 
-
 namespace romea
 {
 namespace ros2
@@ -42,7 +41,6 @@ double get_gps_float_rtk_fix_eure(rclcpp::Node::SharedPtr node);
 double get_gps_rtk_fix_eure(rclcpp::Node::SharedPtr node);
 double get_gps_simulation_fix_eure(rclcpp::Node::SharedPtr node);
 Eigen::Vector3d get_gps_antenna_body_position(rclcpp::Node::SharedPtr node);
-
 
 }  // namespace ros2
 }  // namespace romea

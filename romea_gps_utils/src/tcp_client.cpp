@@ -63,10 +63,9 @@ void TcpClient::connect(const std::string & ip, int port)
     throw std::runtime_error("Cannot create socket");
   }
 
-  if (::connect(
-      socket_, reinterpret_cast<struct sockaddr *>(&addr),
-      sizeof(struct sockaddr_in)) < 0)
-  {
+  if (
+    ::connect(socket_, reinterpret_cast<struct sockaddr *>(&addr), sizeof(struct sockaddr_in)) <
+    0) {
     int err = errno;
     socket_ = -1;
     auto msg = "Cannot connect to " + ip + ':' + std::to_string(port) + ": " + strerror(err);
@@ -78,7 +77,7 @@ std::size_t TcpClient::send(const std::vector<std::uint8_t> & data) const
 {
   std::size_t sent;
   const std::uint8_t * str = data.data();
-  for (sent = 0; sent < data.size(); ) {
+  for (sent = 0; sent < data.size();) {
     int r = ::send(socket_, str + sent, data.size() - sent, 0);
     if (r == -1) {
       throw std::runtime_error("Sending data failed");
@@ -90,7 +89,7 @@ std::size_t TcpClient::send(const std::vector<std::uint8_t> & data) const
 
 std::string TcpClient::readline()
 {
-  for (;; ) {
+  for (;;) {
     if (auto line = try_extract_line()) {
       return *line;
     }

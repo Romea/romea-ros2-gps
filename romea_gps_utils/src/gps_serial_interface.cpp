@@ -43,7 +43,7 @@ GpsSerialInterface::GpsSerialInterface(std::shared_ptr<rclcpp::Node> node)
     serial_.setTimeout(t);
     serial_.open();
   } catch (...) {
-    throw(std::runtime_error("Unable to connect to device " + get_device(node) ));
+    throw(std::runtime_error("Unable to connect to device " + get_device(node)));
   }
 }
 

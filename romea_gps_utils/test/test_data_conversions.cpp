@@ -21,7 +21,6 @@
 // local
 #include "romea_gps_utils/gps_data_conversions.hpp"
 
-
 //-----------------------------------------------------------------------------
 TEST(TestGPSDataConversions, to_nmea_msg)
 {
@@ -53,7 +52,6 @@ TEST(TestGPSDataConversions, to_navsat_fix_msg)
   frame.talkerId = romea::core::TalkerId::GP;
   frame.fixQuality = romea::core::FixQuality::RTK_FIX;
 
-
   romea::ros2::to_ros_msg(stamp, frame_id, frame, msg);
 
   EXPECT_DOUBLE_EQ(msg.latitude, 45.);
@@ -61,8 +59,7 @@ TEST(TestGPSDataConversions, to_navsat_fix_msg)
   EXPECT_DOUBLE_EQ(msg.altitude, 400.0);
 
   EXPECT_EQ(
-    msg.position_covariance_type,
-    sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_APPROXIMATED);
+    msg.position_covariance_type, sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_APPROXIMATED);
   EXPECT_DOUBLE_EQ(msg.position_covariance[0], 0.0036);
   EXPECT_DOUBLE_EQ(msg.position_covariance[0], 0.0036);
 

@@ -16,8 +16,8 @@
 #define ROMEA_GPS_UTILS__GPS_SERIAL_INTERFACE_HPP_
 
 // std
-#include <optional>
 #include <memory>
+#include <optional>
 #include <string>
 
 // ros
@@ -25,7 +25,6 @@
 
 // serial
 #include "serial/serial.h"
-
 
 namespace romea
 {

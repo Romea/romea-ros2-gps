@@ -12,27 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef ROMEA_GPS_DRIVER__GPS_TCP_DRIVER_HPP_
 #define ROMEA_GPS_DRIVER__GPS_TCP_DRIVER_HPP_
 
 // ros
-#include <rclcpp/rclcpp.hpp>
 #include <mavros_msgs/msg/rtcm.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 // romea
-#include <romea_gps_utils/gps_tcp_interface.hpp>
 #include <romea_gps_utils/gps_data.hpp>
+#include <romea_gps_utils/gps_tcp_interface.hpp>
 
 // local
 #include "romea_gps_driver/visibility_control.h"
-
 
 namespace romea
 {
 namespace ros2
 {
-
 
 class GpsTcpDriver
 {
@@ -44,8 +41,7 @@ public:
   virtual ~GpsTcpDriver() = default;
 
   ROMEA_GPS_DRIVER_PUBLIC
-  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
-  get_node_base_interface() const;
+  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr get_node_base_interface() const;
 
 private:
   void rtcm_callback_(mavros_msgs::msg::RTCM::SharedPtr msg);

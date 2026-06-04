@@ -19,9 +19,9 @@
 #include <memory>
 
 // ros
+#include "gazebo/common/Events.hh"
 #include "gazebo/common/Plugin.hh"
 #include "gazebo/sensors/GpsSensor.hh"
-#include "gazebo/common/Events.hh"
 
 namespace romea
 {

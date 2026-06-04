@@ -20,9 +20,9 @@
 #include <string>
 
 // gz
+#include "gz/custom_msgs/nmea_sentence.pb.h"
 #include "gz/sensors/Sensor.hh"
 #include "gz/sensors/Util.hh"
-#include "gz/custom_msgs/nmea_sentence.pb.h"
 
 // sdf
 #include "sdf/Sensor.hh"
@@ -36,43 +36,42 @@ class NmeaGpsSensorPrivate;
 
 class NmeaGpsSensor : public ::gz::sensors::Sensor
 {
-  public:
-    NmeaGpsSensor();
-    virtual ~NmeaGpsSensor();
+public:
+  NmeaGpsSensor();
+  virtual ~NmeaGpsSensor();
 
-    bool Load(const sdf::Sensor &_sdf) override;
-    bool Load(sdf::ElementPtr _sdf) override;
-    bool Init() override;
-    bool Update(const std::chrono::steady_clock::duration &_now) override;
-    bool HasConnections() const override;
+  bool Load(const sdf::Sensor & _sdf) override;
+  bool Load(sdf::ElementPtr _sdf) override;
+  bool Init() override;
+  bool Update(const std::chrono::steady_clock::duration & _now) override;
+  bool HasConnections() const override;
 
-    void SetLatitude(const ::gz::math::Angle &_latitude);
-    const ::gz::math::Angle &Latitude() const;
+  void SetLatitude(const ::gz::math::Angle & _latitude);
+  const ::gz::math::Angle & Latitude() const;
 
-    void SetLongitude(const ::gz::math::Angle &_longitude);
-    const ::gz::math::Angle &Longitude() const;
+  void SetLongitude(const ::gz::math::Angle & _longitude);
+  const ::gz::math::Angle & Longitude() const;
 
-    void SetAltitude(double _altitude);
-    double Altitude() const;
+  void SetAltitude(double _altitude);
+  double Altitude() const;
 
-    void SetYaw(const ::gz::math::Angle & _yaw);
-    const ::gz::math::Angle &Yaw() const;
+  void SetYaw(const ::gz::math::Angle & _yaw);
+  const ::gz::math::Angle & Yaw() const;
 
-    void SetPosition(
-      const ::gz::math::Angle &_latitude,
-      const ::gz::math::Angle &_longitude,
-      double _altitude = 0.0);
+  void SetPosition(
+    const ::gz::math::Angle & _latitude,
+    const ::gz::math::Angle & _longitude,
+    double _altitude = 0.0);
 
-    void SetVelocity(const ::gz::math::Vector3d &_vel);
-    const ::gz::math::Vector3d &Velocity() const;
+  void SetVelocity(const ::gz::math::Vector3d & _vel);
+  const ::gz::math::Vector3d & Velocity() const;
 
-  private:
-    void publishNmeaSentence(
-      const std::chrono::steady_clock::duration & stamp,
-      const std::string nmea_sentence);
+private:
+  void publishNmeaSentence(
+    const std::chrono::steady_clock::duration & stamp, const std::string nmea_sentence);
 
-  private:
-    std::unique_ptr<NmeaGpsSensorPrivate> dataPtr;
+private:
+  std::unique_ptr<NmeaGpsSensorPrivate> dataPtr;
 };
 
 }  // namespace gz

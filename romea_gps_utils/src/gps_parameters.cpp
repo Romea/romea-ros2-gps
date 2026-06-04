@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // romea ros
-#include "romea_common_utils/params/node_parameters.hpp"
 #include "romea_common_utils/params/eigen_parameters.hpp"
+#include "romea_common_utils/params/node_parameters.hpp"
 
 // local
 #include "romea_gps_utils/gps_parameters.hpp"
@@ -28,7 +27,7 @@ const char dgps_fix_uere_param_name[] = "gps.dgps_fix_uere";
 const char float_rtk_fix_uere_param_name[] = "gps.float_rtk_fix_uere";
 const char rtk_fix_uere_param_name[] = "gps.rtk_fix_uere";
 const char simulation_fix_uere_param_name[] = "gps.simulation_fix_uere";
-}
+}  // namespace
 
 namespace romea
 {
@@ -118,7 +117,6 @@ Eigen::Vector3d get_gps_antenna_body_position(rclcpp::Node::SharedPtr node)
 {
   return get_eigen_xyz_vector_parameter<Eigen::Vector3d>(node, "gps");
 }
-
 
 }  // namespace ros2
 }  // namespace romea

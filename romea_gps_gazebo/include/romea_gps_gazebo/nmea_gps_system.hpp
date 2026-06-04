@@ -15,30 +15,26 @@
 #ifndef ROMEA_GPS_GAZEBO__NMEA_GPS_SYSTEM_HPP_
 #define ROMEA_GPS_GAZEBO__NMEA_GPS_SYSTEM_HPP_
 
-#include "gz/utils/ImplPtr.hh"
-#include "gz/sim/config.hh"
 #include "gz/sim/System.hh"
+#include "gz/sim/config.hh"
+#include "gz/utils/ImplPtr.hh"
 
 namespace romea
 {
 namespace gz
 {
-class NmeaGps:
-    public ::gz::sim::System,
-    public ::gz::sim::ISystemPreUpdate,
-    public ::gz::sim::ISystemPostUpdate
+class NmeaGps : public ::gz::sim::System,
+                public ::gz::sim::ISystemPreUpdate,
+                public ::gz::sim::ISystemPostUpdate
 {
-  public:
-    NmeaGps();
+public:
+  NmeaGps();
 
-    void PreUpdate(
-      const ::gz::sim::UpdateInfo &_info,
-      ::gz::sim::EntityComponentManager &_ecm) final;
+  void PreUpdate(
+    const ::gz::sim::UpdateInfo & _info, ::gz::sim::EntityComponentManager & _ecm) final;
 
-
-    void PostUpdate(
-      const ::gz::sim::UpdateInfo &_info,
-      const ::gz::sim::EntityComponentManager &_ecm) final;
+  void PostUpdate(
+    const ::gz::sim::UpdateInfo & _info, const ::gz::sim::EntityComponentManager & _ecm) final;
 
   GZ_UTILS_UNIQUE_IMPL_PTR(dataPtr)
 };

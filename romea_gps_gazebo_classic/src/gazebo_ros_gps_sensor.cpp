@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // std
 #include <iostream>
 #include <memory>
@@ -27,15 +26,15 @@
 
 // ros
 #include "builtin_interfaces/msg/time.hpp"
-#include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include "nmea_msgs/msg/sentence.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
 
 // romea core
 #include "romea_core_common/math/EulerAngles.hpp"
 #include "romea_core_gps/nmea/GGAFrame.hpp"
-#include "romea_core_gps/nmea/RMCFrame.hpp"
 #include "romea_core_gps/nmea/HDTFrame.hpp"
+#include "romea_core_gps/nmea/RMCFrame.hpp"
 
 // local
 #include "romea_gps_gazebo/gazebo_ros_gps_sensor.hpp"
@@ -89,8 +88,7 @@ public:
   void OnUpdate();
 };
 
-GazeboRosGpsSensor::GazeboRosGpsSensor()
-: impl_(std::make_unique<GazeboRosGpsSensorPrivate>())
+GazeboRosGpsSensor::GazeboRosGpsSensor() : impl_(std::make_unique<GazeboRosGpsSensorPrivate>())
 {
 }
 
@@ -103,7 +101,6 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   //  impl_->ros_node_ = gazebo_ros::Node::Get(_sdf, _sensor);
   impl_->ros_node_ = gazebo_ros::Node::Get(_sdf);
 
-
   // Get QoS profiles
   const gazebo_ros::QoS & qos = impl_->ros_node_->get_qos();
 
@@ -113,8 +110,8 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
     return;
   }
 
-  impl_->sensor_parent_link_ = gazebo::physics::get_world()->EntityByName(
-    impl_->sensor_->ParentName());
+  impl_->sensor_parent_link_ =
+    gazebo::physics::get_world()->EntityByName(impl_->sensor_->ParentName());
 
   unsigned int fix_status = DEFAUlT_FIX_STATUS;
   if (_sdf->HasElement("status")) {
@@ -139,12 +136,12 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   impl_->fix_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
   using SNT = gazebo::sensors::SensorNoiseType;
-  impl_->fix_msg_->position_covariance[0] = gazebo_ros::NoiseVariance(
-    impl_->sensor_->Noise(SNT::GPS_POSITION_LATITUDE_NOISE_METERS));
-  impl_->fix_msg_->position_covariance[4] = gazebo_ros::NoiseVariance(
-    impl_->sensor_->Noise(SNT::GPS_POSITION_LONGITUDE_NOISE_METERS));
-  impl_->fix_msg_->position_covariance[8] = gazebo_ros::NoiseVariance(
-    impl_->sensor_->Noise(SNT::GPS_POSITION_ALTITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[0] =
+    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_LATITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[4] =
+    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_LONGITUDE_NOISE_METERS));
+  impl_->fix_msg_->position_covariance[8] =
+    gazebo_ros::NoiseVariance(impl_->sensor_->Noise(SNT::GPS_POSITION_ALTITUDE_NOISE_METERS));
   impl_->fix_msg_->position_covariance_type =
     sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL_KNOWN;
 
@@ -152,7 +149,6 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
     static_cast<sensor_msgs::msg::NavSatStatus::_status_type>(fix_status);
   impl_->fix_msg_->status.service =
     static_cast<sensor_msgs::msg::NavSatStatus::_service_type>(service);
-
 
   //  Init vel publisher
   impl_->vel_pub_ = impl_->ros_node_->create_publisher<geometry_msgs::msg::TwistStamped>(
@@ -176,16 +172,16 @@ void GazeboRosGpsSensor::Load(gazebo::sensors::SensorPtr _sensor, sdf::ElementPt
   impl_->nmea_hdt_sentence_msg_ = std::make_shared<nmea_msgs::msg::Sentence>();
   impl_->nmea_hdt_sentence_msg_->header.frame_id = gazebo_ros::SensorFrameID(*_sensor, *_sdf);
 
-  impl_->sensor_update_event_ = impl_->sensor_->ConnectUpdated(
-    std::bind(&GazeboRosGpsSensorPrivate::OnUpdate, impl_.get()));
+  impl_->sensor_update_event_ =
+    impl_->sensor_->ConnectUpdated(std::bind(&GazeboRosGpsSensorPrivate::OnUpdate, impl_.get()));
 }
 
 void GazeboRosGpsSensorPrivate::OnUpdate()
 {
   auto sensor_stamp = sensor_->LastUpdateTime();
 
-  auto gga_stamp = gazebo_ros::Convert<builtin_interfaces::msg::Time>(
-    sensor_stamp + GGA_STAMP_OFFSET);
+  auto gga_stamp =
+    gazebo_ros::Convert<builtin_interfaces::msg::Time>(sensor_stamp + GGA_STAMP_OFFSET);
 
   double latitude = sensor_->Latitude().Degree();
   double longitude = sensor_->Longitude().Degree();
@@ -208,8 +204,8 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
   nmea_gga_sentence_msg_->header.stamp = gga_stamp;
   nmea_sentence_pub_->publish(*nmea_gga_sentence_msg_);
 
-  auto rmc_stamp = gazebo_ros::Convert<builtin_interfaces::msg::Time>(
-    sensor_stamp + RMC_STAMP_OFFSET);
+  auto rmc_stamp =
+    gazebo_ros::Convert<builtin_interfaces::msg::Time>(sensor_stamp + RMC_STAMP_OFFSET);
 
   core::RMCFrame rmc_frame;
   rmc_frame.fixTime = core::FixTime(rmc_stamp.sec, rmc_stamp.nanosec);
@@ -225,13 +221,13 @@ void GazeboRosGpsSensorPrivate::OnUpdate()
   nmea_sentence_pub_->publish(*nmea_rmc_sentence_msg_);
 
   if (dual_antenna_) {
-    auto hdt_stamp = gazebo_ros::Convert<builtin_interfaces::msg::Time>(
-      sensor_stamp + HDT_STAMP_OFFSET);
+    auto hdt_stamp =
+      gazebo_ros::Convert<builtin_interfaces::msg::Time>(sensor_stamp + HDT_STAMP_OFFSET);
 
     core::HDTFrame hdt_frame;
     hdt_frame.talkerId = core::TalkerId::GP;
-    hdt_frame.heading = core::between0And2Pi(
-      M_PI_2 - (sensor_->Pose() + sensor_parent_link_->WorldPose()).Yaw());
+    hdt_frame.heading =
+      core::between0And2Pi(M_PI_2 - (sensor_->Pose() + sensor_parent_link_->WorldPose()).Yaw());
     hdt_frame.trueNorth = true;
     nmea_hdt_sentence_msg_->header.stamp = hdt_stamp;
     nmea_hdt_sentence_msg_->sentence = hdt_frame.toNMEA();

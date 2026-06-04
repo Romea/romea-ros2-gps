@@ -20,13 +20,12 @@
 #include <string>
 
 // gz
-#include "gz/transport/Node.hh"
 #include "gz/msgs/stringmsg.pb.h"
+#include "gz/transport/Node.hh"
 
 // ros
-#include "rclcpp/rclcpp.hpp"
 #include "nmea_msgs/msg/sentence.hpp"
-
+#include "rclcpp/rclcpp.hpp"
 
 namespace romea
 {

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // std
 #include <memory>
 #include <string>
@@ -23,20 +22,18 @@
 #include "gazebo_ros/testing_utils.hpp"
 
 // ros
-#include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include "nmea_msgs/msg/sentence.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
 
 // romea core
-#include "romea_core_gps/nmea/NMEAParsing.hpp"
 #include "romea_core_gps/nmea/GGAFrame.hpp"
+#include "romea_core_gps/nmea/NMEAParsing.hpp"
 #include "romea_core_gps/nmea/RMCFrame.hpp"
-
 
 // local
 #include "../test/test_helper.h"
-
 
 #define tol 10e-4
 
@@ -51,19 +48,20 @@ public:
   {
     auto callback = std::bind(&NmeaListener::listen_nmea_, this, std::placeholders::_1);
     auto qos = rclcpp::QoS(rclcpp::KeepLast(2)).best_effort().durability_volatile();
-    nmea_sub_ = node_->create_subscription<nmea_msgs::msg::Sentence>(
-      "/gps/nmea_sentence", qos, callback);
+    nmea_sub_ =
+      node_->create_subscription<nmea_msgs::msg::Sentence>("/gps/nmea_sentence", qos, callback);
   }
 
-  void spin_some()
+  void spin_some() { rclcpp::spin_some(node_); }
+
+  std::optional<romea::core::GGAFrame> get_gga_frame() { return gga_frame_.value(); }
+  std::optional<romea::core::RMCFrame> get_rmc_frame() { return rmc_frame_.value(); }
+  bool ok() { return gga_frame_.has_value() && rmc_frame_.has_value(); }
+  void reset()
   {
-    rclcpp::spin_some(node_);
+    gga_frame_.reset();
+    rmc_frame_.reset();
   }
-
-  std::optional<romea::core::GGAFrame> get_gga_frame() {return gga_frame_.value();}
-  std::optional<romea::core::RMCFrame> get_rmc_frame() {return rmc_frame_.value();}
-  bool ok() {return gga_frame_.has_value() && rmc_frame_.has_value();}
-  void reset() {gga_frame_.reset(); rmc_frame_.reset();}
 
 private:
   void listen_nmea_(nmea_msgs::msg::Sentence::ConstSharedPtr msg)
@@ -102,34 +100,29 @@ public:
     auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort().durability_volatile();
 
     auto fix_callback = std::bind(&NavSatListener::listen_fix_, this, std::placeholders::_1);
-    fix_sub_ = node_->create_subscription<sensor_msgs::msg::NavSatFix>(
-      "/gps/fix", qos, fix_callback);
+    fix_sub_ =
+      node_->create_subscription<sensor_msgs::msg::NavSatFix>("/gps/fix", qos, fix_callback);
 
     auto vel_callback = std::bind(&NavSatListener::listen_vel_, this, std::placeholders::_1);
-    vel_sub_ = node_->create_subscription<geometry_msgs::msg::TwistStamped>(
-      "/gps/vel", qos, vel_callback);
+    vel_sub_ =
+      node_->create_subscription<geometry_msgs::msg::TwistStamped>("/gps/vel", qos, vel_callback);
   }
 
-  void spin_some()
+  void spin_some() { rclcpp::spin_some(node_); }
+
+  std::optional<sensor_msgs::msg::NavSatFix> get_fix_msg() { return fix_msg_.value(); }
+  std::optional<geometry_msgs::msg::TwistStamped> get_vel_msg() { return vel_msg_.value(); }
+  bool ok() { return fix_msg_.has_value() && vel_msg_.has_value(); }
+  void reset()
   {
-    rclcpp::spin_some(node_);
+    fix_msg_.reset();
+    vel_msg_.reset();
   }
-
-  std::optional<sensor_msgs::msg::NavSatFix> get_fix_msg() {return fix_msg_.value();}
-  std::optional<geometry_msgs::msg::TwistStamped> get_vel_msg() {return vel_msg_.value();}
-  bool ok() {return fix_msg_.has_value() && vel_msg_.has_value();}
-  void reset() {fix_msg_.reset(); vel_msg_.reset();}
 
 private:
-  void listen_fix_(sensor_msgs::msg::NavSatFix::ConstSharedPtr msg)
-  {
-    fix_msg_ = *msg;
-  }
+  void listen_fix_(sensor_msgs::msg::NavSatFix::ConstSharedPtr msg) { fix_msg_ = *msg; }
 
-  void listen_vel_(geometry_msgs::msg::TwistStamped::ConstSharedPtr msg)
-  {
-    vel_msg_ = *msg;
-  }
+  void listen_vel_(geometry_msgs::msg::TwistStamped::ConstSharedPtr msg) { vel_msg_ = *msg; }
 
 private:
   std::shared_ptr<rclcpp::Node> node_;
@@ -140,7 +133,6 @@ private:
   std::optional<geometry_msgs::msg::TwistStamped> vel_msg_;
 };
 
-
 /// Tests the gazebo_ros_gps_sensor plugin
 class GazeboRosGpsSensorTest : public gazebo::ServerFixture
 {
@@ -148,8 +140,7 @@ public:
   void load_world()
   {
     // Load test world and start paused
-    auto world_name = std::string(TEST_DIR) +
-      std::string("/test_gazebo_ros_gps_sensor.world");
+    auto world_name = std::string(TEST_DIR) + std::string("/test_gazebo_ros_gps_sensor.world");
 
     this->Load(world_name, true);
 
@@ -173,13 +164,7 @@ public:
 
   template<typename Listener>
   void move_and_listen(
-    Listener & listener,
-    double x,
-    double y,
-    double z,
-    double vx,
-    double vy,
-    double vz)
+    Listener & listener, double x, double y, double z, double vx, double vy, double vz)
   {
     ignition::math::Pose3d box_pose;
     box_pose.Pos() = {x, y, z};
@@ -203,7 +188,7 @@ public:
       std::cout << link->WorldLinearVel().Y() << " ";
       std::cout << link->WorldLinearVel().Z() << std::endl;
       zb = box->WorldPose().Pos().Z();
-    }  while (sleep < max_sleep && !(listener.ok() && std::abs(zb - z) < 1));
+    } while (sleep < max_sleep && !(listener.ok() && std::abs(zb - z) < 1));
 
     ASSERT_LT(sleep, max_sleep);
   }
@@ -255,7 +240,6 @@ TEST_F(GazeboRosGpsSensorTest, checkNmeaMessagesInMovement)
   EXPECT_NEAR(*rmc_frame->speedOverGroundInMeterPerSecond, std::sqrt(5), 0.1);
   EXPECT_NEAR(*rmc_frame->trackAngleTrue, M_PI_2 - std::atan(2), 0.1);
 }
-
 
 TEST_F(GazeboRosGpsSensorTest, CheckNavSatMessagesAtRest)
 {

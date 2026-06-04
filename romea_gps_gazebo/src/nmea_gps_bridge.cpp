@@ -34,19 +34,17 @@ NmeaGpsGzBridge::NmeaGpsGzBridge(const rclcpp::NodeOptions & options)
 
   RCLCPP_INFO(this->get_logger(), "nmea_gps_bridge");
   rclcpp::PublisherOptions pub_options;
-  pub_options.event_callbacks.matched_callback =
-    [this](rclcpp::MatchedInfo & s) {
-      if (s.current_count > 0 && !gz_subscribed_)
-      {
-        // RCLCPP_INFO(this->get_logger(), "Subscribing to Gazebo /romea/gps/nmea...");
-        gz_node_.Subscribe(this->gz_topic_name_, &NmeaGpsGzBridge::gz_callback_, this);
-        gz_subscribed_ = true;
-      }else if (s.current_count == 0 && gz_subscribed_){
-        // RCLCPP_INFO(this->get_logger(), "No ROS subscribers, unsubscribing from Gazebo");
-        gz_node_.Unsubscribe(this->gz_topic_name_);
-        gz_subscribed_ = false;
-      }
-    };
+  pub_options.event_callbacks.matched_callback = [this](rclcpp::MatchedInfo & s) {
+    if (s.current_count > 0 && !gz_subscribed_) {
+      // RCLCPP_INFO(this->get_logger(), "Subscribing to Gazebo /romea/gps/nmea...");
+      gz_node_.Subscribe(this->gz_topic_name_, &NmeaGpsGzBridge::gz_callback_, this);
+      gz_subscribed_ = true;
+    } else if (s.current_count == 0 && gz_subscribed_) {
+      // RCLCPP_INFO(this->get_logger(), "No ROS subscribers, unsubscribing from Gazebo");
+      gz_node_.Unsubscribe(this->gz_topic_name_);
+      gz_subscribed_ = false;
+    }
+  };
 
   pub_ = this->create_publisher<nmea_msgs::msg::Sentence>(
     ros_topic_name_, rclcpp::SensorDataQoS().reliable(), pub_options);
@@ -55,12 +53,11 @@ NmeaGpsGzBridge::NmeaGpsGzBridge(const rclcpp::NodeOptions & options)
 //-----------------------------------------------------------------------------
 void NmeaGpsGzBridge::gz_callback_(const gz::msgs::StringMsg & msg)
 {
-  const auto &gz_stamp = msg.header().stamp();
-  if (pub_->get_subscription_count() == 0)
-    return;
+  const auto & gz_stamp = msg.header().stamp();
+  if (pub_->get_subscription_count() == 0) return;
 
   nmea_msgs::msg::Sentence nmea_msg;
-  nmea_msg.header.stamp =  rclcpp::Time(gz_stamp.sec(), gz_stamp.nsec(), RCL_ROS_TIME);
+  nmea_msg.header.stamp = rclcpp::Time(gz_stamp.sec(), gz_stamp.nsec(), RCL_ROS_TIME);
   nmea_msg.header.frame_id = msg.header().data(0).value(0);
   nmea_msg.sentence = msg.data();
 
@@ -69,7 +66,6 @@ void NmeaGpsGzBridge::gz_callback_(const gz::msgs::StringMsg & msg)
 
 }  // namespace ros2
 }  // namespace romea
-
 
 #include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(romea::ros2::NmeaGpsGzBridge)

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_
 #define ROMEA_GPS_UTILS__GPS_DATA_DIAGNOSTICS_HPP_
 

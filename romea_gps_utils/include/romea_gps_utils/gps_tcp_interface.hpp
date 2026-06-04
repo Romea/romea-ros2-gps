@@ -16,8 +16,8 @@
 #define ROMEA_GPS_UTILS__GPS_TCP_INTERFACE_HPP_
 
 // std
-#include <optional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -26,7 +26,6 @@
 
 // local
 #include "romea_gps_utils/tcp_client.hpp"
-
 
 namespace romea
 {

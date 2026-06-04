@@ -33,14 +33,13 @@ namespace ros2
 
 //-----------------------------------------------------------------------------
 GpsTcpInterface::GpsTcpInterface(std::shared_ptr<rclcpp::Node> node)
-: client_{3000},
-  rtcm_client_{3000}
+: client_{3000}, rtcm_client_{3000}
 {
   declare_ip(node);
   declare_parameter<int>(node, "nmea_port");
   declare_parameter<int>(node, "rtcm_port");
 
-  auto const & logger = node->get_logger();
+  const auto & logger = node->get_logger();
   std::string addr = get_ip(node);
   int nmea_port = get_parameter<int>(node, "nmea_port");
   int rtcm_port = get_parameter<int>(node, "rtcm_port");
