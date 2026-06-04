@@ -1,70 +1,302 @@
-# romea_meta_gps_meta_bringup #
+# romea_gps_meta_bringup
 
-# 1) Overview #
+## 1) Overview
 
-The romea_gps_meta_bringup package provides  :
+romea_gps_meta_bringup provides tools to describe and launch a GPS sensor using a meta-description approach.
 
-- **A launch file** for launching ROS2 GPS receiver drivers according to a user-provided meta-description file (see Section 2 for details). Supported drivers are :
+It allows defining a GPS sensor in a high-level YAML format and automatically generating consistent ROS2 artifacts such as:
 
-  - [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)
-  - romea_gps_driver given in this package
+* configuration files -> used as generic ROS2 configuration inputs
+* launch files -> used to start GPS drivers, correction clients and bridges for simulation
+* URDF description files -> used to load the GPS into simulators
 
-   It is possible to launch a driver via command line :
+This package is built on top of `romea_common_meta_bringup` and specializes it for GPS sensor integration.
 
-    ```console
-    ros2 launch romea_gps_meta_bringup gps.launch.py mode:=live robot_namespace:=robot meta_description_file_path:=/path_to_file/meta_description_file.yaml
-    ```
+It also provides launch files that allow controlling the GPS both on a real robot and in simulation.
 
-   where :
+---
 
-  - *mode* is the demonstration mode (live or simulation) 
+## 2) GPS meta-description concept
 
-  - *robot_namespace* is the name of the robot
-  - *meta_description_file_path* is the absolute path of meta-description file
+A `gps meta-description` is a YAML file that defines a GPS sensor and how it should be integrated into a system. It centralizes:
 
-- A **Python module** that can load and parse GPS  meta-description files and provides functions to create URDF  descriptions, configuration files, and launch files based on a given  meta-description.
+* GPS identification (name, namespace)
+* hardware configuration (manufacturer, model, version)
+* kinematic attachment (parent link, pose)
+* ROS2 launch description
+* optional record configuration
 
-- A **ROS2 python executables** able to create :
+---
 
-  - URDF description :
-
-    ```shell
-    ros2 run romea_gps_meta_bringup generate_urdf_description.py mode:live robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.urdf`
-    ```
-
-  - Yaml launch file
-
-    ```shell
-    ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > gps.launch.yaml`
-    ```
-
-  - Configuration file
-
-    ```shell
-    ros2 run romea_gps_meta_bringup generate_configuration_file.py extended:true  meta_description_file_path:/path_to_file/meta_description_file.yaml > gps_config.yaml
-    ```
-
-  where :
-
-  - *mode* is the demonstration mode (live or simulation)
-  - *robot_namespace* is the name of the robot
-  - *meta_description_file_path* is the absolute path of meta-description file
-
-# 2) GPS meta-description #
-
-The GPS meta-description file is a YAML file with five main items:
-
-- **name**: A user-defined name for the GPS receiver.
-- **launch**: A minimal yaml launch used to launch GPS driver (see Section 5).
-- **configuration**: Basic specifications of the GPS receiver.
-- **location**: Describes the location of the GPS receiver antenna on the robot for URDF generation.
-- **records**: Topics to be recorded during experiments or simulation
-
-Example :
+### Example meta-description
 
 ```yaml
-  name: gps  # name of the gps given by user
-  launch: # driver launch file
+name: gps
+namespace: ns
+launch:
+  - group:
+      children:
+        - include:
+            file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
+            arg:
+              - name: device
+                value: /dev/ttyUSB0
+              - name: baudrate
+                value: "115200"
+        - include:
+            file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
+            arg:
+              - name: mountpoint
+                value: MTLDR
+      if: $(eval "'$(var mode)' == 'live'")
+  - include:
+      file: $(find-pkg-share romea_gps_meta_bringup)/profile/gz_bridge.launch.py
+      arg:
+        - name: container
+          value: /gz_container
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true
+location:
+  parent_link: "base_link"
+  xyz: [1.0, 2.0, 3.0]
+records:
+  nmea_sentence: true
+  gps_fix: false
+  vel: false
+```
+
+### Launch files Profiles
+
+The `profile/` directory contains reusable ROS2 launch files dedicated to GPS bringup.
+
+These launch profiles provide predefined setups for common execution contexts, such as:
+
+* starting a real GPS driver, for example `romea_gps_serial_driver.launch.py`
+* starting a TCP GPS driver, for example `romea_gps_tcp_driver.launch.py`
+* starting a NMEA driver, for example `nmea_navsat_driver.launch.py`
+* starting an NTRIP correction client, for example `ntrip_client.launch.py`
+* starting a simulation bridge, for example `gz_bridge.launch.py`
+* starting a localization plugin that extracts observations from GPS
+* reusing standardized bringup configurations across live and simulation modes
+
+Each profile is intended to be included from the launch section of a GPS meta-description. This makes it possible to select the appropriate runtime behavior depending on the selected mode, while keeping the meta-description concise and consistent.
+
+## 3) Scripts
+
+`romea_gps_meta_bringup` provides several scripts to generate ROS2 artifacts (configuration, launch and URDF files) from a GPS meta-description; the usage and resulting outputs are described below.
+
+### Generate configuration file
+
+```bash
+ros2 run romea_gps_meta_bringup generate_configuration_file.py \
+  meta_description_file_path:path/to/gps_meta_description.yaml \
+  extended:false
+```
+
+#### Example output
+
+```yaml
+model: asterx
+version:
+manufacturer: septentrio
+rate: 10  # unit Hz
+gps_fix_uere: 3.0
+dgps_fix_uere: 0.5
+float_rtk_fix_uere: 0.1
+rtk_fix_uere: 0.02
+simulation_fix_uere: 0.02
+antenna_model: septentrio_polant_
+dual_antenna: true
+parent_link: base_link
+xyz: [1.0, 2.0, 3.0]  # unit m
+```
+
+---
+
+### Generate URDF Description
+
+Generates the GPS URDF description from the meta-description.
+
+```bash
+ros2 run romea_gps_meta_bringup generate_urdf_description.py \
+  robot_namespace:robot \
+  meta_description_file_path:path/to/gps_meta_description.yaml \
+  mode:simulation_gazebo
+```
+
+The generated URDF description defines how the GPS is attached to the robot model. It includes the GPS link, the fixed joint between the parent link and the GPS frame, and, in simulation mode, the Gazebo sensor description.
+
+#### Example output when using gazebo simulation
+
+```xml
+<link name="robot_gps_link">
+  ...
+</link>
+
+<joint name="robot_gps_joint" type="fixed">
+  <origin xyz="1.0 2.0 3.0" rpy="0 0 0"/>
+  <parent link="robot_base_link"/>
+  <child link="robot_gps_link"/>
+</joint>
+
+<gazebo reference="robot_gps_link">
+  <sensor name="robot_gps" type="navsat">
+    <update_rate>10</update_rate>
+    ...
+    <plugin filename="gz-sim-navsat-system" name="gz::sim::systems::NavSat"/>
+  </sensor>
+</gazebo>
+```
+
+This URDF description can then be loaded into the robot description and used by Gazebo to publish simulated GPS measurements.
+
+It can also be directly concatenated with mobile base and other device URDF descriptions to build a complete robot model.
+
+### Generate launch file
+
+Generates a YAML ROS2 launch file from the meta-description.
+
+```bash
+ros2 run romea_gps_meta_bringup generate_launch_file.py \
+  robot_namespace:robot \
+  meta_description_file_path:path/to/gps_meta_description.yaml
+```
+
+#### Example output
+
+```yaml
+launch:
+- arg: {name: mode, default: live}
+- group:
+  - push-ros-namespace: {namespace: robot}
+  - push-ros-namespace: {namespace: ns}
+  - push-ros-namespace: {namespace: gps}
+  - let: {name: model, value: asterx}
+  - let: {name: version, value: ''}
+  - let: {name: manufacturer, value: septentrio}
+  - let: {name: rate, value: '10'}
+  - let: {name: gps_fix_uere, value: '3.0'}
+  - let: {name: dgps_fix_uere, value: '0.5'}
+  - let: {name: float_rtk_fix_uere, value: '0.1'}
+  - let: {name: rtk_fix_uere, value: '0.02'}
+  - let: {name: simulation_fix_uere, value: '0.02'}
+  - let: {name: antenna_model, value: septentrio_polant_}
+  - let: {name: dual_antenna, value: 'true'}
+  - let: {name: parent_link, value: base_link}
+  - let: {name: xyz, value: '[1.0, 2.0, 3.0]'}
+  - let: {name: tf_prefix, value: robot_}
+  - let: {name: frame_id, value: robot_gps_link}
+  - group:
+      children:
+      - include:
+          file: $(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py
+          arg: [{name: device, value: /dev/ttyUSB0}, {name: baudrate, value: '115200'}]
+      - include:
+          file: $(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py
+          arg: [{name: mountpoint, value: MTLDR}]
+      if: $(eval "'$(var mode)' == 'live'")
+  - include:
+      file: $(find-pkg-share romea_gps_meta_bringup)/profile/gz_bridge.launch.py
+      arg: [{name: container, value: /gz_container}]
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
+```
+
+#### Notes
+
+* the launch file is generated from the `launch` section of the meta-description
+* namespaces are automatically constructed (`robot -> ns -> gps`)
+* all configuration values are exposed as `let` variables
+* the selected profiles are included at the end
+
+This file can be used directly with ROS2 or generated dynamically using `gps.launch.py`.
+
+## 4) Usage
+
+The package provides **two main launch files**:
+
+* `gps.launch.py` -> for dynamic bringup (live or simulation mode)
+* `simulation_test.launch.py` -> for full simulation test
+
+---
+
+### Dynamic bringup
+
+When using `gps.launch.py`, the following steps are performed automatically:
+
+```bash
+ros2 launch romea_gps_meta_bringup gps.launch.py \
+  mode:=live \
+  robot_namespace:=robot \
+  meta_description_file_path:=path/to/gps_meta_description.yaml
+```
+
+* generation of the launch file
+* execution of the generated launch file
+
+#### Live or simulation mode
+
+The `mode` parameter controls the behavior:
+
+* `live` -> starts the GPS driver, optional correction client and localization plugin
+* `simulation_<simulator>` -> starts simulation bridge
+
+---
+
+### Simulation test
+
+For a complete simulation setup, use:
+
+```bash
+ros2 launch romea_gps_meta_bringup simulation_test.launch.py \
+  simulator_type:=gazebo \
+  robot_namespace:=robot \
+  meta_description_file_path:=path/to/gps_meta_description.yaml
+```
+
+This launch file:
+
+* starts the simulator
+* generates and loads the URDF
+* spawns the GPS in simulation
+* calls `gps.launch.py` to start the gazebo bridge
+
+---
+
+## 5) Supported GPS receivers
+
+Currently, the following GPS receiver manufacturers and models are supported:
+
+| Manufacturer | Model | Version |
+|:------------:|:-----:|:-------:|
+| ashtech | proflex | 800 |
+| drotek | f9p |  |
+| septentrio | asterx |  |
+| ublox | evk | m8 |
+
+Details and specifications for each model can be found in the config directory of the `romea_gps_description` package.
+
+## 6) Supported GPS ROS2 Drivers
+
+The package currently supports the following ROS2 GPS drivers and related components:
+
+* `romea_gps_driver`
+* `nmea_navsat_driver`
+* `ntrip_client`
+* `romea_gps_gazebo`
+* `romea_localisation_gps_plugin`
+
+Dedicated launch profiles are provided in the `profile/` directory to start each supported driver through a standardized interface.
+
+These profiles can be included directly from the launch section of the GPS meta-description.
+
+#### Example using romea_gps_driver with serial connection
+
+```yaml
+launch:
   - include:
       file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
       arg:
@@ -72,88 +304,27 @@ Example :
           value: /dev/ttyUSB0
         - name: baudrate
           value: "115200"
-  - include:
-      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
-      arg:
-        - name: mountpoint
-          value: MTLDR
-configuration: # GPS basic specifications
-    type: drotek  #  type of GPS receiver
-    model: f9p  # model of GPS receiver
-    rate: 10 # frame rate in hz
-location: # geometry configuration 
-  parent_link: "base_link"  # name of parent link where is located the GPS antenna
-  xyz: [0.0, 0.0, 1.5]  # position of ths GPS antenna according parent_link in meters
-records: # topic to be recorded
-  nmea: true # nmea sentences will be recorded into bag
-  gps_fix: false # gps_fix topic will not be recorded into bag
-  vel: false # vel topic will not be recorded into bag
 ```
 
-For more information on how to write a meta-description, please refer to the [*romea_common_meta_bringup*](https://github.com/Romea/romea-ros2-common.git) documentation.
+#### Example using romea_gps_driver with TCP connection
 
-# 3) Supported GPS receiver models
-
-The following GPS receivers are supported:
-
-|  type  |   model    |
-| :----: | :--------: |
-| drotek |    f9p     |
-| astech | proflex800 |
-| ublox  |   evk_m8   |
-| septentrio  |   AsterX   |
-
-The specifications for each receiver can be found in the config directory of the *romea_gps_description* package. If you would like to use a new receiver, you will need to add a corresponding file for that sensor in the config directory of the *romea_gps_description* package.
-
-# 4) Supported GPS receiver ROS2 driver
-
-Supported drivers include [nmea_navsat_driver](https://github.com/ros-drivers/nmea_navsat_driver)  and  romea_gps_driver given in this package. To use one of these drivers, you can add the snippet as shown below into the launch item of the GPS meta-description file:
-
-- **Nmea Navsat driver**:
-
-  ```yaml
-    - include:
-        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
-        arg:
-          - name: "device"
-            value: "/dev/ttyUSB0"
-          - name: "baudrate"
-            value: "115200"
-  ```
-  
-- **Romea gps driver using serial connection**:
-
-  ```yaml
-    - include:
-        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_tcp_driver.launch.py"
-        arg:
-          - name: "device"
-            value: "/dev/ttyUSB0"
-          - name: "baudrate"
-            value: "115200"
-          - name: "container"
-            value: "/foo" # default "", if not empty tcp driver plugin is launch in /foo container 
-  ```
-
-- **Romea gps driver using tcp connection**:
-
-  ```yaml
-    - include:
-        file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_tcp_driver.launch.py"
-        arg:
+```yaml
+launch:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_tcp_driver.launch.py"
+      arg:
         - name: ip
           value: 192.168.0.50
         - name: nmea_port
-          value: 1001
+          value: "1001"
         - name: rtcm_port
-          value: 1002
-        - name: container
-            value: /foo #  default "", if not empty tcp driver plugin is launch in /foo container 
-  ```
+          value: "1002"
+```
 
-You can also launch the NTRIP driver if you require differential correction, as shown below:
+#### Example using NTRIP corrections
 
 ```yaml
+launch:
   - include:
       file: "$(find-pkg-share romea_gps_meta_bringup)/profile/ntrip_client.launch.py"
       arg:
@@ -161,10 +332,10 @@ You can also launch the NTRIP driver if you require differential correction, as 
           value: MTLDR
 ```
 
-Each driver node has an associated launch file located in the profile directory of this package. If you wish to use a different driver, you  will need to create a new launch file dedicated for that driver.  It is possible to generate the full launch file in
+Each launch profile is responsible for:
 
-```shell
-ros2 run romea_gps_meta_bringup generate_launch_file.py robot_namespace:'robot' meta_description_file_path:romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
-```
+* starting the corresponding driver or processing node
+* configuring driver parameters
+* applying standardized topic remappings
 
-ros2 run romea_gps_meta_bringup generate_launch_file.py mode:live robot_namespace:'robot' meta_description_file_path:romea_ros2/src/interfaces/sensors/romea_gps/romea_gps_meta_bringup/test/test_gps_meta_bringup.yaml > toto.launch.yaml
+This abstraction ensures that all supported GPS drivers expose a consistent ROS2 interface independently of their internal implementation.

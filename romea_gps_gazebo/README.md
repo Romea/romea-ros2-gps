@@ -1,19 +1,52 @@
-# romea_gps_gazebo_classic # 
+# romea_gps_gazebo
+## Overview
 
-# 1) Overview 
+romea_gps_gazebo provides Gazebo simulation plugins and ROS2 bridges for GPS/GNSS sensors.
 
-  The romea_gps_gazebo_classic package provides a plugin for GNSS (Global Navigation Satellite System) receiver simulation for Gazebo classic. As gazebo_ros_gps_sensor plugin provided into ROS [gazebo__plugins](https://github.com/ros-simulation/gazebo_ros_pkgs.git), this plugin publish fix and velocity messages  as well as some nmea sentences. For the moment, only GGA,RMC and HDT sentences are provided by this plugin but when contellations will be simulated GSV data will be also provided. 
+The package enables the simulation of GPS receivers attached to robotic platforms and publishes simulated GPS measurements and NMEA sentences through standardized ROS2 interfaces.
 
-# 2) Published Topics
+## Package architecture
 
-- fix (sensor_msgs/NavSatFix):
+The package is composed of three main components:
 
-  The simulated GPS position in WGS84 coordinates (latitude, longitude and altitude).
+| Component	| Description |
+|:---------:|:-----------:|
+| NmeaGpsSensor	| Gazebo sensor implementation generating GPS measurements |
+| NmeaGpsSystem	| Gazebo system plugin managing the GPS simulation |
+| NmeaGpsBridge	| ROS2 bridge exposing GPS data and NMEA messages |
 
-- vel (geometry_msgs/Vector3Stamped):
+## Gazebo integration
 
-  The GNSS velocity vector in ENU coordinates.
+The GPS sensor can be integrated into the robot URDF using Gazebo custom sensor tag.
 
-- nmea(nmea_msgs/Sentence)
+Example
+```xml
+    <sensor type="custom" name="gps_sensor" gz:type="gps"
+      xmlns:gz="http://gazebosim.org/schema/gz">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>1</always_on>
+      <update_rate>10</update_rate>
 
-  GGA,RMC, HDT nmea sentences
+      <dual_antenna>${dual_antenna}</dual_antenna>
+
+      <gz:gps>
+        ...
+      </gz:gps>
+
+      <plugin filename="romea_gps_gazebo_plugin" name="romea::gz::NmeaGps" />
+
+    </sensor>
+  </xacro:if>
+```
+The generated GPS measurements can then be bridged to ROS2 topics and used by localization algorithms.
+
+## ROS2 interfaces
+
+The package provides ROS2 bridges exposing standardized interfaces for simulated GPS data.
+
+Typical published topics include:
+
+| Topic | Message type |
+|:------------:|:-----:|
+| fix	| sensor_msgs/msg/NavSatFix |
+|nmea_sentence | nmea_msgs/msg/Sentence |
