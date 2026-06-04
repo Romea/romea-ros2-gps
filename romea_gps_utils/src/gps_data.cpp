@@ -28,9 +28,11 @@
 #include "romea_core_common/time/Time.hpp"
 
 // local
-#include "romea_gps_utils/gps_data.hpp"
+// clang-format off
 #include "romea_gps_utils/gps_data_conversions.hpp"
 #include "romea_gps_utils/gps_data_diagnostics.hpp"
+#include "romea_gps_utils/gps_data.hpp"
+// clang-format on
 
 namespace romea::ros2
 {
