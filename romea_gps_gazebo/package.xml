@@ -20,9 +20,9 @@
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>nmea_msgs</depend>
-  <depend condition="$ROS_DISTRO &gt;= iron">gz-plugin_vendor</depend>
-  <depend condition="$ROS_DISTRO &gt;= iron">gz-sim_vendor</depend>
-  <depend condition="$ROS_DISTRO &gt;= iron">gz-sensors_vendor</depend>
+  <depend condition="$ROS_DISTRO &gt;= iron">gz_plugin_vendor</depend>
+  <depend condition="$ROS_DISTRO &gt;= iron">gz_sim_vendor</depend>
+  <depend condition="$ROS_DISTRO &gt;= iron">gz_sensors_vendor</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
