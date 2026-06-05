@@ -36,7 +36,7 @@ def launch_setup(context, *args, **kwargs):
 
     gps_configuration = {
         "rate": int(LaunchConfiguration("rate").perform(context)),
-        "dual_antenna": bool(LaunchConfiguration("dual_antenna").perform(context)),
+        "dual_antenna": LaunchConfiguration("dual_antenna").perform(context).lower() =="true",
         "gps_fix_uere": float(LaunchConfiguration("gps_fix_uere").perform(context)),
         "dgps_fix_uere": float(LaunchConfiguration("dgps_fix_uere").perform(context)),
         "float_rtk_fix_uere": float(LaunchConfiguration("float_rtk_fix_uere").perform(context)),
@@ -71,14 +71,14 @@ def launch_setup(context, *args, **kwargs):
 
     launch = LaunchDescription()
     if container == "":
-        if bool(gps_configuration["dual_antenna"]):
+        if gps_configuration["dual_antenna"]:
             executable = "dual_antenna_gps_localisation_plugin_node"
         else:
             executable = "single_antenna_gps_localisation_plugin_node"
 
         launch.add_action(Node(**common_arguments, executable=executable))
     else:
-        if bool(gps_configuration["dual_antenna"]):
+        if gps_configuration["dual_antenna"]:
             plugin = "romea::ros2::DualAntennaGPSLocalisationPlugin"
         else:
             plugin = "romea::ros2::SingleAntennaGPSLocalisationPlugin"
