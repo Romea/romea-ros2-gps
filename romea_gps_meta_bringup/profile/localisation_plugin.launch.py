@@ -36,7 +36,7 @@ def launch_setup(context, *args, **kwargs):
 
     gps_configuration = {
         "rate": int(LaunchConfiguration("rate").perform(context)),
-        "dual_antenna": LaunchConfiguration("dual_antenna").perform(context).lower() =="true",
+        "dual_antenna": LaunchConfiguration("dual_antenna").perform(context).lower() == "true",
         "gps_fix_uere": float(LaunchConfiguration("gps_fix_uere").perform(context)),
         "dgps_fix_uere": float(LaunchConfiguration("dgps_fix_uere").perform(context)),
         "float_rtk_fix_uere": float(LaunchConfiguration("float_rtk_fix_uere").perform(context)),
@@ -66,7 +66,7 @@ def launch_setup(context, *args, **kwargs):
             ("vehicle_controller/odom", odom_topic),
             ("course", f"/{robot_namespace}/localisation/course"),
             ("position", f"/{robot_namespace}/localisation/position"),
-        ]
+        ],
     }
 
     launch = LaunchDescription()
@@ -86,9 +86,7 @@ def launch_setup(context, *args, **kwargs):
         launch.add_action(
             LoadComposableNodes(
                 target_container=container,
-                composable_node_descriptions=[
-                    ComposableNode(**common_arguments, plugin=plugin)
-                ],
+                composable_node_descriptions=[ComposableNode(**common_arguments, plugin=plugin)],
             )
         )
 
@@ -98,9 +96,9 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     default_odom_topic = [
-        TextSubstitution(text='/'),
+        TextSubstitution(text="/"),
         LaunchConfiguration("robot_namespace"),
-        TextSubstitution(text='/base/controller/odom')
+        TextSubstitution(text="/base/controller/odom"),
     ]
 
     return LaunchDescription(
@@ -111,6 +109,6 @@ def generate_launch_description():
             DeclareLaunchArgument("minimal_speed_over_ground", default_value="0.5"),
             DeclareLaunchArgument("odom_topic", default_value=default_odom_topic),
             DeclareLaunchArgument("wgs84_anchor_file_path"),
-            OpaqueFunction(function=launch_setup)
+            OpaqueFunction(function=launch_setup),
         ]
     )
