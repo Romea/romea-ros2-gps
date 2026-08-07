@@ -1,38 +1,46 @@
-# romea_ros2_gps #
+# romea_ros2_gps
 
-This stack contains several ROS2 packages for working with GPS receivers, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
+## Overview
 
-## **Usage**
+`romea_ros2_gps` groups the ROS2 packages used to describe, launch, simulate and interface GPS receivers in the ROMEA ecosystem.
 
-1. create a ROS workspace
-2. cd worskpace
-3. mkdir src
-4. wget https://raw.githubusercontent.com/Romea/romea-ros2-gps/refs/heads/main/romea_gps_public.repos
-5. vcs import src < romea_gps_public.repos
-6. colcon build
-7. see bringup package to launch gps
+This repository-level README gives a map of the stack. Detailed behavior, configuration formats, generated files and launch examples are documented in the README of each package listed below.
 
-## **Contributing**
+## Packages
 
-If you'd like to contribute to this project, here are some guidelines:
+| Package | Role |
+| --- | --- |
+| `romea_gps` | Metapackage for the GPS stack. |
+| `romea_gps_description` | GPS receiver specifications, antenna geometry files, Python helpers and URDF generation. |
+| `romea_gps_meta_bringup` | Main user entry point: GPS meta-description parser, launch generation, URDF generation and reusable launch profiles. |
+| `romea_gps_driver` | Serial and TCP NMEA drivers for live GPS receivers. |
+| `romea_gps_ntrip` | NTRIP client tools used to send RTCM corrections and receive NMEA streams. |
+| `romea_gps_gazebo` | Gazebo GPS simulation plugins and bridges. |
+| `romea_gps_gazebo_classic` | Gazebo Classic GPS simulation plugin. |
+| `romea_gps_utils` | ROS2 GPS utilities, data conversions, diagnostics and serial / TCP helpers. |
 
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Make your changes.
-4. Write tests to cover your changes.
-5. Run the tests to ensure they pass.
-6. Commit your changes.
-7. Push your changes to your forked repository.
-8. Submit a pull request.
+## Usage
 
-## **License**
+This stack is usually consumed from a larger ROMEA workspace or from a demo configuration that already selects the GPS devices to launch.
 
-This project is released under the Apache License 2.0. See the LICENSE file for details.
+In most cases, start with `romea_gps_meta_bringup`. It is the user-facing entry point of the stack: from a GPS meta-description, it can generate the detailed GPS configuration, generate the URDF fragment, and launch the selected live drivers, simulation bridge or localisation plugin. The other packages provide the description data, drivers, simulation plugins and utility code used behind this entry point.
 
-## **Authors**
+Use the specialized package README files when you need to inspect or extend a specific part of the stack:
 
-The romea_ros2_gps stack was developed by **Jean Laneurit** in the context of various research projects carried out at INRAE.
+* `romea_gps_description` to add or inspect receiver and antenna descriptions;
+* `romea_gps_meta_bringup` to write GPS meta-descriptions and launch profiles;
+* `romea_gps_driver` and `romea_gps_ntrip` for live data sources;
+* `romea_gps_gazebo` or `romea_gps_gazebo_classic` for simulation;
+* `romea_gps_utils` for lower-level ROS2 helpers.
 
-## **Contact**
+## License
 
-If you have any questions or comments about romea_ros2_gps stack, please contact **[Jean Laneurit](mailto:jean.laneurit@inrae.fr)** 
+This project is released under the Apache License 2.0. See the `LICENSE` file for details.
+
+## Authors
+
+The `romea_ros2_gps` stack was developed by Jean Laneurit in the context of research projects carried out at INRAE.
+
+## Contact
+
+For questions or comments about this stack, contact [Jean Laneurit](mailto:jean.laneurit@inrae.fr).
