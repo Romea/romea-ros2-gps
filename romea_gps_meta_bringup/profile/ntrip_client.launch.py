@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     password = LaunchConfiguration("password").perform(context)
     mountpoint = LaunchConfiguration("mountpoint").perform(context)
     mode = LaunchConfiguration("mode").perform(context)
+    ssl = LaunchConfiguration("ssl").perform(context)
 
     launch = LaunchDescription()
 
@@ -46,7 +47,8 @@ def launch_setup(context, *args, **kwargs):
                         "username": username,
                         "password": password,
                         "mountpoint": mountpoint,
-                        "authenticate": username != "" and password != ""
+                        "authenticate": username != "" and password != "",
+                        "ssl": ssl.lower() == "true"
                     }
                 ],
                 remappings=[("nmea", "nmea_sentence"), ("rtcm", "ntrip/rtcm")],
@@ -65,6 +67,7 @@ def generate_launch_description():
             DeclareLaunchArgument("username", default_value="centipede"),
             DeclareLaunchArgument("password", default_value="centipede"),
             DeclareLaunchArgument("mountpoint"),
+            DeclareLaunchArgument("ssl", default_value="false"),
             OpaqueFunction(function=launch_setup)
         ]
     )
