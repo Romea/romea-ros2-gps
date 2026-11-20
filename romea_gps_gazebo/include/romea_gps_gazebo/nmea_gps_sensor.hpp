@@ -20,7 +20,8 @@
 #include <string>
 
 // gz
-#include "gz/custom_msgs/nmea_sentence.pb.h"
+// #include "gz/custom_msgs/nmea_sentence.pb.h"
+#include "gz/msgs/stringmsg.pb.h"
 #include "gz/sensors/Sensor.hh"
 #include "gz/sensors/Util.hh"
 

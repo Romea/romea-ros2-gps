@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(romea_gps_driver)
 
 # Default to C99
@@ -39,18 +39,17 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE "ROMEA_GPS_DRIVER_BUILDING_DLL")
 
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  rclcpp_components
-  romea_core_common
-  romea_core_gps
-  romea_common_utils
-  romea_gps_utils
-  geometry_msgs
-  sensor_msgs
-  mavros_msgs
-  nmea_msgs
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  romea_core_common::romea_core_common
+  romea_core_gps::romea_core_gps
+  romea_common_utils::romea_common_utils
+  romea_gps_utils::romea_gps_utils
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${mavros_msgs_TARGETS}
+  ${nmea_msgs_TARGETS})
 
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN "romea::ros2::GpsSerialDriver"

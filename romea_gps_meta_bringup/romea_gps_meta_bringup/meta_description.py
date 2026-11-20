@@ -19,6 +19,7 @@ import romea_gps_description
 
 
 class GPSMetaDescription(SensorMetaDescription):
+
     def __init__(self, meta_description_file_path, robot_name=None):
         super().__init__("gps", meta_description_file_path, robot_name)
 

@@ -24,6 +24,11 @@
   <!-- <exec_depend>nmea_navsat_driver</exec_depend> -->
   <exec_depend>ntrip_client</exec_depend>
 
+  <exec_depend>romea_simulation_meta_bringup</exec_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

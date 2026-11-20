@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(romea_gps_gazebo)
 
 set(ROS_DISTRO $ENV{ROS_DISTRO})
@@ -31,28 +31,29 @@ if(${ROS_DISTRO} STRGREATER "iron")
     find_package(romea_core_common REQUIRED)
     find_package(romea_core_gps REQUIRED)
     find_package(rclcpp REQUIRED)
+    find_package(rclcpp_components REQUIRED)
     find_package(nmea_msgs REQUIRED)
     find_package(ros_gz_bridge REQUIRED)
       
 
 
-    # Define a variable 'MSGS_PROTOS' listing the .proto files
-    set(MSGS_PROTOS ${CMAKE_CURRENT_SOURCE_DIR}/proto/gz/custom_msgs/nmea_sentence.proto)
+    # # Define a variable 'MSGS_PROTOS' listing the .proto files
+    # set(MSGS_PROTOS ${CMAKE_CURRENT_SOURCE_DIR}/proto/gz/custom_msgs/nmea_sentence.proto)
 
-    # Call 'gz_msgs_generate_messages()' to process the .proto files
-    gz_msgs_generate_messages(
-      # The cmake target to be generated for libraries/executables to link
-      TARGET msgs
-      # The protobuf package to generate (Typically based on the path)
-      PROTO_PACKAGE "gz.custom_msgs"
-      # The path to the base directory of the proto files
-      # All import paths should be relative to this (eg gz/custom_msgs/vector3d.proto)
-      MSGS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/proto
-      # List of proto files to process
-      MSGS_PROTOS ${MSGS_PROTOS}
-      # Dependency on gz-msgs
-      DEPENDENCIES gz-msgs::gz-msgs
-    )
+    # # Call 'gz_msgs_generate_messages()' to process the .proto files
+    # gz_msgs_generate_messages(
+    #   # The cmake target to be generated for libraries/executables to link
+    #   TARGET msgs
+    #   # The protobuf package to generate (Typically based on the path)
+    #   PROTO_PACKAGE "gz.custom_msgs"
+    #   # The path to the base directory of the proto files
+    #   # All import paths should be relative to this (eg gz/custom_msgs/vector3d.proto)
+    #   MSGS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/proto
+    #   # List of proto files to process
+    #   MSGS_PROTOS ${MSGS_PROTOS}
+    #   # Dependency on gz-msgs
+    #   DEPENDENCIES gz-msgs::gz-msgs
+    # )
 
     add_library(${PROJECT_NAME}_plugin SHARED src/nmea_gps_sensor.cpp src/nmea_gps_system.cpp)
 
@@ -61,7 +62,7 @@ if(${ROS_DISTRO} STRGREATER "iron")
         gz-plugin::register
         gz-sim::gz-sim
         gz-sensors::gz-sensors
-        romea_gps_gazebo-msgs
+        # romea_gps_gazebo-msgs
         romea_core_gps::romea_core_gps
     )
 
@@ -69,7 +70,7 @@ if(${ROS_DISTRO} STRGREATER "iron")
       PUBLIC
       include
       ${romea_core_gps_INCLUDE_DIRS}
-      ${CMAKE_CURRENT_BINARY_DIR}/romea_gps_gazebo-msgs_genmsg
+      # ${CMAKE_CURRENT_BINARY_DIR}/romea_gps_gazebo-msgs_genmsg
     )
 
 
@@ -79,11 +80,10 @@ if(${ROS_DISTRO} STRGREATER "iron")
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     )
 
-    ament_target_dependencies(${PROJECT_NAME}_gz_bridge
-      rclcpp
-      nmea_msgs
-      ros_gz_bridge
-    )
+    target_link_libraries(${PROJECT_NAME}_gz_bridge PUBLIC
+      rclcpp::rclcpp
+      ${nmea_msgs_TARGETS}
+      ros_gz_bridge::ros_gz_bridge)
 
     rclcpp_components_register_node(${PROJECT_NAME}_gz_bridge
       PLUGIN "romea::ros2::NmeaGpsGzBridge"

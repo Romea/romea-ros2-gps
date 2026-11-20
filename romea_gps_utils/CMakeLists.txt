@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(romea_gps_utils)
 
 # Default to C99
@@ -38,15 +38,21 @@ add_library(${PROJECT_NAME} SHARED
   src/tcp_client.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  sensor_msgs
-  geometry_msgs
-  nmea_msgs
-  romea_core_common
-  romea_core_gps
-  romea_common_utils
-  serial)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${nmea_msgs_TARGETS}
+  romea_core_common::romea_core_common
+  romea_core_gps::romea_core_gps
+  romea_common_utils::romea_common_utils
+  ${serial_LIBRARIES})
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${serial_INCLUDE_DIRS})
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+  ${serial_DEFINITIONS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -61,8 +67,9 @@ ament_export_dependencies(romea_core_gps)
 ament_export_dependencies(romea_common_utils)
 ament_export_dependencies(serial)
 
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
+#ament_export_include_directories(include)
+#ament_export_libraries(${PROJECT_NAME})
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 
 install(
   DIRECTORY include/

@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(romea_gps_description)
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 
 install(
   DIRECTORY config urdf launch

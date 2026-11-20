@@ -22,6 +22,7 @@ from launch_ros.descriptions import ComposableNode
 
 
 class LaunchVariables:
+
     def __init__(self, context):
         self.__context = context
 

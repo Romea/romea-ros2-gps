@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(romea_gps_gazebo_classic)
 
 # if($ENV{ROS_DISTRO})
@@ -37,21 +37,34 @@ if(${ROS_DISTRO} STRLESS_EQUAL "iron")
     add_library(${PLUGIN_LIB_NAME} SHARED
       src/gazebo_ros_gps_sensor.cpp
     )
-    target_include_directories(${PLUGIN_LIB_NAME} PUBLIC include)
+    target_include_directories(${PLUGIN_LIB_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 
-    ament_target_dependencies(${PLUGIN_LIB_NAME}
-      "gazebo_ros"
-      "sensor_msgs"
-      "geometry_msgs"
-      "nmea_msgs"
-      "gazebo_dev"
-      "romea_core_common"
-      "romea_core_gps"
-      "sdformat9"
-    )
-    ament_export_libraries(${PLUGIN_LIB_NAME})
+    target_link_libraries(${PLUGIN_LIB_NAME} PUBLIC
+      ${gazebo_ros_LIBRARIES}
+      ${sensor_msgs_TARGETS}
+      ${geometry_msgs_TARGETS}
+      ${nmea_msgs_TARGETS}
+      ${gazebo_dev_LIBRARIES}
+      romea_core_common::romea_core_common
+      romea_core_gps::romea_core_gps
+      ${sdformat9_LIBRARIES})
 
-    ament_export_include_directories(include)
+    target_include_directories(${PLUGIN_LIB_NAME} SYSTEM PUBLIC
+      ${gazebo_ros_INCLUDE_DIRS}
+      ${gazebo_dev_INCLUDE_DIRS}
+      ${sdformat9_INCLUDE_DIRS})
+
+    target_compile_definitions(${PLUGIN_LIB_NAME} PUBLIC
+      ${gazebo_ros_DEFINITIONS}
+      ${gazebo_dev_DEFINITIONS}
+      ${sdformat9_DEFINITIONS})
+#    ament_export_libraries(${PLUGIN_LIB_NAME})
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(romea_core_common romea_core_gps)
+
+#    ament_export_include_directories(include)
     ament_export_dependencies(rclcpp)
     ament_export_dependencies(romea_common)
     ament_export_dependencies(romea_gps)
@@ -78,6 +91,7 @@ if(${ROS_DISTRO} STRLESS_EQUAL "iron")
 
     install(TARGETS
       ${PLUGIN_LIB_NAME}
+  EXPORT export_${PROJECT_NAME}
       ARCHIVE DESTINATION lib
       LIBRARY DESTINATION lib
       RUNTIME DESTINATION bin)

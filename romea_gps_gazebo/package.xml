@@ -28,6 +28,11 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <depend condition="$ROS_DISTRO &gt; iron">ros_gz_bridge</depend>
+  <depend condition="$ROS_DISTRO &gt; iron">rclcpp_components</depend>
+  <depend condition="$ROS_DISTRO &gt; iron">gz_common_vendor</depend>
+  <depend condition="$ROS_DISTRO &gt; iron">gz_msgs_vendor</depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
