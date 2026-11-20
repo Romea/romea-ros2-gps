@@ -9,6 +9,9 @@ repositories:
   romea_ros2/tools/romea_common:
     type: git
     url: https://github.com/Romea/romea-ros2-common.git
+  romea_ros2/tools/romea_simulation:
+    type: git
+    url: https://github.com/Romea/romea-ros2-simulation.git
   romea_ros2/interfaces/sensors/romea_gps:
     type: git
     url: https://github.com/Romea/romea-ros2-gps.git
