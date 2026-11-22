@@ -16,8 +16,9 @@
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 import romea_common_meta_bringup.ros_launch as common
 import romea_gps_meta_bringup.ros_launch as gps
@@ -41,6 +42,7 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'simulator_type': simulator_type,
             'wgs84_anchor_file_path': wgs84_anchor_file_path,
+            'gui': LaunchConfiguration('gui'),
         }.items(),
     )
 
@@ -89,6 +91,7 @@ def generate_launch_description():
         common.declare_robot_namespace("robot"),
         common.declare_meta_description_file_path("gps"),
         simulation.declare_simulator_type("gazebo"),
+        DeclareLaunchArgument("gui", default_value="true"),
         gps.declare_wgs84_anchor_file_path(default_wgs84_anchor_file_path)
     ]
 

@@ -3,4 +3,6 @@ include:
     file: ".gitlab-ci.yml"
 
 variables:
+  ROS_HUMBLE_IMAGE: "osrf/ros:humble-desktop-full-jammy"
+  ROS_JAZZY_IMAGE: "osrf/ros:jazzy-desktop-full-noble"
   PKGS_TO_BUILD_TEST: "romea_gps_meta_bringup romea_gps_description romea_gps_utils romea_gps_driver romea_gps_gazebo_classic"

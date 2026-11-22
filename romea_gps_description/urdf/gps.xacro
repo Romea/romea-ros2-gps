@@ -9,7 +9,7 @@
     <xacro:property name="joint_name"
       value="${prefix}${name}_joint" />
     <xacro:property name="parent_link_name"
-      value="${prefix}${configuration['parent_link']}" />
+      value="${configuration['parent_link'] if configuration['parent_link'] == 'world' else prefix + configuration['parent_link']}" />
 
     <xacro:property name="xyz"
       value="${configuration['xyz']}" />
@@ -89,7 +89,12 @@
     </link>
 
 
-    <xacro:if value="${standalone == False}">
+    <!-- A standalone sensor with parent world is fixed at its mounting pose. -->
+    <xacro:if value="${standalone and parent_link_name == 'world'}">
+      <link name="world" />
+    </xacro:if>
+
+    <xacro:if value="${not standalone or parent_link_name == 'world'}">
       <joint
         name="${joint_name}" type="fixed">
         <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}" rpy="0 0 0" />
