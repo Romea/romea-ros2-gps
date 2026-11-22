@@ -268,13 +268,6 @@ Pass `gui:=false` to run without the simulator GUI. The default WGS84 anchor is
 `config/wgs84_anchors/inrae_aubiere.yaml`; override `wgs84_anchor_file_path` to
 select another anchor.
 
-In standalone mode, `location.parent_link: world` generates an unprefixed `world`
-link and a fixed joint at the configured position. Other standalone parents leave
-the sensor free. In robot integration (`standalone: false`), the robot supplies
-the parent link. The test checks attachment to `world` at xyz `[1.0, 2.0, 3.0]`.
-
----
-
 ## 5) Supported GPS receivers
 
 Currently, the following GPS receiver manufacturers and models are supported:
